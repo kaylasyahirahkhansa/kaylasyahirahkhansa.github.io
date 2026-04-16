@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ICD-11 · International Classification of Diseases</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --sans: 'Inter', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+    --bg: #f8f7f5;
+    --surface: #ffffff;
+    --surface2: #f2f1ef;
+    --border: rgba(0,0,0,0.08);
+    --border2: rgba(0,0,0,0.14);
+    --text: #1a1916;
+    --muted: #6b6963;
+    --faint: #a8a49e;
+    --accent: #1d4ed8;
+    --accent-light: #eff6ff;
+    --accent-text: #1e40af;
+    --green: #15803d;
+    --green-bg: #f0fdf4;
+    --amber: #b45309;
+    --amber-bg: #fffbeb;
+    --red: #b91c1c;
+    --red-bg: #fef2f2;
+    --purple: #7c3aed;
+    --purple-bg: #f5f3ff;
+    --teal: #0f766e;
+    --teal-bg: #f0fdfa;
+    --radius: 10px;
+    --radius-sm: 6px;
+    --radius-lg: 16px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+  }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(248,247,245,0.88);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 56px;
+    display: flex; align-items: center; gap: 2rem;
+  }
+  .logo {
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 700; font-size: 15px; letter-spacing: -0.3px;
+    color: var(--text); text-decoration: none; white-space: nowrap;
+  }
+  .logo-badge {
+    background: var(--accent); color: #fff;
+    font-size: 10px; font-weight: 700; padding: 2px 7px;
+    border-radius: 4px; letter-spacing: 0.5px;
+  }
+  .logo-who {
+    font-size: 11px; color: var(--faint); font-weight: 400; margin-left: 2px;
+  }
+  .topbar-search {
+    flex: 1; max-width: 480px;
+    position: relative;
+  }
+  .topbar-search input {
+    width: 100%; height: 36px;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    padding: 0 12px 0 36px;
+    font-size: 13px; font-family: var(--sans);
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .topbar-search input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(29,78,216,0.1);
+  }
+  .topbar-search .si { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--faint); }
+  .topbar-nav { display: flex; align-items: center; gap: 4px; margin-left: auto; }
+  .tn { padding: 6px 12px; border-radius: 6px; font-size: 13px; color: var(--muted); cursor: pointer; transition: all 0.15s; border: none; background: none; font-family: var(--sans); }
+  .tn:hover { background: var(--surface2); color: var(--text); }
+  .tn.active { background: var(--surface); color: var(--text); box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .btn-primary { background: var(--accent); color: #fff; padding: 7px 16px; border-radius: 7px; font-size: 13px; font-weight: 500; cursor: pointer; border: none; font-family: var(--sans); transition: background 0.15s; }
+  .btn-primary:hover { background: #1d40b0; }
+
+  /* ── LAYOUT ── */
+  .layout { display: flex; height: calc(100vh - 56px); overflow: hidden; }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 280px; min-width: 280px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 1rem 0;
+  }
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+  .sb-section { margin-bottom: 1.5rem; }
+  .sb-label { font-size: 10px; font-weight: 600; color: var(--faint); letter-spacing: 0.8px; text-transform: uppercase; padding: 0 1.25rem 0.5rem; }
+  .sb-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 7px 1.25rem; cursor: pointer;
+    font-size: 13px; color: var(--muted);
+    transition: all 0.12s; position: relative;
+    border: none; background: none; width: 100%; text-align: left; font-family: var(--sans);
+  }
+  .sb-item:hover { background: var(--bg); color: var(--text); }
+  .sb-item.active { background: var(--accent-light); color: var(--accent-text); font-weight: 500; }
+  .sb-item.active::before { content:''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--accent); }
+  .sb-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .sb-count { margin-left: auto; font-size: 11px; color: var(--faint); background: var(--bg); padding: 1px 6px; border-radius: 4px; }
+  .chapter-tree { padding: 0.5rem 0; }
+  .ct-item {
+    padding: 5px 1.25rem 5px 2.5rem; cursor: pointer;
+    font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 8px;
+    transition: all 0.12s; border: none; background: none; width: 100%; text-align: left; font-family: var(--sans);
+  }
+  .ct-item:hover { background: var(--bg); color: var(--text); }
+  .ct-item.active { color: var(--accent-text); background: var(--accent-light); }
+  .ct-num { font-size: 10px; font-weight: 600; color: var(--faint); min-width: 18px; }
+
+  /* ── MAIN ── */
+  .main { flex: 1; overflow-y: auto; padding: 2rem; }
+  .main::-webkit-scrollbar { width: 6px; }
+  .main::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 2.5rem;
+    margin-bottom: 1.5rem;
+    position: relative; overflow: hidden;
+  }
+  .hero-tag { font-size: 11px; font-weight: 600; color: var(--accent); letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 0.75rem; }
+  .hero h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.7px; line-height: 1.2; margin-bottom: 0.75rem; }
+  .hero p { font-size: 14px; color: var(--muted); max-width: 520px; line-height: 1.7; margin-bottom: 1.5rem; }
+  .hero-stats { display: flex; gap: 2rem; }
+  .hero-stat { text-align: center; }
+  .hero-stat .val { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: var(--text); }
+  .hero-stat .lbl { font-size: 11px; color: var(--faint); margin-top: 2px; }
+  .hero-bg {
+    position: absolute; right: -20px; top: -20px;
+    width: 260px; height: 260px; opacity: 0.035;
+    background: conic-gradient(from 0deg, #1d4ed8, #7c3aed, #0f766e, #15803d, #1d4ed8);
+    border-radius: 50%;
+  }
+
+  /* ── GRID ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1rem; }
+  .grid-auto { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 1.25rem;
+    box-shadow: var(--shadow);
+  }
+  .card-title { font-size: 12px; font-weight: 600; color: var(--faint); letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 0.75rem; }
+  .card h2 { font-size: 18px; font-weight: 700; letter-spacing: -0.4px; margin-bottom: 0.25rem; }
+  .card-sub { font-size: 12px; color: var(--muted); }
+
+  /* ── SEARCH RESULTS ── */
+  #search-results {
+    display: none;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    position: absolute; top: 42px; left: 0; right: 0; z-index: 200;
+    overflow: hidden;
+    max-height: 400px; overflow-y: auto;
+  }
+  .sr-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 14px; cursor: pointer;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s;
+  }
+  .sr-item:last-child { border-bottom: none; }
+  .sr-item:hover { background: var(--bg); }
+  .sr-code { font-family: var(--mono); font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; }
+  .sr-name { font-size: 13px; color: var(--text); }
+  .sr-chapter { font-size: 11px; color: var(--faint); margin-left: auto; }
+
+  /* ── CHAPTER EXPLORER ── */
+  .chapter-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    cursor: pointer; transition: all 0.15s;
+    display: flex; align-items: flex-start; gap: 12px;
+  }
+  .chapter-card:hover { border-color: var(--border2); box-shadow: var(--shadow-md); transform: translateY(-1px); }
+  .chapter-card.selected { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(29,78,216,0.08); }
+  .chapter-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+  .chapter-info { flex: 1; min-width: 0; }
+  .chapter-num { font-size: 10px; font-weight: 700; color: var(--faint); letter-spacing: 0.5px; }
+  .chapter-name { font-size: 13px; font-weight: 500; line-height: 1.4; color: var(--text); margin-top: 2px; }
+  .chapter-range { font-family: var(--mono); font-size: 10px; color: var(--faint); margin-top: 3px; }
+  .chapter-count { font-size: 11px; color: var(--faint); }
+
+  /* ── CODE DETAIL ── */
+  #detail-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.75rem;
+    margin-top: 1rem;
+    display: none;
+    animation: fadeSlide 0.25s ease;
+  }
+  @keyframes fadeSlide { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .dp-header { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 1.5rem; }
+  .dp-code-big { font-family: var(--mono); font-size: 32px; font-weight: 700; color: var(--accent); letter-spacing: -1px; }
+  .dp-meta { flex: 1; }
+  .dp-title { font-size: 18px; font-weight: 600; line-height: 1.3; letter-spacing: -0.3px; margin-bottom: 0.5rem; }
+  .dp-breadcrumb { display: flex; gap: 6px; align-items: center; font-size: 12px; color: var(--faint); flex-wrap: wrap; }
+  .dp-crumb { cursor: pointer; } .dp-crumb:hover { color: var(--accent); }
+  .dp-sep { color: var(--border2); }
+  .dp-section { margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid var(--border); }
+  .dp-section-label { font-size: 11px; font-weight: 600; color: var(--faint); letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 0.75rem; }
+  .dp-desc { font-size: 14px; color: var(--muted); line-height: 1.75; }
+  .inclusion-pill { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px; font-size: 12px; margin: 3px; border: 1px solid var(--border); background: var(--bg); color: var(--muted); cursor: pointer; transition: all 0.12s; }
+  .inclusion-pill:hover { background: var(--accent-light); color: var(--accent-text); border-color: rgba(29,78,216,0.2); }
+  .exclusion-pill { background: var(--red-bg); color: var(--red); border-color: rgba(185,28,28,0.15); }
+  .dp-actions { display: flex; gap: 8px; margin-top: 1.25rem; flex-wrap: wrap; }
+  .act-btn { padding: 7px 14px; border-radius: 7px; font-size: 12px; font-weight: 500; cursor: pointer; border: 1px solid var(--border2); background: var(--surface); color: var(--muted); font-family: var(--sans); transition: all 0.12s; display: flex; align-items: center; gap: 6px; }
+  .act-btn:hover { background: var(--bg); color: var(--text); }
+  .act-btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .act-btn.primary:hover { background: #1d40b0; }
+
+  /* ── TABS ── */
+  .tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--border); margin-bottom: 1.25rem; }
+  .tab { padding: 8px 14px; font-size: 13px; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.15s; border-left: none; border-right: none; border-top: none; background: none; font-family: var(--sans); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 500; }
+  .tab:hover:not(.active) { color: var(--text); }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── VISUALIZER ── */
+  .viz-area {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 1.5rem; margin-bottom: 1rem;
+  }
+  .viz-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between; }
+  .viz-legend { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .viz-li { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+  .viz-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+  /* Chapter frequency bars */
+  .freq-bars { display: flex; flex-direction: column; gap: 6px; }
+  .freq-row { display: flex; align-items: center; gap: 10px; }
+  .freq-label { font-size: 11px; color: var(--muted); width: 120px; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-shrink: 0; }
+  .freq-bar-wrap { flex: 1; background: var(--bg); border-radius: 4px; height: 20px; overflow: hidden; }
+  .freq-bar { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 8px; font-size: 10px; font-weight: 600; color: #fff; transition: width 0.6s cubic-bezier(0.4,0,0.2,1); }
+  .freq-val { font-size: 11px; color: var(--muted); width: 40px; }
+
+  /* ── CODING TOOL ── */
+  .code-tool {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 1.5rem; margin-bottom: 1rem;
+  }
+  .ct-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+  .ct-header h3 { font-size: 14px; font-weight: 600; }
+  .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 500; }
+  .badge-new { background: var(--green-bg); color: var(--green); }
+  .badge-beta { background: var(--purple-bg); color: var(--purple); }
+  .badge-who { background: var(--accent-light); color: var(--accent-text); }
+
+  .symptom-input { width: 100%; padding: 10px 14px; border: 1px solid var(--border2); border-radius: var(--radius); font-size: 13px; font-family: var(--sans); color: var(--text); background: var(--bg); resize: vertical; min-height: 80px; outline: none; transition: border-color 0.15s, box-shadow 0.15s; }
+  .symptom-input:focus { border-color: var(--accent); background: var(--surface); box-shadow: 0 0 0 3px rgba(29,78,216,0.08); }
+
+  .suggest-list { margin-top: 0.75rem; display: flex; flex-direction: column; gap: 6px; }
+  .suggest-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: pointer; background: var(--bg); transition: all 0.12s; }
+  .suggest-item:hover { background: var(--accent-light); border-color: rgba(29,78,216,0.2); }
+  .si-code { font-family: var(--mono); font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 5px; flex-shrink: 0; }
+  .si-text { flex: 1; }
+  .si-name { font-size: 13px; font-weight: 500; color: var(--text); }
+  .si-desc { font-size: 11px; color: var(--faint); }
+  .si-conf { display: flex; align-items: center; gap: 4px; font-size: 11px; }
+  .conf-bar { width: 48px; height: 4px; border-radius: 2px; background: var(--border); overflow: hidden; }
+  .conf-fill { height: 100%; border-radius: 2px; }
+
+  /* ── RECENT / BOOKMARKS ── */
+  .recent-list { display: flex; flex-direction: column; gap: 4px; }
+  .recent-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: var(--radius-sm); cursor: pointer; transition: background 0.12s; }
+  .recent-item:hover { background: var(--bg); }
+  .ri-code { font-family: var(--mono); font-size: 11px; font-weight: 600; padding: 2px 6px; border-radius: 4px; flex-shrink: 0; }
+  .ri-name { font-size: 12px; color: var(--muted); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ri-time { font-size: 10px; color: var(--faint); }
+
+  /* ── SETTINGS PANEL ── */
+  .settings-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .settings-row:last-child { border-bottom: none; }
+  .toggle { width: 36px; height: 20px; border-radius: 10px; background: var(--border2); position: relative; cursor: pointer; transition: background 0.2s; }
+  .toggle.on { background: var(--accent); }
+  .toggle::after { content: ''; position: absolute; left: 2px; top: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: transform 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+  .toggle.on::after { transform: translateX(16px); }
+
+  /* ── TIMELINE / HISTORY ── */
+  .timeline { position: relative; padding-left: 20px; }
+  .timeline::before { content: ''; position: absolute; left: 6px; top: 0; bottom: 0; width: 1px; background: var(--border); }
+  .tl-item { position: relative; margin-bottom: 1rem; }
+  .tl-dot { position: absolute; left: -18px; top: 4px; width: 8px; height: 8px; border-radius: 50%; border: 2px solid var(--surface); }
+  .tl-year { font-size: 11px; font-weight: 700; color: var(--faint); margin-bottom: 2px; }
+  .tl-desc { font-size: 12px; color: var(--muted); }
+
+  /* ── MAP / GLOBAL ── */
+  .region-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+  .region-card { padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); }
+  .region-name { font-size: 12px; font-weight: 500; color: var(--text); }
+  .region-stat { font-size: 11px; color: var(--faint); margin-top: 2px; }
+  .region-bar { height: 3px; border-radius: 2px; margin-top: 6px; }
+
+  /* ── FLOATING ACTIONS ── */
+  .fab { position: fixed; bottom: 2rem; right: 2rem; display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+  .fab-btn { display: flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 20px; background: var(--text); color: #fff; font-size: 12px; font-weight: 500; cursor: pointer; box-shadow: var(--shadow-md); border: none; font-family: var(--sans); transition: transform 0.15s, background 0.15s; }
+  .fab-btn:hover { transform: scale(1.03); }
+  .fab-btn.secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border2); }
+  .fab-btn.secondary:hover { background: var(--bg); }
+
+  /* ── NOTIFICATIONS ── */
+  .notif-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--red); }
+
+  /* ── STATUS TAGS ── */
+  .status-tag { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 500; }
+
+  /* ── FILTER BAR ── */
+  .filter-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1rem; align-items: center; }
+  .filter-chip { padding: 5px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; border: 1px solid var(--border2); background: var(--surface); color: var(--muted); transition: all 0.12s; font-family: var(--sans); }
+  .filter-chip.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .filter-chip:hover:not(.active) { background: var(--bg); color: var(--text); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .hero-stats { gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <a class="logo" href="#">
+    <div class="logo-badge">ICD-11</div>
+    <span>International Classification of Diseases</span>
+    <span class="logo-who">WHO 2019</span>
+  </a>
+  <div class="topbar-search">
+    <svg class="si" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input id="main-search" type="text" placeholder="Search by code, condition, or symptom…" autocomplete="off"/>
+    <div id="search-results"></div>
+  </div>
+  <nav class="topbar-nav">
+    <button class="tn active" onclick="showView('browse')">Browse</button>
+    <button class="tn" onclick="showView('code')">Code finder</button>
+    <button class="tn" onclick="showView('stats')">Analytics</button>
+    <button class="tn" onclick="showView('about')">About</button>
+    <button class="btn-primary">API access</button>
+  </nav>
+</header>
+
+<div class="layout">
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sb-section">
+    <div class="sb-label">Quick access</div>
+    <button class="sb-item active" onclick="showView('browse')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Overview
+    </button>
+    <button class="sb-item" onclick="showView('code')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="1"/></svg>
+      Code finder
+      <span class="sb-count">AI</span>
+    </button>
+    <button class="sb-item" onclick="showBookmarks()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m19 21-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
+      Bookmarks
+      <span class="sb-count" id="bm-count">0</span>
+    </button>
+    <button class="sb-item" onclick="showView('stats')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Analytics
+    </button>
+  </div>
+  <div class="sb-section">
+    <div class="sb-label">Chapters</div>
+    <div class="chapter-tree" id="chapter-tree"></div>
+  </div>
+  <div class="sb-section">
+    <div class="sb-label">Recent</div>
+    <div class="recent-list" id="recent-sidebar"></div>
+  </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main" id="main-content"></main>
+</div>
+
+<!-- FAB -->
+<div class="fab">
+  <button class="fab-btn" onclick="showView('code')">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    Find a code
+  </button>
+</div>
+
+<script>
+const CHAPTERS = [
+  { num:'01', name:'Infectious or parasitic diseases', range:'1A00–1H0Z', color:'#ef4444', bg:'#fef2f2', count:1009, icon:'🦠' },
+  { num:'02', name:'Neoplasms', range:'2A00–2F9Z', color:'#f97316', bg:'#fff7ed', count:832, icon:'🔬' },
+  { num:'03', name:'Blood or blood-forming organs', range:'3A00–3C8Z', color:'#eab308', bg:'#fefce8', count:280, icon:'🩸' },
+  { num:'04', name:'Immune system diseases', range:'4A00–4B4Z', color:'#84cc16', bg:'#f7fee7', count:198, icon:'🛡' },
+  { num:'05', name:'Endocrine, nutritional, metabolic', range:'5A00–5D46', color:'#22c55e', bg:'#f0fdf4', count:490, icon:'⚗️' },
+  { num:'06', name:'Mental, behavioural, neurodevelopmental', range:'6A00–6E8Z', color:'#14b8a6', bg:'#f0fdfa', count:594, icon:'🧠' },
+  { num:'07', name:'Sleep-wake disorders', range:'7A00–7B2Z', color:'#06b6d4', bg:'#ecfeff', count:96, icon:'🌙' },
+  { num:'08', name:'Nervous system diseases', range:'8A00–8E7Z', color:'#3b82f6', bg:'#eff6ff', count:720, icon:'🧬' },
+  { num:'09', name:'Visual system diseases', range:'9A00–9E1Z', color:'#6366f1', bg:'#eef2ff', count:380, icon:'👁' },
+  { num:'10', name:'Ear or mastoid process diseases', range:'AA00–AB9Z', color:'#8b5cf6', bg:'#f5f3ff', count:210, icon:'👂' },
+  { num:'11', name:'Circulatory system diseases', range:'BA00–BE2Z', color:'#a855f7', bg:'#faf5ff', count:650, icon:'❤️' },
+  { num:'12', name:'Respiratory system diseases', range:'CA00–CB7Z', color:'#ec4899', bg:'#fdf2f8', count:430, icon:'🫁' },
+  { num:'13', name:'Digestive system diseases', range:'DA00–DE2Z', color:'#f43f5e', bg:'#fff1f2', count:510, icon:'🫀' },
+  { num:'14', name:'Skin diseases', range:'EA00–EM0Z', color:'#fb923c', bg:'#fff7ed', count:840, icon:'🩹' },
+  { num:'15', name:'Musculoskeletal system diseases', range:'FA00–FC0Z', color:'#facc15', bg:'#fefce8', count:620, icon:'🦴' },
+  { num:'16', name:'Genitourinary system diseases', range:'GA00–GC8Z', color:'#4ade80', bg:'#f0fdf4', count:480, icon:'🔵' },
+  { num:'19', name:'Injuries, poisoning, external causes', range:'NA00–NF2Z', color:'#f87171', bg:'#fef2f2', count:1240, icon:'🚑' },
+  { num:'26', name:'Supplementary chapter', range:'QA00–QF4Z', color:'#94a3b8', bg:'#f8fafc', count:320, icon:'📋' },
+];
+
+const SAMPLE_CODES = [
+  { code:'A00.0', name:'Cholera due to Vibrio cholerae', chapter:'01', color:'#ef4444', bg:'#fef2f2',
+    desc:'Cholera is an acute diarrheal infection caused by ingestion of food or water contaminated with the bacterium Vibrio cholerae O1 serogroup.',
+    inclusions:['Vibrio cholerae 01, biovar cholerae','Classical cholera'],
+    exclusions:['Cholera due to Vibrio cholerae O139','Carrier of cholera (Z22.1)'] },
+  { code:'F10.2', name:'Alcohol dependence syndrome', chapter:'06', color:'#14b8a6', bg:'#f0fdfa',
+    desc:'A cluster of behavioural, cognitive, and physiological phenomena that develop after repeated substance use and that typically include a strong desire to take the drug.',
+    inclusions:['Alcoholism','Chronic alcoholism','Dipsomania'],
+    exclusions:['Alcohol abuse (F10.1)','Toxic effect of alcohol (T51)'] },
+  { code:'I10', name:'Essential (primary) hypertension', chapter:'11', color:'#a855f7', bg:'#faf5ff',
+    desc:'Persistently high blood pressure in the arteries without a known secondary cause. Defined as systolic ≥ 130 mmHg or diastolic ≥ 80 mmHg.',
+    inclusions:['Arterial hypertension NOS','Hypertension NOS','Hypertensive disease'],
+    exclusions:['Hypertension complicating pregnancy (O10)','Neonatal hypertension (P29.2)'] },
+  { code:'J18.9', name:'Pneumonia, unspecified organism', chapter:'12', color:'#ec4899', bg:'#fdf2f8',
+    desc:'Acute respiratory infection affecting the lung parenchyma. Characterized by alveolar inflammation and consolidation.',
+    inclusions:['Bronchopneumonia NOS','Pneumonia NOS'],
+    exclusions:['Abscess of lung with pneumonia (J85.1)','Aspiration pneumonia (J69)'] },
+  { code:'E11.9', name:'Type 2 diabetes mellitus without complications', chapter:'05', color:'#22c55e', bg:'#f0fdf4',
+    desc:'A metabolic disorder characterised by hyperglycaemia resulting from defects in insulin secretion, insulin action, or both.',
+    inclusions:['Diabetes NOS (adult-onset)','Non-insulin-dependent diabetes mellitus'],
+    exclusions:['Type 1 diabetes mellitus (E10)','Diabetes mellitus in pregnancy (O24)'] },
+  { code:'M54.5', name:'Low back pain', chapter:'15', color:'#facc15', bg:'#fefce8',
+    desc:'Pain in the lumbar, sacral or lumbosacral region. One of the most common musculoskeletal complaints worldwide.',
+    inclusions:['Lumbago NOS','Low back strain','Lumbar backache'],
+    exclusions:['Lumbago due to intervertebral disc displacement (M51.1)','Low back pain with sciatica (M54.4)'] },
+  { code:'C34.1', name:'Malignant neoplasm of upper lobe, bronchus or lung', chapter:'02', color:'#f97316', bg:'#fff7ed',
+    desc:'Primary malignant tumour arising in the upper lobe of the bronchus or lung. Commonly associated with smoking and environmental exposures.',
+    inclusions:['Carcinoma of upper lobe bronchus','Non-small cell lung carcinoma, upper lobe'],
+    exclusions:['Secondary malignant neoplasm of lung (C78.0)','Carcinoid tumour of bronchus (D3A.090)'] },
+  { code:'F41.1', name:'Generalised anxiety disorder', chapter:'06', color:'#14b8a6', bg:'#f0fdfa',
+    desc:'Persistent and excessive anxiety and worry about multiple domains, difficult to control, causing significant distress or functional impairment.',
+    inclusions:['Anxiety neurosis','Anxiety reaction','Anxiety state'],
+    exclusions:['Adjustment disorder with anxious mood (F43.2)','Neurasthenia (F48.0)'] },
+];
+
+let bookmarks = [];
+let recent = [];
+let currentView = 'browse';
+
+function getChapter(num) { return CHAPTERS.find(c => c.num === num); }
+function getCode(code) { return SAMPLE_CODES.find(c => c.code === code); }
+
+function addRecent(code) {
+  recent = [code, ...recent.filter(r => r !== code)].slice(0, 8);
+  renderRecentSidebar();
+}
+
+function renderRecentSidebar() {
+  const el = document.getElementById('recent-sidebar');
+  if (!recent.length) { el.innerHTML = '<div style="padding:4px 1.25rem;font-size:12px;color:var(--faint)">No recent codes</div>'; return; }
+  el.innerHTML = recent.map(c => {
+    const d = getCode(c);
+    if (!d) return '';
+    return `<div class="recent-item" onclick="openCode('${c}')">
+      <span class="ri-code" style="background:${d.bg};color:${d.color}">${d.code}</span>
+      <span class="ri-name">${d.name}</span>
+    </div>`;
+  }).join('');
+}
+
+function renderChapterTree() {
+  const el = document.getElementById('chapter-tree');
+  el.innerHTML = CHAPTERS.slice(0,10).map(ch =>
+    `<button class="ct-item" onclick="filterByChapter('${ch.num}')">
+      <span class="ct-num">${ch.num}</span>
+      <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">${ch.name.split(' ').slice(0,3).join(' ')}…</span>
+    </button>`
+  ).join('') + `<div style="padding:4px 1.25rem 0 2.5rem;font-size:11px;color:var(--faint);cursor:pointer" onclick="showView('browse')">+ 8 more chapters</div>`;
+}
+
+function showView(v) {
+  currentView = v;
+  document.querySelectorAll('.tn').forEach(b => b.classList.remove('active'));
+  const btns = {'browse':0,'code':1,'stats':2,'about':3};
+  if (btns[v] !== undefined) document.querySelectorAll('.tn')[btns[v]]?.classList.add('active');
+  if (v === 'browse') renderBrowse();
+  else if (v === 'code') renderCodeFinder();
+  else if (v === 'stats') renderStats();
+  else if (v === 'about') renderAbout();
+}
+
+function showBookmarks() {
+  const main = document.getElementById('main-content');
+  main.innerHTML = `<div style="max-width:700px">
+    <h2 style="font-size:18px;font-weight:700;margin-bottom:1rem">Bookmarked codes</h2>
+    ${bookmarks.length ? bookmarks.map(c => {
+      const d = getCode(c);
+      return d ? codeCard(d) : '';
+    }).join('') : '<div class="card" style="color:var(--faint);font-size:14px">No bookmarks yet. Open a code and click "Bookmark" to save it.</div>'}
+  </div>`;
+}
+
+function codeCard(d) {
+  return `<div class="card" style="margin-bottom:10px;cursor:pointer" onclick="openCode('${d.code}')">
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="font-family:monospace;font-size:13px;font-weight:700;padding:3px 10px;border-radius:6px;background:${d.bg};color:${d.color}">${d.code}</span>
+      <span style="font-size:13px;font-weight:500">${d.name}</span>
+    </div>
+  </div>`;
+}
+
+function renderBrowse() {
+  const main = document.getElementById('main-content');
+  main.innerHTML = `
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-tag">WHO · Version 11 · 2019</div>
+    <h1>International Classification<br>of Diseases & Related Health Problems</h1>
+    <p>The global standard for diagnostic health information. Used in clinical care, research, and health statistics in 194 WHO Member States.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="val">55,000+</div><div class="lbl">Unique codes</div></div>
+      <div class="hero-stat"><div class="val">28</div><div class="lbl">Chapters</div></div>
+      <div class="hero-stat"><div class="val">194</div><div class="lbl">Member states</div></div>
+      <div class="hero-stat"><div class="val">2019</div><div class="lbl">Released</div></div>
+    </div>
+  </div>
+
+  <div style="margin-bottom:0.75rem;display:flex;align-items:center;justify-content:space-between">
+    <div style="font-size:13px;font-weight:600">All chapters</div>
+    <div class="filter-bar" style="margin-bottom:0">
+      <button class="filter-chip active" onclick="filterChapters('all',this)">All</button>
+      <button class="filter-chip" onclick="filterChapters('disease',this)">Diseases</button>
+      <button class="filter-chip" onclick="filterChapters('injury',this)">Injury</button>
+    </div>
+  </div>
+
+  <div class="grid-auto" id="chapters-grid"></div>
+
+  <div id="detail-panel"></div>
+  `;
+  renderChaptersGrid(CHAPTERS);
+}
+
+function renderChaptersGrid(chapters) {
+  const grid = document.getElementById('chapters-grid');
+  if (!grid) return;
+  grid.innerHTML = chapters.map(ch => `
+    <div class="chapter-card" id="ch-${ch.num}" onclick="selectChapter('${ch.num}')">
+      <div class="chapter-icon" style="background:${ch.bg}">${ch.icon}</div>
+      <div class="chapter-info">
+        <div class="chapter-num">CH ${ch.num}</div>
+        <div class="chapter-name">${ch.name}</div>
+        <div class="chapter-range">${ch.range}</div>
+        <div class="chapter-count" style="margin-top:4px;color:${ch.color};font-weight:600;font-size:11px">${ch.count.toLocaleString()} codes</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterChapters(type, btn) {
+  document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const map = { all: CHAPTERS, disease: CHAPTERS.filter(c => !['19','26'].includes(c.num)), injury: CHAPTERS.filter(c => c.num === '19') };
+  renderChaptersGrid(map[type] || CHAPTERS);
+}
+
+function filterByChapter(num) {
+  showView('browse');
+  setTimeout(() => selectChapter(num), 50);
+}
+
+function selectChapter(num) {
+  document.querySelectorAll('.chapter-card').forEach(c => c.classList.remove('selected'));
+  const card = document.getElementById(`ch-${num}`);
+  if (card) { card.classList.add('selected'); card.scrollIntoView({ behavior:'smooth', block:'nearest' }); }
+  const ch = getChapter(num);
+  const panel = document.getElementById('detail-panel');
+  if (!panel || !ch) return;
+  const sample = SAMPLE_CODES.filter(c => c.chapter === num);
+  panel.style.display = 'block';
+  panel.innerHTML = `
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:1.5rem">
+      <div style="width:48px;height:48px;border-radius:12px;background:${ch.bg};display:flex;align-items:center;justify-content:center;font-size:22px">${ch.icon}</div>
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--faint);letter-spacing:0.5px;text-transform:uppercase">Chapter ${ch.num}</div>
+        <div style="font-size:17px;font-weight:700;letter-spacing:-0.3px">${ch.name}</div>
+        <div style="font-family:monospace;font-size:12px;color:var(--faint);margin-top:2px">${ch.range}</div>
+      </div>
+      <div style="margin-left:auto;text-align:right">
+        <div style="font-size:24px;font-weight:700;color:${ch.color}">${ch.count.toLocaleString()}</div>
+        <div style="font-size:11px;color:var(--faint)">total codes</div>
+      </div>
+    </div>
+    ${sample.length ? `<div style="font-size:12px;font-weight:600;color:var(--faint);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:0.75rem">Sample codes from this chapter</div>
+    <div style="display:flex;flex-direction:column;gap:6px">
+    ${sample.map(d => `<div onclick="openCode('${d.code}')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:all 0.12s" onmouseover="this.style.borderColor='${d.color}4d'" onmouseout="this.style.borderColor='var(--border)'">
+      <span style="font-family:monospace;font-size:12px;font-weight:700;padding:3px 9px;border-radius:5px;background:${d.bg};color:${d.color}">${d.code}</span>
+      <span style="font-size:13px;flex:1">${d.name}</span>
+      <span style="font-size:11px;color:var(--faint)">→</span>
+    </div>`).join('')}
+    </div>` : `<div style="color:var(--faint);font-size:13px">No sample codes in the demo.</div>`}
+    <div class="dp-actions" style="margin-top:1.25rem">
+      <button class="act-btn primary" onclick="showView('code')">Find codes in this chapter</button>
+      <button class="act-btn" onclick="panel.style.display='none'">Close</button>
+    </div>
+  `;
+  panel.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+function openCode(code) {
+  addRecent(code);
+  const d = getCode(code);
+  if (!d) return;
+  const main = document.getElementById('main-content');
+  main.innerHTML = `
+  <div style="max-width:720px">
+    <button onclick="showView('browse')" style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);border:none;background:none;cursor:pointer;font-family:var(--sans);margin-bottom:1rem;padding:0">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+      Back to browse
+    </button>
+    <div id="detail-panel" style="display:block">
+      <div class="dp-header">
+        <div class="dp-code-big">${d.code}</div>
+        <div class="dp-meta">
+          <div class="dp-title">${d.name}</div>
+          <div class="dp-breadcrumb">
+            <span class="dp-crumb" onclick="showView('browse')">Home</span><span class="dp-sep">›</span>
+            <span class="dp-crumb" onclick="filterByChapter('${d.chapter}')">Chapter ${d.chapter}</span><span class="dp-sep">›</span>
+            <span style="color:var(--text)">${d.code}</span>
+          </div>
+        </div>
+        <button onclick="toggleBookmark('${d.code}')" id="bm-btn" style="padding:7px 12px;border-radius:7px;border:1px solid var(--border2);background:var(--surface);cursor:pointer;font-size:12px;font-family:var(--sans);color:var(--muted);display:flex;align-items:center;gap:5px">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="${bookmarks.includes(d.code)?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><path d="m19 21-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
+          ${bookmarks.includes(d.code) ? 'Bookmarked' : 'Bookmark'}
+        </button>
+      </div>
+
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab('details',this)">Details</button>
+        <button class="tab" onclick="switchTab('coding',this)">Coding notes</button>
+        <button class="tab" onclick="switchTab('related',this)">Related codes</button>
+      </div>
+
+      <div class="tab-panel active" id="tab-details">
+        <div class="dp-section-label">Description</div>
+        <p class="dp-desc">${d.desc}</p>
+
+        <div class="dp-section">
+          <div class="dp-section-label">Inclusions</div>
+          <div>${d.inclusions.map(i => `<span class="inclusion-pill">${i}</span>`).join('')}</div>
+        </div>
+
+        <div class="dp-section">
+          <div class="dp-section-label">Exclusions</div>
+          <div>${d.exclusions.map(e => `<span class="inclusion-pill exclusion-pill">${e}</span>`).join('')}</div>
+        </div>
+
+        <div class="dp-section">
+          <div class="dp-section-label">Code properties</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            ${[['Code',d.code],['Chapter','CH '+d.chapter],['Hierarchy level','3 (sub-category)'],['Billable','Yes'],['WHO valid','Yes'],['Version','ICD-11 (2019)']].map(([k,v]) =>
+              `<div style="padding:10px;background:var(--bg);border-radius:8px">
+                <div style="font-size:11px;color:var(--faint);margin-bottom:2px">${k}</div>
+                <div style="font-size:13px;font-weight:500;font-family:${k==='Code'?'monospace':'inherit'}">${v}</div>
+              </div>`
+            ).join('')}
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="tab-coding">
+        <div class="dp-section-label">Clinical coding guidance</div>
+        <div style="background:var(--amber-bg);border:1px solid rgba(180,83,9,0.15);border-radius:8px;padding:12px 14px;margin-bottom:1rem">
+          <div style="font-size:12px;font-weight:600;color:var(--amber);margin-bottom:4px">Note</div>
+          <div style="font-size:13px;color:var(--amber)">Always assign the most specific code available. Use additional codes to capture complications or manifestations.</div>
+        </div>
+        <p class="dp-desc">When coding this condition, ensure primary diagnosis justifies the admission. Sequence according to circumstances of the encounter. Apply official coding guidelines from the chapter-specific notes.</p>
+        <div class="dp-section">
+          <div class="dp-section-label">Postcoordination</div>
+          <p class="dp-desc" style="font-size:13px">ICD-11 supports postcoordination — you may combine this code with extension codes for severity, aetiology, or anatomical site.</p>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="tab-related">
+        <div class="dp-section-label">Related codes</div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          ${SAMPLE_CODES.filter(r => r.chapter === d.chapter && r.code !== d.code).map(r =>
+            `<div onclick="openCode('${r.code}')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:all 0.12s" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background=''">
+              <span style="font-family:monospace;font-size:12px;font-weight:700;padding:3px 9px;border-radius:5px;background:${r.bg};color:${r.color}">${r.code}</span>
+              <span style="font-size:13px">${r.name}</span>
+            </div>`
+          ).join('') || '<div style="color:var(--faint);font-size:13px">No related codes in demo.</div>'}
+        </div>
+      </div>
+
+      <div class="dp-actions">
+        <button class="act-btn primary" onclick="copyCode('${d.code}')">Copy code</button>
+        <button class="act-btn">Export PDF</button>
+        <button class="act-btn" onclick="showView('code')">Find similar</button>
+        <button class="act-btn" onclick="toggleBookmark('${d.code}')">
+          ${bookmarks.includes(d.code) ? 'Remove bookmark' : 'Bookmark'}
+        </button>
+      </div>
+    </div>
+  </div>
+  `;
+}
+
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-' + id)?.classList.add('active');
+}
+
+function toggleBookmark(code) {
+  if (bookmarks.includes(code)) { bookmarks = bookmarks.filter(b => b !== code); }
+  else { bookmarks.push(code); }
+  document.getElementById('bm-count').textContent = bookmarks.length;
+  const btn = document.getElementById('bm-btn');
+  if (btn) btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="${bookmarks.includes(code)?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><path d="m19 21-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg> ${bookmarks.includes(code)?'Bookmarked':'Bookmark'}`;
+}
+
+function copyCode(code) {
+  navigator.clipboard?.writeText(code).catch(()=>{});
+  const el = event.target;
+  const orig = el.textContent; el.textContent = 'Copied!';
+  setTimeout(() => { el.textContent = orig; }, 1500);
+}
+
+function renderCodeFinder() {
+  const main = document.getElementById('main-content');
+  main.innerHTML = `
+  <div style="max-width:680px">
+    <div style="margin-bottom:1.5rem">
+      <div style="font-size:11px;font-weight:600;color:var(--faint);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:4px">AI-assisted</div>
+      <h2 style="font-size:22px;font-weight:700;letter-spacing:-0.5px;margin-bottom:0.5rem">Code finder</h2>
+      <p style="font-size:13px;color:var(--muted)">Describe a clinical scenario or symptoms and get suggested ICD-11 codes ranked by relevance.</p>
+    </div>
+    <div class="code-tool">
+      <div class="ct-header">
+        <h3>Clinical scenario</h3>
+        <span class="badge badge-beta">Demo</span>
+      </div>
+      <textarea class="symptom-input" id="symptom-text" placeholder="e.g. 65-year-old patient with chronic cough, weight loss, haemoptysis and 40 pack-year smoking history…"></textarea>
+      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+        <button class="act-btn primary" onclick="runCodeFinder()">Find codes</button>
+        <button class="filter-chip" onclick="fillExample('hypertension with headache and dizziness, no secondary cause identified')">Hypertension</button>
+        <button class="filter-chip" onclick="fillExample('acute low back pain after lifting, no neurological deficit, age 42')">Back pain</button>
+        <button class="filter-chip" onclick="fillExample('generalised anxiety, persistent worrying for 6+ months, difficulty concentrating')">Anxiety</button>
+        <button class="filter-chip" onclick="fillExample('type 2 diabetes, well-controlled, no complications on annual review')">Diabetes</button>
+      </div>
+    </div>
+    <div id="code-results"></div>
+    <div class="card" style="margin-top:1rem">
+      <div class="card-title">Popular today</div>
+      <div style="display:flex;flex-direction:column;gap:4px">
+        ${SAMPLE_CODES.slice(0,5).map(d => `
+          <div onclick="openCode('${d.code}')" style="display:flex;align-items:center;gap:10px;padding:8px;border-radius:6px;cursor:pointer;transition:background 0.12s" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background=''">
+            <span style="font-family:monospace;font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;background:${d.bg};color:${d.color}">${d.code}</span>
+            <span style="font-size:13px">${d.name}</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  </div>
+  `;
+}
+
+function fillExample(text) {
+  document.getElementById('symptom-text').value = text;
+  runCodeFinder();
+}
+
+function runCodeFinder() {
+  const txt = document.getElementById('symptom-text')?.value?.toLowerCase() || '';
+  const results = document.getElementById('code-results');
+  if (!results || !txt.trim()) return;
+  results.innerHTML = `<div style="padding:1rem;color:var(--faint);font-size:13px;display:flex;align-items:center;gap:8px"><span style="animation:spin 1s linear infinite;display:inline-block">⟳</span> Analysing clinical scenario…</div>`;
+
+  const keywords = {
+    'hypertension': [['I10','Essential (primary) hypertension',98,'#a855f7','#faf5ff'],['I11.9','Hypertensive heart disease without heart failure',82,'#a855f7','#faf5ff'],['R51','Headache',61,'#94a3b8','#f8fafc']],
+    'back pain': [['M54.5','Low back pain',97,'#facc15','#fefce8'],['M51.1','Lumbar and other intervertebral disc degeneration',74,'#facc15','#fefce8'],['M54.4','Lumbago with sciatica',55,'#facc15','#fefce8']],
+    'anxiety': [['F41.1','Generalised anxiety disorder',96,'#14b8a6','#f0fdfa'],['F41.0','Panic disorder',71,'#14b8a6','#f0fdfa'],['F41.2','Mixed anxiety and depressive disorder',64,'#14b8a6','#f0fdfa']],
+    'diabetes': [['E11.9','Type 2 diabetes mellitus without complications',98,'#22c55e','#f0fdf4'],['E11.65','Type 2 diabetes mellitus with hyperglycaemia',67,'#22c55e','#f0fdf4'],['Z79.4','Long-term use of insulin',45,'#94a3b8','#f8fafc']],
+    'cough': [['J18.9','Pneumonia, unspecified organism',72,'#ec4899','#fdf2f8'],['C34.1','Malignant neoplasm of upper lobe, bronchus or lung',68,'#f97316','#fff7ed'],['J41.0','Simple chronic bronchitis',55,'#ec4899','#fdf2f8']],
+    'cholera': [['A00.0','Cholera due to Vibrio cholerae',99,'#ef4444','#fef2f2']],
+  };
+
+  let matches = [];
+  for (const [key, codes] of Object.entries(keywords)) {
+    if (txt.includes(key)) matches = [...matches, ...codes];
+  }
+  if (!matches.length) matches = [['F41.1','Generalised anxiety disorder',45,'#14b8a6','#f0fdfa'],['I10','Essential (primary) hypertension',38,'#a855f7','#faf5ff'],['M54.5','Low back pain',31,'#facc15','#fefce8']];
+  matches = matches.slice(0,4);
+
+  setTimeout(() => {
+    results.innerHTML = `
+      <div style="font-size:12px;font-weight:600;color:var(--faint);letter-spacing:0.5px;text-transform:uppercase;margin:0.75rem 0 0.5rem">Suggested codes</div>
+      <div class="suggest-list">
+        ${matches.map(([code, name, conf, color, bg]) => {
+          const confPct = conf;
+          return `<div class="suggest-item" onclick="openCode('${code}')">
+            <span class="si-code" style="background:${bg};color:${color}">${code}</span>
+            <div class="si-text">
+              <div class="si-name">${name}</div>
+              <div class="si-desc" style="color:var(--faint)">Click to view full details</div>
+            </div>
+            <div class="si-conf">
+              <div class="conf-bar"><div class="conf-fill" style="width:${confPct}%;background:${color}"></div></div>
+              <span style="color:var(--faint)">${confPct}%</span>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+      <div style="font-size:11px;color:var(--faint);margin-top:0.75rem">This is a demonstration. Clinical coding must be validated by a certified medical coder.</div>
+    `;
+  }, 900);
+}
+
+function renderStats() {
+  const main = document.getElementById('main-content');
+  main.innerHTML = `
+  <div>
+    <h2 style="font-size:22px;font-weight:700;letter-spacing:-0.5px;margin-bottom:0.25rem">Analytics & coverage</h2>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:1.5rem">Global ICD-11 adoption and chapter distribution.</p>
+
+    <div class="grid-3" style="margin-bottom:1.5rem">
+      <div class="card" style="text-align:center">
+        <div class="card-title">Total codes</div>
+        <h2 style="color:var(--accent)">55,000+</h2>
+        <div class="card-sub">vs 14,400 in ICD-10</div>
+      </div>
+      <div class="card" style="text-align:center">
+        <div class="card-title">Member states adopted</div>
+        <h2 style="color:var(--green)">87</h2>
+        <div class="card-sub">of 194 WHO members</div>
+      </div>
+      <div class="card" style="text-align:center">
+        <div class="card-title">Linked to SNOMED CT</div>
+        <h2 style="color:var(--purple)">Yes</h2>
+        <div class="card-sub">Bidirectional mapping</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="viz-area">
+        <div class="viz-title">Codes per chapter</div>
+        <div class="freq-bars" id="freq-bars"></div>
+      </div>
+      <div class="viz-area">
+        <div class="viz-title">ICD version history</div>
+        <div class="timeline" id="timeline-el"></div>
+      </div>
+    </div>
+
+    <div class="viz-area">
+      <div class="viz-title">Regional adoption</div>
+      <div class="region-grid" id="region-grid"></div>
+    </div>
+  </div>
+  `;
+  renderFreqBars();
+  renderTimeline();
+  renderRegions();
+}
+
+function renderFreqBars() {
+  const el = document.getElementById('freq-bars');
+  const max = Math.max(...CHAPTERS.map(c => c.count));
+  el.innerHTML = CHAPTERS.slice(0,10).map(ch =>
+    `<div class="freq-row">
+      <div class="freq-label">${ch.name.split(' ').slice(0,2).join(' ')}</div>
+      <div class="freq-bar-wrap">
+        <div class="freq-bar" style="width:${(ch.count/max*100).toFixed(1)}%;background:${ch.color}">${ch.count > 500 ? ch.count : ''}</div>
+      </div>
+      <div class="freq-val">${ch.count < 500 ? ch.count : ''}</div>
+    </div>`
+  ).join('');
+}
+
+function renderTimeline() {
+  const versions = [
+    {year:'1893',title:'ICD-1 released',desc:'Bertillon Classification of Causes of Death'},
+    {year:'1948',title:'WHO takes ownership',desc:'ICD-6 adopted internationally'},
+    {year:'1975',title:'ICD-9 published',desc:'Still used in some countries today'},
+    {year:'1992',title:'ICD-10 released',desc:'Major expansion with alphanumeric codes'},
+    {year:'2018',title:'ICD-11 approved',desc:'First fully digital, multilingual version'},
+    {year:'2019',title:'ICD-11 in force',desc:'Official deployment for member states'},
+  ];
+  const colors = ['#ef4444','#f97316','#eab308','#22c55e','#3b82f6','#7c3aed'];
+  document.getElementById('timeline-el').innerHTML = versions.map((v,i) => `
+    <div class="tl-item">
+      <div class="tl-dot" style="background:${colors[i]}"></div>
+      <div class="tl-year">${v.year}</div>
+      <div style="font-size:12px;font-weight:500;color:var(--text)">${v.title}</div>
+      <div class="tl-desc">${v.desc}</div>
+    </div>
+  `).join('');
+}
+
+function renderRegions() {
+  const regions = [
+    {name:'Europe',pct:78,color:'#3b82f6'},
+    {name:'Americas',pct:65,color:'#22c55e'},
+    {name:'W. Pacific',pct:55,color:'#14b8a6'},
+    {name:'E. Mediterranean',pct:44,color:'#f97316'},
+    {name:'Africa',pct:38,color:'#a855f7'},
+    {name:'S.E. Asia',pct:32,color:'#ec4899'},
+  ];
+  document.getElementById('region-grid').innerHTML = regions.map(r => `
+    <div class="region-card">
+      <div class="region-name">${r.name}</div>
+      <div class="region-stat">${r.pct}% adopted</div>
+      <div class="region-bar" style="background:var(--bg);overflow:hidden">
+        <div style="height:100%;width:${r.pct}%;background:${r.color};border-radius:2px"></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderAbout() {
+  const main = document.getElementById('main-content');
+  main.innerHTML = `
+  <div style="max-width:680px">
+    <h2 style="font-size:22px;font-weight:700;letter-spacing:-0.5px;margin-bottom:0.5rem">About ICD-11</h2>
+    <p style="font-size:14px;color:var(--muted);line-height:1.75;margin-bottom:1.5rem">The International Classification of Diseases (ICD) is the global health information standard for mortality and morbidity statistics, published by the World Health Organisation.</p>
+
+    <div class="grid-2" style="margin-bottom:1.5rem">
+      <div class="card">
+        <div class="card-title">What's new in ICD-11</div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;margin-top:4px">
+          ${['Digital-first, fully electronic','Postcoordination for nuanced coding','Multilingual (43 languages)','Linked to SNOMED CT & OMOP','Over 55,000 unique clinical entities','Simplified structure for primary care'].map(f =>
+            `<li style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)"><span style="color:var(--green)">✓</span> ${f}</li>`
+          ).join('')}
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">Resources</div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
+          ${[['ICD-11 Browser','browser.icd.who.int'],['WHO ICD Homepage','icd.who.int'],['Implementation guide','who.int/standards/classifications'],['API documentation','icd.who.int/icdapi'],['Training materials','apps.who.int/icd/training']].map(([name,url]) =>
+            `<a href="https://${url}" style="font-size:13px;color:var(--accent);text-decoration:none;display:flex;align-items:center;gap:4px" target="_blank">${name} <span style="font-size:10px;color:var(--faint)">↗</span></a>`
+          ).join('')}
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Settings</div>
+      <div class="settings-row">
+        <div>
+          <div style="font-size:13px;font-weight:500">Show code descriptions by default</div>
+          <div style="font-size:12px;color:var(--faint)">Expand full descriptions in search results</div>
+        </div>
+        <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+      </div>
+      <div class="settings-row">
+        <div>
+          <div style="font-size:13px;font-weight:500">Enable postcoordination hints</div>
+          <div style="font-size:12px;color:var(--faint)">Show extension code suggestions</div>
+        </div>
+        <div class="toggle" onclick="this.classList.toggle('on')"></div>
+      </div>
+      <div class="settings-row">
+        <div>
+          <div style="font-size:13px;font-weight:500">ICD-10 cross-reference</div>
+          <div style="font-size:12px;color:var(--faint)">Show equivalent ICD-10 codes where available</div>
+        </div>
+        <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+      </div>
+      <div class="settings-row">
+        <div>
+          <div style="font-size:13px;font-weight:500">Compact view</div>
+          <div style="font-size:12px;color:var(--faint)">Reduce spacing in chapter browser</div>
+        </div>
+        <div class="toggle" onclick="this.classList.toggle('on')"></div>
+      </div>
+    </div>
+  </div>
+  `;
+}
+
+/* ── SEARCH ── */
+const searchInput = document.getElementById('main-search');
+const searchResults = document.getElementById('search-results');
+
+searchInput.addEventListener('input', () => {
+  const q = searchInput.value.trim().toLowerCase();
+  if (!q || q.length < 2) { searchResults.style.display = 'none'; return; }
+  const matches = SAMPLE_CODES.filter(d =>
+    d.code.toLowerCase().includes(q) || d.name.toLowerCase().includes(q) || d.desc.toLowerCase().includes(q)
+  ).slice(0, 6);
+  if (!matches.length) { searchResults.style.display = 'none'; return; }
+  searchResults.style.display = 'block';
+  searchResults.innerHTML = matches.map(d => {
+    const ch = getChapter(d.chapter);
+    return `<div class="sr-item" onclick="openCode('${d.code}');searchResults.style.display='none';searchInput.value=''">
+      <span class="sr-code" style="background:${d.bg};color:${d.color}">${d.code}</span>
+      <span class="sr-name">${d.name}</span>
+      <span class="sr-chapter">${ch ? ch.icon + ' CH' + d.chapter : ''}</span>
+    </div>`;
+  }).join('');
+});
+
+document.addEventListener('click', (e) => {
+  if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+    searchResults.style.display = 'none';
+  }
+});
+
+searchInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') { searchResults.style.display = 'none'; searchInput.value = ''; }
+});
+
+/* ── INIT ── */
+renderChapterTree();
+renderRecentSidebar();
+renderBrowse();
+</script>
+</body>
+</html>

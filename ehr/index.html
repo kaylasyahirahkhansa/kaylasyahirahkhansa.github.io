@@ -1,0 +1,1683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MedAxis EHR</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f0f2f5;--white:#fff;--s2:#f7f8fa;--s3:#eef0f4;--bd:#d1d5db;--bd2:#b8bdc7;--eb:#005b94;--ebd:#004a7a;--ebl:#e8f1f8;--gr:#2e7d32;--grl:#e8f5e9;--rd:#c62828;--rdl:#ffebee;--am:#e65100;--aml:#fff3e0;--t1:#1a1e2a;--t2:#4a5568;--t3:#718096;--t4:#a0aec0;--sans:'Source Sans 3',sans-serif;--mono:'Source Code Pro',monospace;--sh:0 1px 3px rgba(0,0,0,.08);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:var(--sans);background:var(--bg);color:var(--t1);height:100vh;overflow:hidden;display:flex;flex-direction:column;font-size:13px;}
+
+/* SYSTEM BAR */
+.sysbar{height:34px;background:var(--ebd);display:flex;align-items:center;padding:0 10px;flex-shrink:0;z-index:20;}
+.syslogo{display:flex;align-items:center;gap:7px;color:#fff;font-size:14px;font-weight:700;padding:0 12px 0 4px;border-right:1px solid rgba(255,255,255,.2);margin-right:6px;}
+.syslogo-icon{width:22px;height:22px;background:#fff;border-radius:4px;display:grid;place-items:center;font-size:13px;font-weight:800;color:var(--ebd);}
+.sbtn{display:flex;align-items:center;gap:4px;padding:4px 10px;border-radius:3px;font-size:12.5px;color:rgba(255,255,255,.88);cursor:pointer;transition:background .12s;border:none;background:none;font-family:var(--sans);white-space:nowrap;}
+.sbtn:hover{background:rgba(255,255,255,.12);color:#fff;}
+.sbtn.active{background:rgba(255,255,255,.22);color:#fff;font-weight:600;}
+.sdiv{width:1px;height:18px;background:rgba(255,255,255,.18);margin:0 3px;}
+.sright{margin-left:auto;display:flex;align-items:center;gap:4px;}
+.alert-btn{display:flex;align-items:center;gap:5px;padding:3px 9px;border-radius:3px;font-size:12px;font-weight:600;cursor:pointer;border:none;background:var(--rd);color:#fff;font-family:var(--sans);}
+.suser{display:flex;align-items:center;gap:6px;padding:3px 10px;border-left:1px solid rgba(255,255,255,.2);margin-left:4px;color:rgba(255,255,255,.9);font-size:12.5px;cursor:pointer;position:relative;}
+.savatar{width:22px;height:22px;background:rgba(255,255,255,.25);border-radius:50%;display:grid;place-items:center;font-size:10px;font-weight:700;color:#fff;}
+
+/* PATIENT LOOKUP DROPDOWN */
+.lookup-wrap{position:relative;margin-left:16px;flex-shrink:0;}
+.hdrsearch{display:flex;align-items:center;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:3px;padding:0 10px;gap:7px;height:30px;width:230px;}
+.hdrsearch input{background:none;border:none;outline:none;color:#fff;font-family:var(--sans);font-size:12.5px;width:100%;}
+.hdrsearch input::placeholder{color:rgba(255,255,255,.6);}
+.lookup-drop{display:none;position:absolute;top:34px;left:0;width:320px;background:#fff;border:1px solid var(--bd);border-radius:3px;box-shadow:0 4px 16px rgba(0,0,0,.15);z-index:100;}
+.lookup-drop.open{display:block;}
+.lookup-item{display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid #eef0f4;cursor:pointer;transition:background .1s;}
+.lookup-item:hover{background:var(--ebl);}
+.lookup-item:last-child{border-bottom:none;}
+.lu-avatar{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;}
+.lu-name{font-size:12.5px;font-weight:600;color:var(--eb);}
+.lu-meta{font-size:11px;color:var(--t3);}
+
+/* HEADER */
+header{height:52px;background:var(--eb);display:flex;align-items:center;padding:0 12px;flex-shrink:0;box-shadow:0 2px 6px rgba(0,0,0,.2);z-index:15;}
+.pbanner{display:flex;align-items:center;gap:10px;flex:1;min-width:0;}
+.pbanner-av{width:36px;height:36px;background:rgba(255,255,255,.2);border:1.5px solid rgba(255,255,255,.4);border-radius:50%;display:grid;place-items:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0;}
+.pbanner-name{font-size:16px;font-weight:700;color:#fff;letter-spacing:-.2px;line-height:1;}
+.pbanner-meta{font-size:11.5px;color:rgba(255,255,255,.8);margin-top:3px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
+.bsep{opacity:.4;}
+.btag{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:2px;font-size:11px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;}
+.btag-al{background:var(--rd);color:#fff;cursor:pointer;}
+.btag-fl{background:var(--am);color:#fff;}
+.btag-act{background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.35);}
+
+/* CHART TABS */
+.charttabs{background:var(--s3);border-bottom:2px solid var(--bd);display:flex;align-items:flex-end;padding:0 10px;flex-shrink:0;overflow-x:auto;scrollbar-width:none;}
+.charttabs::-webkit-scrollbar{display:none;}
+.ctab{display:flex;align-items:center;gap:6px;padding:7px 14px 6px;font-size:12.5px;font-weight:500;color:var(--t3);cursor:pointer;border:1px solid transparent;border-bottom:none;border-radius:4px 4px 0 0;margin-right:2px;transition:all .12s;white-space:nowrap;background:transparent;position:relative;bottom:-2px;}
+.ctab:hover{color:var(--t2);background:rgba(0,91,148,.06);}
+.ctab.active{background:var(--white);color:var(--eb);border-color:var(--bd);font-weight:600;border-bottom-color:var(--white);}
+.tbadge{font-size:10px;background:var(--eb);color:#fff;padding:1px 5px;border-radius:10px;font-weight:600;}
+
+/* TOOLBAR */
+.toolbar{background:var(--white);border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:2px;padding:4px 10px;flex-shrink:0;flex-wrap:wrap;}
+.tbtn{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:2px;font-size:12px;font-weight:500;color:var(--t2);cursor:pointer;border:none;background:none;font-family:var(--sans);transition:all .1s;white-space:nowrap;}
+.tbtn:hover{background:var(--ebl);color:var(--eb);}
+.tbtn.pri{background:var(--eb);color:#fff;font-weight:600;}
+.tbtn.pri:hover{background:var(--ebd);}
+.tbtn.suc{background:var(--gr);color:#fff;font-weight:600;}
+.tbtn.suc:hover{background:#1b5e20;}
+.tbtn.war{background:var(--rdl);color:var(--rd);font-weight:600;border:1px solid rgba(198,40,40,.2);}
+.tdiv{width:1px;height:20px;background:var(--bd);margin:0 3px;}
+
+/* BODY */
+.appbody{display:flex;flex:1;overflow:hidden;}
+
+/* SIDEBAR */
+aside{width:210px;background:var(--white);border-right:1px solid var(--bd);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;scrollbar-width:thin;}
+.navgrp{border-bottom:1px solid var(--bd);}
+.navgrp-hdr{padding:7px 10px 6px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);background:var(--s2);border-bottom:1px solid var(--bd);cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none;}
+.navgrp-hdr:hover{background:var(--s3);}
+.navgrp-hdr .arr{transition:transform .2s;}
+.navgrp-hdr.collapsed .arr{transform:rotate(-90deg);}
+.navgrp-body{overflow:hidden;max-height:500px;transition:max-height .25s ease;}
+.navgrp-body.collapsed{max-height:0;}
+.nitem{display:flex;align-items:center;gap:8px;padding:6px 10px 6px 14px;font-size:12.5px;color:var(--t2);cursor:pointer;transition:background .1s;border-left:3px solid transparent;}
+.nitem:hover{background:var(--ebl);color:var(--eb);}
+.nitem.active{background:var(--ebl);color:var(--eb);font-weight:600;border-left-color:var(--eb);}
+.ndot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.nbadge{margin-left:auto;font-size:10.5px;font-weight:700;min-width:18px;height:16px;background:var(--eb);color:#fff;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;padding:0 4px;}
+.nbadge.red{background:var(--rd);}
+.nbadge.amber{background:var(--am);}
+
+/* CONTENT */
+.cwside{display:flex;flex:1;overflow:hidden;}
+.maincol{flex:1;overflow-y:auto;min-width:0;background:var(--bg);}
+.mainin{padding:10px 12px 20px;display:flex;flex-direction:column;gap:10px;}
+
+/* CARDS */
+.card{background:var(--white);border:1px solid var(--bd);border-radius:3px;box-shadow:var(--sh);overflow:hidden;}
+.chead{display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:var(--eb);color:#fff;}
+.chead-t{font-size:12px;font-weight:700;letter-spacing:.02em;text-transform:uppercase;}
+.chead-a{display:flex;gap:4px;}
+.cact{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);border-radius:2px;color:#fff;font-size:11px;font-weight:500;cursor:pointer;font-family:var(--sans);transition:background .12s;}
+.cact:hover{background:rgba(255,255,255,.3);}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+
+/* VITALS */
+.vrow{display:grid;grid-template-columns:repeat(6,1fr);}
+.vcell{padding:8px 10px;border-right:1px solid #eef0f4;text-align:center;cursor:pointer;transition:background .1s;}
+.vcell:hover{background:var(--ebl);}
+.vcell:last-child{border-right:none;}
+.vlbl{font-size:10.5px;color:var(--t3);font-weight:600;text-transform:uppercase;letter-spacing:.05em;}
+.vval{font-size:18px;font-weight:700;color:var(--t1);font-family:var(--mono);margin:2px 0;line-height:1;}
+.vval.red{color:var(--rd);}
+.vval.amber{color:var(--am);}
+.vval.green{color:var(--gr);}
+.vunit{font-size:10.5px;color:var(--t3);}
+.vdate{font-size:10px;color:var(--t4);margin-top:2px;}
+
+/* PROBLEM LIST */
+.probitem{display:flex;align-items:flex-start;gap:8px;padding:6px 10px;border-bottom:1px solid #eef0f4;cursor:pointer;transition:background .1s;}
+.probitem:hover{background:var(--ebl);}
+.probitem:last-child{border-bottom:none;}
+.pnum{font-family:var(--mono);font-size:11px;color:var(--t3);min-width:20px;padding-top:1px;}
+.pname{font-size:12.5px;color:var(--t1);font-weight:500;}
+.picd{font-size:11px;color:var(--t3);font-family:var(--mono);margin-top:1px;}
+.pstat{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:1px 5px;border-radius:2px;}
+.s-active{background:var(--grl);color:var(--gr);}
+.s-chronic{background:var(--ebl);color:var(--eb);}
+.s-resolved{background:var(--s3);color:var(--t3);}
+
+/* ALLERGIES */
+.alitem{display:flex;align-items:center;gap:10px;padding:6px 10px;border-bottom:1px solid #eef0f4;font-size:12.5px;cursor:pointer;transition:background .1s;}
+.alitem:hover{background:var(--rdl);}
+.alitem:last-child{border-bottom:none;}
+.alsev{font-size:10px;font-weight:700;text-transform:uppercase;padding:1px 6px;border-radius:2px;flex-shrink:0;}
+.sev-h{background:var(--rdl);color:var(--rd);}
+.sev-m{background:var(--aml);color:var(--am);}
+.sev-l{background:var(--grl);color:var(--gr);}
+.alname{font-weight:600;color:var(--t1);}
+.alreact{color:var(--t3);font-size:11.5px;}
+
+/* DATA TABLE */
+.dtbl{width:100%;border-collapse:collapse;}
+.dtbl th{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--t3);padding:5px 10px;background:var(--s2);border-bottom:1px solid var(--bd);text-align:left;}
+.dtbl td{padding:6px 10px;font-size:12.5px;border-bottom:1px solid #eef0f4;color:var(--t1);}
+.dtbl tr:last-child td{border-bottom:none;}
+.dtbl tbody tr:hover td{background:var(--ebl);cursor:pointer;}
+.tlink{color:var(--eb);text-decoration:underline;cursor:pointer;font-weight:500;}
+.tlink:hover{color:var(--ebd);}
+.tmuted{color:var(--t3);}
+.tsm{font-size:11.5px;}
+.tabn{color:var(--rd);font-weight:700;}
+
+/* NOTES */
+.noteentry{padding:8px 10px;border-bottom:1px solid #eef0f4;cursor:pointer;}
+.noteentry:last-child{border-bottom:none;}
+.noteentry:hover{background:var(--ebl);}
+.notetype{font-size:12.5px;font-weight:600;color:var(--eb);}
+.noteauth{font-size:11.5px;color:var(--t3);}
+.noteprev{font-size:12px;color:var(--t2);margin-top:3px;line-height:1.4;}
+
+/* APPTS */
+.apptentry{display:flex;align-items:flex-start;gap:10px;padding:7px 10px;border-bottom:1px solid #eef0f4;cursor:pointer;transition:background .1s;}
+.apptentry:hover{background:var(--ebl);}
+.apptentry:last-child{border-bottom:none;}
+.apptdc{text-align:center;min-width:40px;flex-shrink:0;}
+.apptmo{font-size:10px;font-weight:700;text-transform:uppercase;color:var(--eb);}
+.apptday{font-size:20px;font-weight:700;line-height:1;color:var(--t1);font-family:var(--mono);}
+.appttype{font-size:12.5px;font-weight:600;color:var(--eb);}
+.apptdet{font-size:11.5px;color:var(--t3);margin-top:2px;}
+
+/* RIGHT COL */
+.rightcol{width:255px;flex-shrink:0;display:flex;flex-direction:column;gap:10px;padding:10px 12px 20px 0;overflow-y:auto;background:var(--bg);}
+.inforow{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;border-bottom:1px solid #eef0f4;font-size:12.5px;}
+.inforow:last-child{border-bottom:none;}
+.infokey{color:var(--t3);}
+.infoval{color:var(--t1);font-weight:600;}
+
+/* TOASTS */
+.toast-area{position:fixed;bottom:18px;right:18px;display:flex;flex-direction:column;gap:8px;z-index:9999;}
+.toast{background:var(--t1);color:#fff;padding:10px 16px;border-radius:4px;font-size:12.5px;box-shadow:0 4px 16px rgba(0,0,0,.2);display:flex;align-items:center;gap:10px;max-width:340px;animation:toastin .25s ease;}
+.toast.green{background:#1b5e20;}
+.toast.red{background:var(--rd);}
+.toast.blue{background:var(--ebd);}
+.toast .toast-close{margin-left:auto;cursor:pointer;opacity:.6;font-size:16px;background:none;border:none;color:#fff;}
+@keyframes toastin{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+
+/* MODAL BASE */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;align-items:center;justify-content:center;}
+.overlay.open{display:flex;}
+.modal{background:var(--white);border-radius:4px;box-shadow:0 4px 24px rgba(0,0,0,.18);width:520px;max-height:88vh;display:flex;flex-direction:column;overflow:hidden;}
+.modal.wide{width:700px;}
+.modal.narrow{width:400px;}
+.mhead{background:var(--eb);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;}
+.mtitle{font-size:13px;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:.04em;}
+.mclose{color:rgba(255,255,255,.7);cursor:pointer;font-size:22px;line-height:1;background:none;border:none;font-family:var(--sans);}
+.mclose:hover{color:#fff;}
+.mbody{padding:14px;overflow-y:auto;flex:1;}
+.mfoot{padding:10px 14px;border-top:1px solid var(--bd);display:flex;gap:8px;justify-content:flex-end;}
+.mbtn{padding:6px 16px;border-radius:2px;font-size:12.5px;font-weight:600;cursor:pointer;border:1px solid;font-family:var(--sans);}
+.mbtn-pri{background:var(--eb);color:#fff;border-color:var(--ebd);}
+.mbtn-pri:hover{background:var(--ebd);}
+.mbtn-sec{background:var(--white);color:var(--t2);border-color:var(--bd2);}
+.mbtn-sec:hover{background:var(--s2);}
+.mbtn-dan{background:var(--rd);color:#fff;border-color:#a31515;}
+.mbtn-dan:hover{background:#a31515;}
+.mbtn-suc{background:var(--gr);color:#fff;border-color:#1b5e20;}
+
+.frow{margin-bottom:10px;}
+.flbl{font-size:11px;font-weight:700;color:var(--t2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;display:block;}
+.finp{width:100%;padding:6px 8px;border:1px solid var(--bd2);border-radius:2px;font-family:var(--sans);font-size:13px;color:var(--t1);background:var(--white);outline:none;}
+.finp:focus{border-color:var(--eb);box-shadow:0 0 0 2px rgba(0,91,148,.12);}
+select.finp{cursor:pointer;}
+textarea.finp{resize:vertical;line-height:1.55;}
+.frow2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.finfo{font-size:11.5px;color:var(--t3);margin-top:3px;}
+.fdivider{border:none;border-top:1px solid var(--bd);margin:12px 0;}
+
+/* DETAIL VIEW (for notes, labs) */
+.detail-block{padding:12px 14px;border-bottom:1px solid #eef0f4;}
+.detail-block:last-child{border-bottom:none;}
+.detail-label{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--t3);margin-bottom:4px;}
+.detail-text{font-size:13px;color:var(--t1);line-height:1.6;}
+
+/* SCHEDULE GRID */
+.sched-grid{display:grid;grid-template-columns:60px 1fr;gap:0;}
+.sched-time{padding:6px 10px;font-size:11px;font-family:var(--mono);color:var(--t3);border-bottom:1px solid #eef0f4;background:var(--s2);text-align:right;}
+.sched-slot{padding:5px 10px;border-bottom:1px solid #eef0f4;border-left:1px solid var(--bd);}
+.sched-slot.has-appt{background:var(--ebl);cursor:pointer;}
+.sched-slot.has-appt:hover{background:#cde0f0;}
+.sched-appt-name{font-size:12.5px;font-weight:600;color:var(--eb);}
+.sched-appt-type{font-size:11.5px;color:var(--t3);}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:var(--s2);}
+::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:3px;}
+::-webkit-scrollbar-thumb:hover{background:var(--t4);}
+
+/* TABS INSIDE MODALS */
+.mtab-bar{display:flex;border-bottom:2px solid var(--bd);margin-bottom:12px;}
+.mtab{padding:6px 14px;font-size:12.5px;font-weight:500;color:var(--t3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:color .12s;}
+.mtab:hover{color:var(--t2);}
+.mtab.active{color:var(--eb);border-bottom-color:var(--eb);font-weight:600;}
+.mtabpanel{display:none;}
+.mtabpanel.active{display:block;}
+
+/* STATUS BADGES */
+.badge{display:inline-block;padding:2px 7px;border-radius:2px;font-size:11px;font-weight:700;text-transform:uppercase;}
+.badge-ok{background:var(--grl);color:var(--gr);}
+.badge-warn{background:var(--aml);color:var(--am);}
+.badge-crit{background:var(--rdl);color:var(--rd);}
+.badge-info{background:var(--ebl);color:var(--eb);}
+.badge-grey{background:var(--s3);color:var(--t3);}
+
+/* PAGE SECTIONS (chart tab content) */
+.page{display:none;}
+.page.active{display:block;}
+
+/* ANIMATE */
+.mainin>*{animation:fin .18s ease both;}
+.mainin>*:nth-child(1){animation-delay:.03s;}
+.mainin>*:nth-child(2){animation-delay:.06s;}
+.mainin>*:nth-child(3){animation-delay:.09s;}
+.mainin>*:nth-child(4){animation-delay:.12s;}
+.mainin>*:nth-child(5){animation-delay:.15s;}
+@keyframes fin{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+
+.empty-state{padding:32px;text-align:center;color:var(--t3);font-size:13px;}
+.empty-state svg{margin-bottom:8px;opacity:.4;}
+</style>
+</head>
+<body>
+
+<!-- SYSTEM BAR -->
+<div class="sysbar">
+  <div class="syslogo"><div class="syslogo-icon">M</div>MedAxis</div>
+  <button class="sbtn active" onclick="setSysPage('dashboard',this)">Dashboard</button>
+  <button class="sbtn" onclick="setSysPage('patients',this)">Patients</button>
+  <button class="sbtn" onclick="setSysPage('schedule',this)">Schedule</button>
+  <button class="sbtn" onclick="setSysPage('reports',this)">Reports</button>
+  <button class="sbtn" onclick="setSysPage('messages',this)">Messages</button>
+  <div class="sdiv"></div>
+  <div class="sright">
+    <button class="alert-btn" onclick="openModal('alertsModal')">⚠ 4 Alerts</button>
+    <div class="sdiv"></div>
+    <div class="suser" onclick="openModal('userModal')">
+      <div class="savatar">DR</div>
+      Dr. Rivera · Internal Med ▾
+    </div>
+  </div>
+</div>
+
+<!-- PATIENT HEADER -->
+<header id="patientHeader">
+  <div class="pbanner">
+    <div class="pbanner-av" id="bannerAv">EV</div>
+    <div>
+      <div class="pbanner-name" id="bannerName">Vasquez, Elena M.</div>
+      <div class="pbanner-meta" id="bannerMeta">
+        <span id="bannerDob">DOB: 03/12/1978 (48 y)</span>
+        <span class="bsep">|</span><span id="bannerSex">Sex: F</span>
+        <span class="bsep">|</span><span id="bannerMrn">MRN: 00421</span>
+        <span class="bsep">|</span><span id="bannerPcp">PCP: Dr. Rivera</span>
+        <span class="bsep">|</span>
+        <span class="btag btag-al" onclick="openModal('allergyModal')">⚠ Allergies</span>
+        <span class="btag btag-fl" id="bpFlag">↑ BP</span>
+        <span class="btag btag-act">Active</span>
+      </div>
+    </div>
+  </div>
+  <div class="lookup-wrap">
+    <div class="hdrsearch">
+      <svg width="12" height="12" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" placeholder="Patient Lookup…" id="lookupInput" oninput="filterLookup(this.value)" onfocus="document.getElementById('lookupDrop').classList.add('open')" onblur="setTimeout(()=>document.getElementById('lookupDrop').classList.remove('open'),200)">
+    </div>
+    <div class="lookup-drop" id="lookupDrop"></div>
+  </div>
+</header>
+
+<!-- CHART TABS -->
+<div class="charttabs" id="chartTabs">
+  <div class="ctab active" onclick="switchChartTab('summary',this)">Chart Summary</div>
+  <div class="ctab" onclick="switchChartTab('visitnotes',this)">Visit Notes</div>
+  <div class="ctab" onclick="switchChartTab('results',this)">Results <span class="tbadge" id="tbResults">7</span></div>
+  <div class="ctab" onclick="switchChartTab('orders',this)">Orders <span class="tbadge" id="tbOrders">3</span></div>
+  <div class="ctab" onclick="switchChartTab('medications',this)">Medications</div>
+  <div class="ctab" onclick="switchChartTab('imaging',this)">Imaging</div>
+  <div class="ctab" onclick="switchChartTab('history',this)">History</div>
+  <div class="ctab" onclick="switchChartTab('billing',this)">Billing</div>
+</div>
+
+<!-- TOOLBAR -->
+<div class="toolbar">
+  <button class="tbtn pri" onclick="openModal('noteModal')">+ New Note</button>
+  <button class="tbtn suc" onclick="openModal('rxModal')">Rx Order</button>
+  <div class="tdiv"></div>
+  <button class="tbtn" onclick="openModal('referralModal')">Referral</button>
+  <button class="tbtn" onclick="openModal('labOrderModal')">Lab Order</button>
+  <button class="tbtn" onclick="openModal('imagingOrderModal')">Imaging</button>
+  <button class="tbtn" onclick="openModal('procedureModal')">Procedure</button>
+  <div class="tdiv"></div>
+  <button class="tbtn war" onclick="openModal('allergyModal')">⚠ Allergy Alert</button>
+  <div class="tdiv"></div>
+  <button class="tbtn" style="margin-left:auto" onclick="printChart()">🖨 Print Chart</button>
+  <button class="tbtn" onclick="exportChart()">↓ Export</button>
+</div>
+
+<!-- APP BODY -->
+<div class="appbody">
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <div class="navgrp">
+      <div class="navgrp-hdr" onclick="toggleNavGrp(this)">Chart <span class="arr">▾</span></div>
+      <div class="navgrp-body">
+        <div class="nitem active" onclick="setNavItem(this,'summary')"><span class="ndot" style="background:var(--eb)"></span>Summary</div>
+        <div class="nitem" onclick="setNavItem(this,'problems')"><span class="ndot" style="background:#9ca3af"></span>Problem List</div>
+        <div class="nitem" onclick="setNavItem(this,'medications')"><span class="ndot" style="background:#9ca3af"></span>Medications <span class="nbadge" id="medBadge">5</span></div>
+        <div class="nitem" onclick="setNavItem(this,'allergies')"><span class="ndot" style="background:var(--rd)"></span>Allergies <span class="nbadge red">3</span></div>
+        <div class="nitem" onclick="setNavItem(this,'immunizations')"><span class="ndot" style="background:#9ca3af"></span>Immunizations</div>
+        <div class="nitem" onclick="setNavItem(this,'familyhx')"><span class="ndot" style="background:#9ca3af"></span>Family History</div>
+      </div>
+    </div>
+    <div class="navgrp">
+      <div class="navgrp-hdr" onclick="toggleNavGrp(this)">Encounters <span class="arr">▾</span></div>
+      <div class="navgrp-body">
+        <div class="nitem" onclick="setNavItem(this,'visitnotes')">Today — Office Visit</div>
+        <div class="nitem" onclick="setNavItem(this,'visitnotes')">02/14/26 — Follow-up</div>
+        <div class="nitem" onclick="setNavItem(this,'visitnotes')">11/08/25 — Annual</div>
+        <div class="nitem" onclick="setNavItem(this,'visitnotes')">08/03/25 — Urgent</div>
+        <div class="nitem" onclick="setNavItem(this,'visitnotes')" style="font-size:11.5px;color:var(--eb);text-decoration:underline">View All (22)…</div>
+      </div>
+    </div>
+    <div class="navgrp">
+      <div class="navgrp-hdr" onclick="toggleNavGrp(this)">Results <span class="arr">▾</span></div>
+      <div class="navgrp-body">
+        <div class="nitem" onclick="setNavItem(this,'results')">Labs <span class="nbadge amber" id="labBadge">7</span></div>
+        <div class="nitem" onclick="setNavItem(this,'imaging')">Radiology</div>
+        <div class="nitem" onclick="setNavItem(this,'results')">Cardiology</div>
+        <div class="nitem" onclick="setNavItem(this,'results')">Pathology</div>
+      </div>
+    </div>
+    <div class="navgrp">
+      <div class="navgrp-hdr" onclick="toggleNavGrp(this)">Orders <span class="arr">▾</span></div>
+      <div class="navgrp-body">
+        <div class="nitem" onclick="setNavItem(this,'orders')">Pending <span class="nbadge red" id="orderBadge">3</span></div>
+        <div class="nitem" onclick="setNavItem(this,'orders')">Completed</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- CONTENT -->
+  <div class="cwside">
+    <div class="maincol" id="mainCol">
+      <!-- SUMMARY PAGE -->
+      <div class="page active mainin" id="page-summary">
+        <!-- Vitals -->
+        <div class="card">
+          <div class="chead">
+            <div class="chead-t">Vitals</div>
+            <div class="chead-a">
+              <button class="cact" onclick="openModal('vitalsModal')">+ Enter Vitals</button>
+              <button class="cact" onclick="openModal('vitalsTrendModal')">Trend</button>
+            </div>
+          </div>
+          <div class="vrow" id="vitalsRow"></div>
+        </div>
+
+        <!-- Problems + Allergies -->
+        <div class="grid2">
+          <div class="card">
+            <div class="chead">
+              <div class="chead-t">Problem List</div>
+              <div class="chead-a"><button class="cact" onclick="openModal('addProblemModal')">+ Add</button></div>
+            </div>
+            <div id="problemList"></div>
+          </div>
+          <div class="card">
+            <div class="chead">
+              <div class="chead-t">Allergies &amp; Reactions</div>
+              <div class="chead-a"><button class="cact" onclick="openModal('addAllergyModal')">+ Add</button></div>
+            </div>
+            <div id="allergyList"></div>
+          </div>
+        </div>
+
+        <!-- Medications -->
+        <div class="card">
+          <div class="chead">
+            <div class="chead-t">Active Medications</div>
+            <div class="chead-a">
+              <button class="cact" onclick="openModal('reconcileModal')">Reconcile</button>
+              <button class="cact" onclick="openModal('rxModal')">+ Order</button>
+            </div>
+          </div>
+          <table class="dtbl" id="medTable"></table>
+        </div>
+
+        <!-- Lab Results -->
+        <div class="card">
+          <div class="chead">
+            <div class="chead-t">Recent Lab Results</div>
+            <div class="chead-a">
+              <button class="cact" onclick="switchChartTab('results',null)">View All</button>
+              <button class="cact" onclick="openModal('labOrderModal')">+ Order</button>
+            </div>
+          </div>
+          <table class="dtbl" id="labTable"></table>
+        </div>
+
+        <!-- Notes -->
+        <div class="card">
+          <div class="chead">
+            <div class="chead-t">Clinical Notes</div>
+            <div class="chead-a"><button class="cact" onclick="openModal('noteModal')">+ New Note</button></div>
+          </div>
+          <div id="notesList"></div>
+        </div>
+      </div>
+
+      <!-- VISIT NOTES PAGE -->
+      <div class="page mainin" id="page-visitnotes">
+        <div class="card">
+          <div class="chead"><div class="chead-t">Visit Notes</div><div class="chead-a"><button class="cact" onclick="openModal('noteModal')">+ New Note</button></div></div>
+          <div id="allNotesList"></div>
+        </div>
+      </div>
+
+      <!-- RESULTS PAGE -->
+      <div class="page mainin" id="page-results">
+        <div class="card">
+          <div class="chead"><div class="chead-t">Lab Results</div><div class="chead-a"><button class="cact" onclick="openModal('labOrderModal')">+ Order</button></div></div>
+          <table class="dtbl" id="allLabTable"></table>
+        </div>
+      </div>
+
+      <!-- ORDERS PAGE -->
+      <div class="page mainin" id="page-orders">
+        <div class="card">
+          <div class="chead"><div class="chead-t">Active Orders</div><div class="chead-a"><button class="cact" onclick="openModal('labOrderModal')">+ Lab</button><button class="cact" onclick="openModal('rxModal')">+ Rx</button></div></div>
+          <table class="dtbl" id="ordersTable"></table>
+        </div>
+      </div>
+
+      <!-- MEDICATIONS PAGE -->
+      <div class="page mainin" id="page-medications">
+        <div class="card">
+          <div class="chead"><div class="chead-t">Medication List</div><div class="chead-a"><button class="cact" onclick="openModal('reconcileModal')">Reconcile</button><button class="cact" onclick="openModal('rxModal')">+ Order</button></div></div>
+          <table class="dtbl" id="allMedTable"></table>
+        </div>
+      </div>
+
+      <!-- IMAGING PAGE -->
+      <div class="page mainin" id="page-imaging">
+        <div class="card">
+          <div class="chead"><div class="chead-t">Imaging Studies</div><div class="chead-a"><button class="cact" onclick="openModal('imagingOrderModal')">+ Order</button></div></div>
+          <table class="dtbl" id="imagingTable"></table>
+        </div>
+      </div>
+
+      <!-- HISTORY PAGE -->
+      <div class="page mainin" id="page-history">
+        <div class="card">
+          <div class="chead"><div class="chead-t">Medical History</div></div>
+          <div id="historyContent"></div>
+        </div>
+        <div class="card">
+          <div class="chead"><div class="chead-t">Family History</div></div>
+          <div id="familyContent"></div>
+        </div>
+        <div class="card">
+          <div class="chead"><div class="chead-t">Immunizations</div><div class="chead-a"><button class="cact" onclick="openModal('immunModal')">+ Add</button></div></div>
+          <table class="dtbl" id="immunTable"></table>
+        </div>
+      </div>
+
+      <!-- BILLING PAGE -->
+      <div class="page mainin" id="page-billing">
+        <div class="card">
+          <div class="chead"><div class="chead-t">Billing & Coding</div><div class="chead-a"><button class="cact" onclick="openModal('billingModal')">+ Add Code</button></div></div>
+          <table class="dtbl" id="billingTable"></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="rightcol">
+      <div class="card">
+        <div class="chead"><div class="chead-t">Upcoming Appts</div><div class="chead-a"><button class="cact" onclick="openModal('scheduleModal')">Schedule</button></div></div>
+        <div id="apptList"></div>
+      </div>
+      <div class="card">
+        <div class="chead"><div class="chead-t">Care Team</div></div>
+        <div id="careTeam"></div>
+      </div>
+      <div class="card">
+        <div class="chead"><div class="chead-t">Patient Info</div><div class="chead-a"><button class="cact" onclick="openModal('patientInfoModal')">Edit</button></div></div>
+        <div id="patientInfoPanel"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SYSTEM-LEVEL PAGES (non-chart) ===== -->
+<div id="sysPage" style="display:none;flex:1;overflow:hidden;flex-direction:column;">
+  <div class="mainin" id="sysPageContent" style="padding:16px;overflow-y:auto;flex:1;"></div>
+</div>
+
+<!-- ===== TOAST AREA ===== -->
+<div class="toast-area" id="toastArea"></div>
+
+<!-- ===== MODALS ===== -->
+
+<!-- New Note Modal -->
+<div class="overlay" id="noteModal">
+  <div class="modal">
+    <div class="mhead"><div class="mtitle">New Clinical Note — <span id="notePatientName">Vasquez, Elena M.</span></div><button class="mclose" onclick="closeModal('noteModal')">×</button></div>
+    <div class="mbody">
+      <div class="frow2">
+        <div class="frow"><label class="flbl">Note Type</label><select class="finp" id="noteType"><option>Office Visit Note</option><option>Progress Note</option><option>Discharge Summary</option><option>Referral Note</option><option>Procedure Note</option></select></div>
+        <div class="frow"><label class="flbl">Date / Time</label><input class="finp" type="datetime-local" id="noteDateTime"></div>
+      </div>
+      <div class="frow"><label class="flbl">Chief Complaint</label><input class="finp" type="text" id="noteCC" placeholder="e.g. Hypertension follow-up, elevated BP"></div>
+      <div class="frow"><label class="flbl">Subjective (S)</label><textarea class="finp" rows="3" id="noteS" placeholder="Patient presents for…"></textarea></div>
+      <div class="frow"><label class="flbl">Objective (O)</label><textarea class="finp" rows="3" id="noteO" placeholder="Vitals, exam findings…"></textarea></div>
+      <div class="frow"><label class="flbl">Assessment (A)</label><textarea class="finp" rows="2" id="noteA" placeholder="Diagnosis, interpretation…"></textarea></div>
+      <div class="frow"><label class="flbl">Plan (P)</label><textarea class="finp" rows="3" id="noteP" placeholder="Treatment plan, follow-up…"></textarea></div>
+      <div class="frow"><label class="flbl">Cosign</label><select class="finp" id="noteCosign"><option>No cosign required</option><option>Dr. Rivera (Attending)</option><option>Dr. Patel (Consulting)</option></select></div>
+    </div>
+    <div class="mfoot"><button class="mbtn mbtn-sec" onclick="closeModal('noteModal')">Cancel</button><button class="mbtn mbtn-sec" onclick="saveDraftNote()">Save Draft</button><button class="mbtn mbtn-pri" onclick="submitNote()">Sign &amp; Submit</button></div>
+  </div>
+</div>
+
+<!-- Rx Order Modal -->
+<div class="overlay" id="rxModal">
+  <div class="modal">
+    <div class="mhead"><div class="mtitle">New Rx Order</div><button class="mclose" onclick="closeModal('rxModal')">×</button></div>
+    <div class="mbody">
+      <div class="frow"><label class="flbl">Medication</label><input class="finp" type="text" id="rxMed" placeholder="Search medication…" oninput="rxSearch(this.value)"><div id="rxSuggestions" style="border:1px solid var(--bd);border-top:none;display:none;border-radius:0 0 2px 2px;"></div></div>
+      <div class="frow2">
+        <div class="frow"><label class="flbl">Dose</label><input class="finp" type="text" id="rxDose" placeholder="e.g. 10 mg"></div>
+        <div class="frow"><label class="flbl">Route</label><select class="finp" id="rxRoute"><option>Oral</option><option>IV</option><option>IM</option><option>Topical</option><option>Inhaled</option><option>Sublingual</option></select></div>
+      </div>
+      <div class="frow2">
+        <div class="frow"><label class="flbl">Frequency</label><select class="finp" id="rxFreq"><option>Once daily</option><option>Twice daily</option><option>Three times daily</option><option>Four times daily</option><option>As needed</option><option>At bedtime</option><option>Every 8 hours</option></select></div>
+        <div class="frow"><label class="flbl">Duration</label><input class="finp" type="text" id="rxDur" placeholder="e.g. 30 days, ongoing"></div>
+      </div>
+      <div class="frow"><label class="flbl">Quantity / Refills</label><div class="frow2"><input class="finp" type="number" id="rxQty" placeholder="Qty (e.g. 30)"><input class="finp" type="number" id="rxRefills" placeholder="Refills (e.g. 3)"></div></div>
+      <div class="frow"><label class="flbl">Instructions to Pharmacist</label><textarea class="finp" rows="2" id="rxInstr" placeholder="Special instructions…"></textarea></div>
+      <div class="frow"><label class="flbl">Allergy Check</label><div class="finp" style="background:var(--grl);color:var(--gr);font-weight:600;font-size:12px">✓ No known interactions with current allergy list</div></div>
+    </div>
+    <div class="mfoot"><button class="mbtn mbtn-sec" onclick="closeModal('rxModal')">Cancel</button><button class="mbtn mbtn-pri" onclick="submitRx()">Order &amp; Sign</button></div>
+  </div>
+</div>
+
+<!-- Lab Order Modal -->
+<div class="overlay" id="labOrderModal">
+  <div class="modal">
+    <div class="mhead"><div class="mtitle">Lab Order</div><button class="mclose" onclick="closeModal('labOrderModal')">×</button></div>
+    <div class="mbody">
+      <div class="frow"><label class="flbl">Order Set / Panel</label><select class="finp" id="labPanel"><option value="">— Select —</option><option>Basic Metabolic Panel (BMP)</option><option>Comprehensive Metabolic Panel (CMP)</option><option>Complete Blood Count (CBC)</option><option>Lipid Panel</option><option>Thyroid Panel (TSH, T3, T4)</option><option>HbA1c</option><option>Urinalysis</option><option>PT/INR</option><option>Custom</option></select></div>
+      <div class="frow"><label class="flbl">Custom Tests (if applicable)</label><input class="finp" type="text" id="labCustom" placeholder="e.g. Vitamin D, Iron studies…"></div>
+      <div class="frow2">
+        <div class="frow"><label class="flbl">Priority</label><select class="finp" id="labPriority"><option>Routine</option><option>STAT</option><option>ASAP</option></select></div>
+        <div class="frow"><label class="flbl">Collection Date</label><input class="finp" type="date" id="labDate"></div>
+      </div>
+      <div class="frow"><label class="flbl">Clinical Indication / Diagnosis</label><input class="finp" type="text" id="labIndication" placeholder="e.g. Monitoring diabetes, hyperlipidemia"></div>
+      <div class="frow"><label class="flbl">Fasting Required?</label><select class="finp" id="labFasting"><option>No</option><option>Yes — 8 hours</option><option>Yes — 12 hours</option></select></div>
+    </div>
+    <div class="mfoot"><button class="mbtn mbtn-sec" onclick="closeModal('labOrderModal')">Cancel</button><button class="mbtn mbtn-pri" onclick="submitLabOrder()">Submit Order</button></div>
+  </div>
+</div>
+
+<!-- Imaging Order Modal -->
+<div class="overlay" id="imagingOrderModal">
+  <div class="modal">
+    <div class="mhead"><div class="mtitle">Imaging Order</div><button class="mclose" onclick="closeModal('imagingOrderModal')">×</button></div>
+    <div class="mbody">
+      <div class="frow"><label class="flbl">Study Type</label><select class="finp" id="imgType"><option>X-Ray</option><option>CT Scan</option><option>MRI</option><option>Ultrasound</option><option>PET Scan</option><option>Echocardiogram</option><option>Mammogram</option></select></div>
+      <div class="frow"><label class="flbl">Body Part / Region</label><input class="finp" type="text" id="imgRegion" placeholder="e.g. Chest, Abdomen, Left knee…"></div>
+      <div class="frow2">
+        <div class="frow"><label class="flbl">With/Without Contrast</label><select class="finp" id="imgContrast"><option>Without contrast</option><option>With contrast</option><option>With and without</option><option>N/A</option></select></div>
+        <div class="frow"><label class="flbl">Priority</label><select class="finp" id="imgPriority"><option>Routine</option><option>STAT</option><option>ASAP</option></select></div>
+      </div>
+      <div class="frow"><label class="flbl">Clinical Indication</label><textarea class="finp" rows="2" id="imgIndication" placeholder="Reason for imaging…"></textarea></div>
+    </div>
+    <div class="mfoot"><button class="mbtn mbtn-sec" onclick="closeModal('imagingOrderModal')">Cancel</button><button class="mbtn mbtn-pri" onclick="submitImagingOrder()">Submit Order</button></div>
+  </div>
+</div>
+
+<!-- Referral Modal -->
+<div class="overlay" id="referralModal">
+  <div class="modal">
+    <div class="mhead"><div class="mtitle">Referral</div><button class="mclose" onclick="closeModal('referralModal')">×</button></div>
+    <div class="mbody">
+      <div class="frow"><label class="flbl">Specialty</label><select class="finp" id="refSpec"><option>Cardiology</option><option>Pulmonology</option><option>Endocrinology</option><option>Neurology</option><option>Gastroenterology</option><option>Nephrology</option><option>Orthopedics</option><option>Psychiatry</option><option>Dermatology</option></select></div>
+      <div class="frow"><label class="flbl">Referred To (Physician)</label><input class="finp" type="text" id="refPhysician" placeholder="e.g. Dr. S. Patel"></div>
+      <div class="frow2">
+        <div class="frow"><label class="flbl">Urgency</label><select class="finp" id="refUrgency"><option>Routine</option><option>Urgent</option><option>Emergent</option></select></div>
+        <div class="frow"><label class="flbl">Authorization #</label><input class="finp" type="text" id="refAuth" placeholder="Insurance auth #"></div>
+      </div>
+      <div class="frow"><label class="flbl">Reason / Clinical Notes</label><textarea class="finp" rows="3" id="refReason" placeholder="Reason for referral…"></textarea></div>
+    </div>
+    <div class="mfoot"><button class="mbtn mbtn-sec" onclick="closeModal('referralModal')">Cancel</button><button class="mbtn mbtn-pri" onclick="submitReferral()">Submit Referral</button></div>
+  </div>
+</div>
+
+<!-- Procedure Modal -->
+<div class="overlay" id="procedureModal">
+  <div class="modal narrow">
+    <div class="mhead"><div class="mtitle">Procedure Order</div><button class="mclose" onclick="closeModal('procedureModal')">×</button></div>
+    <div class="mbody">
+      <div class="frow"><label class="flbl">Procedure</label><select class="finp" id="procType"><option>ECG / EKG</option><option>Spirometry</option><option>Blood Draw</option><option>IV Placement</option><option>Wound Care</option><option>Biopsy</option><option>Lumbar Puncture</option></select></div>
+      <div class="frow"><label class="flbl">Indication</label><input class="finp" type="text" id="procIndication" placeholder="Clinical reason…"></div>
+      <div class="frow"><label class="flbl">Priority</label><select class="finp" id="procPri"><option>Routine</option><option>STAT</option></select></div>
+    </div>
+    <div class="mfoot"><button class="mbtn mbtn-sec" onclick="closeModal('procedureModal')">Cancel</button><button class="mbtn mbtn-pri" onclick="submitProcedure()">Order</button></div>
+  </div>
+</div>
+
+<!-- Enter Vitals Modal -->
+<div class="overlay" id="vitalsModal">
+  <div class="modal">
+    <div class="mhead"><div class="mtitle">Enter Vitals</div><button class="mclose" onclick="closeModal('vitalsModal')">×</button></div>
+    <div class="mbody">
+      <div class="frow2">
+        <div class="frow"><label class="flbl">Systolic BP</label><input class="finp" type="number" id="vBpS" placeholder="mmHg"></div>
+        <div class="frow"><label class="flbl">Diastolic BP</label><input class="finp" type="number" id="vBpD" placeholder="mmHg"></div>
+      </div>
+      <div class="frow2">
+        <div class="frow"><label class="flbl">Heart Rate</label><input class="finp" type="number" id="vHR" placeholder="bpm"></div>
+        <div class="frow"><label class="flbl">Respiratory Rate</label><input class="finp" type="number" id="vRR" placeholder="/min"></div>
+      </div>
+      <div class="frow2">
+        <div class="frow"><label class="flbl">Temperature (°F)</label><input class="finp" type="number" step="0.1" id="vTemp" placeholder="°F"></div>
+        <div class="frow"><label class="flbl">SpO₂ (%)</label><input class="finp" type="number" id="vSpo2" placeholder="%"></div>
+      </div>
+      <div class="frow2">
+        <div class="frow"><label class="flbl">Weight (lbs)</label><input class="finp" type="number" id="vWt" placeholder="lbs"></div>
+        <div class="frow"><label class="flbl">Height (in)</label><input class="finp" type="number" id="vHt" placeholder="inches"></div>
+      </div>
+    </div>
+    <div class="mfoot"><button class="mbtn mbtn-sec" onclick="closeModal('vitalsModal')">Cancel</button><button class="mbtn mbtn-pri" onclick="saveVitals()">Save Vitals</button></div>
+  </div>
+</div>
+
+<!-- Vitals Trend Modal -->
+<div class="overlay" id="vitalsTrendModal">
+  <div class="modal wide">
+    <div class="mhead"><div class="mtitle">Vitals Trend — Vasquez, Elena M.</div><button class="mclose" onclick="closeModal('vitalsTrendModal')">×</button></div>
+    <div class="mbody">
+      <table class="dtbl">
+        <thead><tr><th>Date</th><th>BP</th><th>HR</th><th>RR</th><th>Temp</th><th>SpO₂</th><th>Wt</th><th>BMI</th></tr></thead>
+        <tbody id="vitalsTrendBody"></tbody>
+      </table>
+    </div>
+    <div class="mfoot"><button class="mbtn mbtn-sec" onclick="closeModal('vitalsTrendModal')">Close</button></div>
+  </div>
+</div>
+
+<!-- Add Problem Modal -->
+<div class="overlay" id="addProblemModal">
+  <div class="modal narrow">
+    <div class="mhead"><div class="mtitle">Add Problem</div><button class="mclose" onclick="closeModal('addProblemModal')">×</button></div>
+    <div class="mbody">
+      <div class="frow"><label class="flbl">Problem / Diagnosis</label><input class="finp" type="text" id="probName" placeholder="e.g. Type 2 Diabetes"></div>
+      <div class="frow2">
+        <div class="frow"><label class="flbl">ICD-10 Code</label><input class="finp" type="text" id="probICD" placeholder="e.g. E11.9"></div>
+        <div class="frow"><label class="flbl">Onset Year</label><input class="finp" type="text" id="probOnset" placeholder="YYYY"></div>
+      </div>
+      <div class="frow"><label class="flbl">Status</label><select class="finp" id="probStatus"><option value="active">Active</option><option value="chronic">Chronic</option><option value="resolved">Resolved</option></select></div>
+    </div>
+    <div class="mfoot"><button class="mbtn mbtn-sec" onclick="closeModal('addProblemModal')">Cancel</button><button class="mbtn mbtn-pri" onclick="addProblem()">Add Problem</button></div>
+  </div>
+</div>
+
+<!-- Add Allergy Modal -->
+<div class="overlay" id="addAllergyModal">
+  <div class="modal narrow">
+    <div class="mhead"><div class="mtitle">Add Allergy</div><button class="mclose" onclick="closeModal('addAllergyModal')">×</button></div>
+    <div class="mbody">
+      <div class="frow"><label class="flbl">Allergen</label><input class="finp" type="text" id="alName" placeholder="e.g. Amoxicillin"></div>
+      <div class="frow"><label class="flbl">Reaction</label><input class="finp" type="text" id="alReaction" placeholder="e.g. Hives, anaphylaxis"></div>
+      <div class="frow"><label class="flbl">Severity</label><select class="finp" id="alSev"><option value="high">Severe</option><option value="mod">Moderate</option><option value="low">Mild</option></select></div>
+    </div>
+    <div class="mfoot"><button class="mbtn mbtn-sec" onclick="closeModal('addAllergyModal')">Cancel</button><button class="mbtn mbtn-pri" onclick="addAllergy()">Add Allergy</button></div>
+  </div>
+</div>
+
+<!-- Allergy Detail Modal -->
+<div class="overlay" id="allergyModal">
+  <div class="modal">
+    <div class="mhead"><div class="mtitle">⚠ Allergy Alert — Vasquez, Elena M.</div><button class="mclose" onclick="closeModal('allergyModal')">×</button></div>
+    <div class="mbody" id="allergyModalBody"></div>
+    <div class="mfoot"><button class="mbtn mbtn-sec" onclick="closeModal('allergyModal')">Close</button><button class="mbtn mbtn-pri" onclick="closeModal('allergyModal');openModal('addAllergyModal')">+ Add Allergy</button></div>
+  </div>
+</div>
+
+<!-- Problem Detail Modal -->
+<div class="overlay" id="problemDetailModal">
+  <div class="modal">
+    <div class="mhead"><div class="mtitle" id="probDetailTitle">Problem Detail</div><button class="mclose" onclick="closeModal('problemDetailModal')">×</button></div>
+    <div class="mbody" id="probDetailBody"></div>
+    <div class="mfoot"><button class="mbtn mbtn-dan" onclick="removeProblem()">Remove</button><button class="mbtn mbtn-sec" onclick="closeModal('problemDetailModal')">Close</button></div>
+  </div>
+</div>
+
+<!-- Note Detail Modal -->
+<div class="overlay" id="noteDetailModal">
+  <div class="modal wide">
+    <div class="mhead"><div class="mtitle" id="noteDetailTitle">Clinical Note</div><button class="mclose" onclick="closeModal('noteDetailModal')">×</button></div>
+    <div class="mbody" id="noteDetailBody"></div>
+    <div class="mfoot"><button class="mbtn mbtn-sec" onclick="closeModal('noteDetailModal')">Close</button><button class="mbtn mbtn-pri" onclick="closeModal('noteDetailModal')">Addendum</button></div>
+  </div>
+</div>
+
+<!-- Lab Detail Modal -->
+<div class="overlay" id="labDetailModal">
+  <div class="modal">
+    <div class="mhead"><div class="mtitle" id="labDetailTitle">Lab Result</div><button class="mclose" onclick="closeModal('labDetailModal')">×</button></div>
+    <div class="mbody" id="labDetailBody"></div>
+    <div class="mfoot"><button class="mbtn mbtn-sec" onclick="closeModal('labDetailModal')">Close</button><button class="mbtn mbtn-pri" onclick="closeModal('labDetailModal');openModal('labOrderModal')">Reorder</button></div>
+  </div>
+</div>
+
+<!-- Med Detail Modal -->
+<div class="overlay" id="medDetailModal">
+  <div class="modal">
+    <div class="mhead"><div class="mtitle" id="medDetailTitle">Medication Detail</div><button class="mclose" onclick="closeModal('medDetailModal')">×</button></div>
+    <div class="mbody" id="medDetailBody"></div>
+    <div class="mfoot"><button class="mbtn mbtn-dan" onclick="discontinueMed()">Discontinue</button><button class="mbtn mbtn-sec" onclick="closeModal('medDetailModal')">Close</button><button class="mbtn mbtn-pri" onclick="modifyMed()">Modify</button></div>
+  </div>
+</div>
+
+<!-- Schedule Appointment Modal -->
+<div class="overlay" id="scheduleModal">
+  <div class="modal">
+    <div class="mhead"><div class="mtitle">Schedule Appointment</div><button class="mclose" onclick="closeModal('scheduleModal')">×</button></div>
+    <div class="mbody">
+      <div class="frow"><label class="flbl">Appointment Type</label><select class="finp" id="schedType"><option>Office Visit</option><option>Follow-up</option><option>Annual Physical</option><option>Lab Draw</option><option>Consultation</option><option>Telehealth</option></select></div>
+      <div class="frow2">
+        <div class="frow"><label class="flbl">Date</label><input class="finp" type="date" id="schedDate"></div>
+        <div class="frow"><label class="flbl">Time</label><input class="finp" type="time" id="schedTime" value="09:00"></div>
+      </div>
+      <div class="frow"><label class="flbl">Provider</label><select class="finp" id="schedProvider"><option>Dr. A. Rivera, MD</option><option>Dr. S. Patel, MD (Cardiology)</option><option>N. Torres, RN</option></select></div>
+      <div class="frow"><label class="flbl">Notes</label><textarea class="finp" rows="2" id="schedNotes" placeholder="Reason for visit…"></textarea></div>
+    </div>
+    <div class="mfoot"><button class="mbtn mbtn-sec" onclick="closeModal('scheduleModal')">Cancel</button><button class="mbtn mbtn-pri" onclick="submitAppt()">Confirm Appointment</button></div>
+  </div>
+</div>
+
+<!-- Alerts Modal -->
+<div class="overlay" id="alertsModal">
+  <div class="modal">
+    <div class="mhead"><div class="mtitle">⚠ Clinical Alerts</div><button class="mclose" onclick="closeModal('alertsModal')">×</button></div>
+    <div class="mbody">
+      <div id="alertsBody"></div>
+    </div>
+    <div class="mfoot"><button class="mbtn mbtn-sec" onclick="closeModal('alertsModal')">Dismiss All</button></div>
+  </div>
+</div>
+
+<!-- Reconcile Modal -->
+<div class="overlay" id="reconcileModal">
+  <div class="modal wide">
+    <div class="mhead"><div class="mtitle">Medication Reconciliation</div><button class="mclose" onclick="closeModal('reconcileModal')">×</button></div>
+    <div class="mbody"><p style="color:var(--t3);font-size:13px;margin-bottom:12px">Review and reconcile current medications against external pharmacy records.</p><table class="dtbl" id="reconcileTable"></table></div>
+    <div class="mfoot"><button class="mbtn mbtn-sec" onclick="closeModal('reconcileModal')">Cancel</button><button class="mbtn mbtn-pri" onclick="closeModal('reconcileModal');toast('Medications reconciled','green')">Complete Reconciliation</button></div>
+  </div>
+</div>
+
+<!-- Patient Info Edit Modal -->
+<div class="overlay" id="patientInfoModal">
+  <div class="modal">
+    <div class="mhead"><div class="mtitle">Edit Patient Info</div><button class="mclose" onclick="closeModal('patientInfoModal')">×</button></div>
+    <div class="mbody">
+      <div class="frow2">
+        <div class="frow"><label class="flbl">Last Name</label><input class="finp" type="text" id="piLast" value="Vasquez"></div>
+        <div class="frow"><label class="flbl">First Name</label><input class="finp" type="text" id="piFirst" value="Elena"></div>
+      </div>
+      <div class="frow2">
+        <div class="frow"><label class="flbl">Date of Birth</label><input class="finp" type="date" id="piDob" value="1978-03-12"></div>
+        <div class="frow"><label class="flbl">Sex</label><select class="finp" id="piSex"><option selected>F</option><option>M</option><option>Other</option></select></div>
+      </div>
+      <div class="frow2">
+        <div class="frow"><label class="flbl">Phone</label><input class="finp" type="tel" id="piPhone" value="(415) 555-0192"></div>
+        <div class="frow"><label class="flbl">Blood Type</label><select class="finp" id="piBT"><option>O+</option><option>O-</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option></select></div>
+      </div>
+      <div class="frow"><label class="flbl">Insurance</label><input class="finp" type="text" id="piIns" value="BlueCross PPO"></div>
+      <div class="frow"><label class="flbl">Emergency Contact</label><input class="finp" type="text" id="piEmg" value="Carlos Vasquez — (415) 555-0183"></div>
+    </div>
+    <div class="mfoot"><button class="mbtn mbtn-sec" onclick="closeModal('patientInfoModal')">Cancel</button><button class="mbtn mbtn-pri" onclick="savePatientInfo()">Save Changes</button></div>
+  </div>
+</div>
+
+<!-- Immunization Modal -->
+<div class="overlay" id="immunModal">
+  <div class="modal narrow">
+    <div class="mhead"><div class="mtitle">Add Immunization</div><button class="mclose" onclick="closeModal('immunModal')">×</button></div>
+    <div class="mbody">
+      <div class="frow"><label class="flbl">Vaccine</label><select class="finp" id="immunVax"><option>Influenza (Flu)</option><option>COVID-19 (mRNA)</option><option>Tdap</option><option>Pneumococcal (PPSV23)</option><option>Hepatitis B</option><option>Shingrix (RZV)</option><option>MMR</option></select></div>
+      <div class="frow2">
+        <div class="frow"><label class="flbl">Date Given</label><input class="finp" type="date" id="immunDate"></div>
+        <div class="frow"><label class="flbl">Lot #</label><input class="finp" type="text" id="immunLot" placeholder="Lot #"></div>
+      </div>
+      <div class="frow"><label class="flbl">Administered By</label><input class="finp" type="text" id="immunBy" value="N. Torres, RN"></div>
+    </div>
+    <div class="mfoot"><button class="mbtn mbtn-sec" onclick="closeModal('immunModal')">Cancel</button><button class="mbtn mbtn-pri" onclick="addImmunization()">Add</button></div>
+  </div>
+</div>
+
+<!-- Billing Modal -->
+<div class="overlay" id="billingModal">
+  <div class="modal narrow">
+    <div class="mhead"><div class="mtitle">Add Billing Code</div><button class="mclose" onclick="closeModal('billingModal')">×</button></div>
+    <div class="mbody">
+      <div class="frow"><label class="flbl">CPT Code</label><input class="finp" type="text" id="billCpt" placeholder="e.g. 99213"></div>
+      <div class="frow"><label class="flbl">Description</label><input class="finp" type="text" id="billDesc" placeholder="e.g. Office visit, est. patient"></div>
+      <div class="frow"><label class="flbl">Modifier</label><input class="finp" type="text" id="billMod" placeholder="e.g. 25"></div>
+    </div>
+    <div class="mfoot"><button class="mbtn mbtn-sec" onclick="closeModal('billingModal')">Cancel</button><button class="mbtn mbtn-pri" onclick="addBilling()">Add Code</button></div>
+  </div>
+</div>
+
+<!-- User Profile Modal -->
+<div class="overlay" id="userModal">
+  <div class="modal narrow">
+    <div class="mhead"><div class="mtitle">User Profile</div><button class="mclose" onclick="closeModal('userModal')">×</button></div>
+    <div class="mbody">
+      <div style="text-align:center;padding:16px 0 12px">
+        <div style="width:56px;height:56px;background:var(--eb);border-radius:50%;display:grid;place-items:center;font-size:20px;font-weight:700;color:#fff;margin:0 auto 10px">DR</div>
+        <div style="font-size:15px;font-weight:700">Dr. Alejandro Rivera, MD</div>
+        <div style="font-size:12.5px;color:var(--t3);margin-top:3px">Internal Medicine · MedAxis Health System</div>
+      </div>
+      <hr class="fdivider">
+      <div class="inforow"><span class="infokey">NPI</span><span class="infoval" style="font-family:var(--mono)">1234567890</span></div>
+      <div class="inforow"><span class="infokey">License</span><span class="infoval" style="font-family:var(--mono)">CA-G12345</span></div>
+      <div class="inforow"><span class="infokey">DEA</span><span class="infoval" style="font-family:var(--mono)">AR1234567</span></div>
+      <div class="inforow"><span class="infokey">Signature</span><span class="infoval">On file</span></div>
+    </div>
+    <div class="mfoot"><button class="mbtn mbtn-sec" onclick="closeModal('userModal')">Close</button><button class="mbtn mbtn-dan" onclick="closeModal('userModal');toast('Signed out','blue')">Sign Out</button></div>
+  </div>
+</div>
+
+<script>
+// ===== DATA STORE =====
+let currentPatientIdx = 0;
+let activeProblemIdx = null;
+let activeMedIdx = null;
+
+const patients = [
+  {id:'00421',initials:'EV',color:'#005b94',name:'Vasquez, Elena M.',dob:'03/12/1978',age:48,sex:'F',pcp:'Dr. Rivera',phone:'(415) 555-0192',insurance:'BlueCross PPO',blood:'O+',lang:'EN/ES',emg:'Carlos Vasquez',bpFlag:true},
+  {id:'00398',initials:'MC',color:'#6a1b9a',name:'Chen, Marcus T.',dob:'07/05/1945',age:80,sex:'M',pcp:'Dr. Rivera',phone:'(510) 555-0441',insurance:'Medicare',blood:'A+',lang:'EN/ZH',emg:'Linda Chen',bpFlag:false},
+  {id:'00455',initials:'PN',color:'#2e7d32',name:'Nair, Priya S.',dob:'11/22/1990',age:35,sex:'F',pcp:'Dr. Rivera',phone:'(628) 555-0317',insurance:'Aetna HMO',blood:'B+',lang:'EN',emg:'Raj Nair',bpFlag:false},
+];
+
+let vitalsHistory = [
+  {date:'03/13/26',bp:'138/88',hr:'76',rr:'16',temp:'98.6',spo2:'97',wt:'158',bmi:'26.2'},
+  {date:'02/14/26',bp:'142/90',hr:'80',rr:'15',temp:'98.4',spo2:'98',wt:'160',bmi:'26.5'},
+  {date:'11/08/25',bp:'136/84',hr:'74',rr:'14',temp:'98.7',spo2:'97',wt:'159',bmi:'26.3'},
+];
+
+let problems = [
+  {num:1,name:'Essential Hypertension',icd:'I10',onset:'2019',status:'chronic',notes:'Managed with Lisinopril and Amlodipine. BP trending slightly elevated.'},
+  {num:2,name:'Hyperlipidemia',icd:'E78.5',onset:'2021',status:'chronic',notes:'LDL elevated at 128. Currently on Atorvastatin 20mg.'},
+  {num:3,name:'GERD',icd:'K21.0',onset:'2022',status:'active',notes:'Managed with Omeprazole. Symptoms controlled.'},
+  {num:4,name:'Generalized Anxiety Disorder',icd:'F41.1',onset:'2023',status:'active',notes:'Managed with Sertraline. Patient reports improvement.'},
+  {num:5,name:'Appendectomy (Hx)',icd:'Z87.39',onset:'2007',status:'resolved',notes:'Uncomplicated appendectomy in 2007. No recurrence.'},
+];
+
+let allergies = [
+  {name:'Penicillin',reaction:'Anaphylaxis, urticaria',sev:'high'},
+  {name:'Sulfonamides',reaction:'Rash, pruritus',sev:'mod'},
+  {name:'Latex',reaction:'Contact dermatitis',sev:'low'},
+];
+
+let meds = [
+  {name:'Lisinopril',dose:'10 mg',route:'Oral',freq:'Once daily (AM)',start:'01/2019',presc:'Rivera',indication:'Hypertension',notes:'Monitor renal function & K+. Check BP regularly.',status:'active'},
+  {name:'Amlodipine',dose:'5 mg',route:'Oral',freq:'Once daily',start:'04/2021',presc:'Rivera',indication:'Hypertension',notes:'Monitor for peripheral edema.',status:'active'},
+  {name:'Atorvastatin',dose:'20 mg',route:'Oral',freq:'At bedtime',start:'06/2021',presc:'Patel',indication:'Hyperlipidemia',notes:'Monitor LFTs annually. Watch for myopathy.',status:'active'},
+  {name:'Omeprazole',dose:'20 mg',route:'Oral',freq:'Before breakfast',start:'03/2022',presc:'Rivera',indication:'GERD',notes:'Take 30-60 min before eating.',status:'active'},
+  {name:'Sertraline',dose:'50 mg',route:'Oral',freq:'Once daily (AM)',start:'09/2023',presc:'Rivera',indication:'Anxiety',notes:'Monitor for mood changes. Annual medication review.',status:'active'},
+];
+
+let labs = [
+  {name:'Hemoglobin A1c',val:'5.8%',ref:'< 5.7%',flag:'H',date:'03/10/26',panel:'CMP',interp:'Slightly above normal — prediabetes range. Monitor.'},
+  {name:'Total Cholesterol',val:'204 mg/dL',ref:'< 200',flag:'H',date:'03/10/26',panel:'Lipid',interp:'Borderline high. Dietary changes and continued statin therapy recommended.'},
+  {name:'LDL',val:'128 mg/dL',ref:'< 100',flag:'H',date:'03/10/26',panel:'Lipid',interp:'Elevated LDL despite statin therapy. Consider dose increase.'},
+  {name:'HDL',val:'58 mg/dL',ref:'> 50',flag:'',date:'03/10/26',panel:'Lipid',interp:'Within normal range. Good protective HDL level.'},
+  {name:'Creatinine',val:'0.82 mg/dL',ref:'0.5–1.1',flag:'',date:'03/10/26',panel:'CMP',interp:'Normal renal function.'},
+  {name:'eGFR',val:'88 mL/min',ref:'> 60',flag:'',date:'03/10/26',panel:'CMP',interp:'Normal.'},
+  {name:'TSH',val:'2.1 µIU/mL',ref:'0.4–4.0',flag:'',date:'02/15/26',panel:'Thyroid',interp:'Normal thyroid function.'},
+];
+
+let notes = [
+  {type:'Office Visit Note',date:'03/13/2026',author:'Dr. A. Rivera, MD',cc:'BP follow-up',s:'Patient presents for routine BP follow-up. Reports no chest pain or dyspnea. Medication compliance good.',o:'BP 138/88. HR 76. Wt 158 lbs. Lungs CTA. Heart RRR.',a:'Hypertension — borderline elevated. Continue current regimen.',p:'Continue Lisinopril 10mg and Amlodipine 5mg. Reinforce dietary sodium <2g/day. Daily 30-min walk. Follow up 4 weeks.',signed:true},
+  {type:'Progress Note',date:'02/14/2026',author:'Dr. A. Rivera, MD',cc:'Hypertension, lipid management',s:'Follow-up for hypertension and hyperlipidemia. Reports occasional AM headaches.',o:'BP 142/90. LDL 128 (elevated). HR 80.',a:'Hypertension — suboptimal control. Hyperlipidemia — inadequate LDL lowering.',p:'Continue current meds. Ordered lipid panel. Reinforce diet. Follow-up 1 month.',signed:true},
+  {type:'Annual Physical',date:'11/08/2025',author:'Dr. A. Rivera, MD',cc:'Annual wellness exam',s:'Annual exam. No acute complaints. Reports mild stress at work.',o:'General: well-appearing. BP 136/84. BMI 26.3. Pelvic: deferred (per pt preference).',a:'Hypertension — stable. Anxiety — managed. Preventive care up to date.',p:'Mammogram ordered. Continue current meds. Flu vaccine administered. Annual labs ordered.',signed:true},
+];
+
+let appts = [
+  {month:'MAR',day:'20',type:'Cardiology Consult',detail:'Dr. S. Patel · 10:00 AM',status:'confirmed'},
+  {month:'APR',day:'03',type:'Lab Draw — Repeat Lipids',detail:'Quest Lab · 7:30 AM',status:'confirmed'},
+  {month:'APR',day:'10',type:'BP Follow-up',detail:'Dr. A. Rivera · 2:15 PM',status:'confirmed'},
+];
+
+let orders = [
+  {id:'ORD-0091',type:'Lab',desc:'Lipid Panel — Repeat',priority:'Routine',date:'03/13/26',status:'pending',provider:'Rivera'},
+  {id:'ORD-0092',type:'Lab',desc:'HbA1c — Recheck in 3 months',priority:'Routine',date:'03/13/26',status:'pending',provider:'Rivera'},
+  {id:'ORD-0090',type:'Referral',desc:'Cardiology — Dr. Patel',priority:'Urgent',date:'03/10/26',status:'scheduled',provider:'Rivera'},
+];
+
+let imaging = [
+  {study:'Echocardiogram',date:'01/15/26',result:'Mild LV hypertrophy. EF 60%. No valvular abnormalities.',status:'final',provider:'Patel'},
+  {study:'Chest X-Ray',date:'11/08/25',result:'No acute cardiopulmonary findings.',status:'final',provider:'Rivera'},
+];
+
+let immunizations = [
+  {vaccine:'Influenza (Flu)',date:'10/05/2025',lot:'FL2025-A',by:'N. Torres, RN'},
+  {vaccine:'Tdap',date:'06/12/2023',lot:'TDP-443',by:'N. Torres, RN'},
+  {vaccine:'Pneumococcal (PPSV23)',date:'03/15/2022',lot:'PPV-201',by:'Dr. Rivera'},
+  {vaccine:'COVID-19 (mRNA) — Booster',date:'09/01/2024',lot:'CV-8810',by:'Pharmacy'},
+];
+
+let billingCodes = [
+  {cpt:'99214',desc:'Office visit, est. patient, moderate complexity',modifier:'',date:'03/13/26',status:'pending'},
+  {cpt:'I10',desc:'Essential Hypertension',modifier:'',date:'03/13/26',status:'pending'},
+];
+
+let alerts = [
+  {type:'Lab Critical',msg:'HbA1c 5.8% — prediabetes range. Consider dietary counseling.',level:'warn'},
+  {type:'Lab Abnormal',msg:'LDL 128 mg/dL — above goal for patient with hypertension.',level:'warn'},
+  {type:'Medication Due',msg:'Annual review of Sertraline recommended.',level:'info'},
+  {type:'Preventive Care',msg:'Mammogram ordered — patient not yet scheduled.',level:'info'},
+];
+
+// ===== RENDER FUNCTIONS =====
+function renderBanner() {
+  const p = patients[currentPatientIdx];
+  document.getElementById('bannerAv').textContent = p.initials;
+  document.getElementById('bannerAv').style.background = 'rgba(255,255,255,.2)';
+  document.getElementById('bannerName').textContent = p.name;
+  document.getElementById('bannerDob').textContent = `DOB: ${p.dob} (${p.age} y)`;
+  document.getElementById('bannerSex').textContent = `Sex: ${p.sex}`;
+  document.getElementById('bannerMrn').textContent = `MRN: ${p.id}`;
+  document.getElementById('bannerPcp').textContent = `PCP: ${p.pcp}`;
+  document.getElementById('bpFlag').style.display = p.bpFlag ? '' : 'none';
+  renderPatientInfoPanel();
+}
+
+function renderVitals() {
+  const v = vitalsHistory[0];
+  const bpParts = v.bp.split('/');
+  const elevated = parseInt(bpParts[0]) >= 130 || parseInt(bpParts[1]) >= 85;
+  document.getElementById('vitalsRow').innerHTML = `
+    <div class="vcell" onclick="openModal('vitalsTrendModal')">
+      <div class="vlbl">BP</div>
+      <div class="vval ${elevated?'amber':''}">${v.bp}</div>
+      <div class="vunit">mmHg${elevated?' ↑':''}</div>
+      <div class="vdate">Today ${new Date().getHours()}:${String(new Date().getMinutes()).padStart(2,'0')}a</div>
+    </div>
+    <div class="vcell" onclick="openModal('vitalsTrendModal')">
+      <div class="vlbl">HR</div>
+      <div class="vval ${parseInt(v.hr)>100||parseInt(v.hr)<60?'red':parseInt(v.hr)>90?'amber':''}">${v.hr}</div>
+      <div class="vunit">bpm</div>
+      <div class="vdate">Today</div>
+    </div>
+    <div class="vcell" onclick="openModal('vitalsTrendModal')">
+      <div class="vlbl">RR</div>
+      <div class="vval">${v.rr}</div>
+      <div class="vunit">/min</div>
+      <div class="vdate">Today</div>
+    </div>
+    <div class="vcell" onclick="openModal('vitalsTrendModal')">
+      <div class="vlbl">Temp</div>
+      <div class="vval ${parseFloat(v.temp)>100.4?'red':''}">${v.temp}</div>
+      <div class="vunit">°F</div>
+      <div class="vdate">Today</div>
+    </div>
+    <div class="vcell" onclick="openModal('vitalsTrendModal')">
+      <div class="vlbl">SpO₂</div>
+      <div class="vval ${parseInt(v.spo2)<94?'red':parseInt(v.spo2)<96?'amber':'green'}">${v.spo2}%</div>
+      <div class="vunit">RA</div>
+      <div class="vdate">Today</div>
+    </div>
+    <div class="vcell" onclick="openModal('vitalsModal')">
+      <div class="vlbl">Wt / BMI</div>
+      <div class="vval" style="font-size:15px">${v.wt} lb</div>
+      <div class="vunit">BMI ${v.bmi}</div>
+      <div class="vdate">Today</div>
+    </div>`;
+}
+
+function renderProblems() {
+  const el = document.getElementById('problemList');
+  if (!el) return;
+  el.innerHTML = problems.map((p,i) => `
+    <div class="probitem" onclick="openProblemDetail(${i})">
+      <div class="pnum">${p.num}.</div>
+      <div style="flex:1"><div class="pname">${p.name}</div><div class="picd">${p.icd}</div></div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
+        <span class="pstat s-${p.status}">${p.status}</span>
+        <span style="font-size:11px;color:var(--t3)">${p.onset}</span>
+      </div>
+    </div>`).join('');
+}
+
+function renderAllergies() {
+  const el = document.getElementById('allergyList');
+  if (!el) return;
+  el.innerHTML = allergies.map(a => `
+    <div class="alitem" onclick="openModal('allergyModal')">
+      <span class="alsev sev-${a.sev}">${a.sev==='high'?'Severe':a.sev==='mod'?'Moderate':'Mild'}</span>
+      <div><div class="alname">${a.name}</div><div class="alreact">${a.reaction}</div></div>
+    </div>`).join('');
+  renderAllergyModalBody();
+}
+
+function renderAllergyModalBody() {
+  const el = document.getElementById('allergyModalBody');
+  if (!el) return;
+  el.innerHTML = `<p style="color:var(--rd);font-weight:600;font-size:13px;margin-bottom:12px">⚠ This patient has ${allergies.length} documented allergies. Verify before prescribing.</p>` +
+    allergies.map(a => `
+    <div style="display:flex;align-items:flex-start;gap:12px;padding:10px;background:${a.sev==='high'?'var(--rdl)':a.sev==='mod'?'var(--aml)':'var(--grl)'};border-radius:3px;margin-bottom:8px;">
+      <span class="alsev sev-${a.sev}">${a.sev==='high'?'Severe':a.sev==='mod'?'Moderate':'Mild'}</span>
+      <div><div style="font-weight:700;font-size:13.5px">${a.name}</div><div style="font-size:12px;color:var(--t2);margin-top:2px">Reaction: ${a.reaction}</div></div>
+    </div>`).join('');
+}
+
+function renderMeds() {
+  const html = `<thead><tr><th>Medication</th><th>Dose / Route</th><th>Frequency</th><th>Start</th><th>Prescriber</th><th></th></tr></thead>
+    <tbody>${meds.filter(m=>m.status==='active').map((m,i)=>`
+    <tr onclick="openMedDetail(${i})">
+      <td><span class="tlink">${m.name}</span></td>
+      <td>${m.dose} <span class="tmuted tsm">· ${m.route}</span></td>
+      <td>${m.freq}</td>
+      <td style="font-family:var(--mono);font-size:11.5px;color:var(--t3)">${m.start}</td>
+      <td style="font-size:12px;color:var(--t2)">${m.presc}</td>
+      <td><span class="tlink tsm" onclick="event.stopPropagation();openMedDetail(${i})">Modify</span></td>
+    </tr>`).join('')}</tbody>`;
+  ['medTable','allMedTable'].forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML=html; });
+  document.getElementById('medBadge').textContent = meds.filter(m=>m.status==='active').length;
+  renderReconcileTable();
+}
+
+function renderLabs() {
+  const html = `<thead><tr><th>Test</th><th>Result</th><th>Reference</th><th>Flag</th><th>Panel</th><th>Date</th></tr></thead>
+    <tbody>${labs.map((l,i)=>`
+    <tr onclick="openLabDetail(${i})">
+      <td><span class="tlink">${l.name}</span></td>
+      <td class="${l.flag?'tabn':''}">${l.val}</td>
+      <td style="font-size:11.5px;color:var(--t3);font-family:var(--mono)">${l.ref}</td>
+      <td>${l.flag?`<b style="color:var(--rd)">${l.flag}</b>`:`<span style="color:var(--gr)">N</span>`}</td>
+      <td style="font-size:11.5px;color:var(--t3)">${l.panel}</td>
+      <td style="font-size:11.5px;color:var(--t3);font-family:var(--mono)">${l.date}</td>
+    </tr>`).join('')}</tbody>`;
+  ['labTable','allLabTable'].forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML=html; });
+  document.getElementById('labBadge').textContent = labs.filter(l=>l.flag).length;
+  document.getElementById('tbResults').textContent = labs.filter(l=>l.flag).length;
+}
+
+function renderNotes() {
+  const html = n => `
+    <div class="noteentry" onclick="openNoteDetail(${notes.indexOf(n)})">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+        <div class="notetype">${n.type}</div>
+        <div style="display:flex;align-items:center;gap:8px"><span class="badge ${n.signed?'badge-ok':'badge-warn'}">${n.signed?'Signed':'Draft'}</span><div class="noteauth">${n.date} · ${n.author}</div></div>
+      </div>
+      <div class="noteprev"><b>CC:</b> ${n.cc}</div>
+    </div>`;
+  ['notesList','allNotesList'].forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML=notes.map(html).join(''); });
+}
+
+function renderAppts() {
+  const el = document.getElementById('apptList');
+  if (!el) return;
+  el.innerHTML = appts.map((a,i) => `
+    <div class="apptentry" onclick="openApptDetail(${i})">
+      <div class="apptdc"><div class="apptmo">${a.month}</div><div class="apptday">${a.day}</div></div>
+      <div style="flex:1"><div class="appttype">${a.type}</div><div class="apptdet">${a.detail}</div></div>
+      <span class="badge ${a.status==='confirmed'?'badge-ok':'badge-warn'}">${a.status}</span>
+    </div>`).join('');
+}
+
+function renderOrders() {
+  const el = document.getElementById('ordersTable');
+  if (!el) return;
+  el.innerHTML = `<thead><tr><th>ID</th><th>Type</th><th>Description</th><th>Priority</th><th>Date</th><th>Status</th><th>Provider</th></tr></thead>
+    <tbody>${orders.map(o=>`<tr>
+      <td style="font-family:var(--mono);font-size:11.5px;color:var(--t3)">${o.id}</td>
+      <td><span class="badge badge-info">${o.type}</span></td>
+      <td>${o.desc}</td>
+      <td><span class="badge ${o.priority==='STAT'?'badge-crit':o.priority==='Urgent'?'badge-warn':'badge-grey'}">${o.priority}</span></td>
+      <td style="font-size:11.5px;color:var(--t3);font-family:var(--mono)">${o.date}</td>
+      <td><span class="badge ${o.status==='pending'?'badge-warn':o.status==='scheduled'?'badge-info':'badge-ok'}">${o.status}</span></td>
+      <td style="font-size:12px;color:var(--t2)">${o.provider}</td>
+    </tr>`).join('')}</tbody>`;
+  document.getElementById('orderBadge').textContent = orders.filter(o=>o.status==='pending').length;
+  document.getElementById('tbOrders').textContent = orders.filter(o=>o.status==='pending').length;
+}
+
+function renderImaging() {
+  const el = document.getElementById('imagingTable');
+  if (!el) return;
+  el.innerHTML = `<thead><tr><th>Study</th><th>Date</th><th>Result Summary</th><th>Status</th><th>Provider</th></tr></thead>
+    <tbody>${imaging.map(im=>`<tr>
+      <td><span class="tlink">${im.study}</span></td>
+      <td style="font-family:var(--mono);font-size:11.5px;color:var(--t3)">${im.date}</td>
+      <td style="font-size:12.5px;color:var(--t2);max-width:280px">${im.result}</td>
+      <td><span class="badge badge-ok">${im.status}</span></td>
+      <td style="font-size:12px;color:var(--t2)">${im.provider}</td>
+    </tr>`).join('')}</tbody>`;
+}
+
+function renderHistory() {
+  const hc = document.getElementById('historyContent');
+  if (hc) hc.innerHTML = `
+    <div class="detail-block"><div class="detail-label">Past Medical History</div><div class="detail-text">Hypertension (2019) · Hyperlipidemia (2021) · GERD (2022) · Anxiety Disorder (2023) · Appendectomy (2007)</div></div>
+    <div class="detail-block"><div class="detail-label">Past Surgical History</div><div class="detail-text">Appendectomy — 2007, uncomplicated</div></div>
+    <div class="detail-block"><div class="detail-label">Social History</div><div class="detail-text">Non-smoker. Occasional alcohol (1–2 drinks/week). Sedentary occupation (office). Married with 2 children.</div></div>
+    <div class="detail-block"><div class="detail-label">Review of Systems</div><div class="detail-text">Positive: occasional headaches, mild anxiety. Negative: no chest pain, no dyspnea, no edema, no GI complaints.</div></div>`;
+  const fc = document.getElementById('familyContent');
+  if (fc) fc.innerHTML = `
+    <div class="detail-block"><div class="detail-label">Family History</div><div class="detail-text">Father: HTN, MI at 62. Mother: Type 2 DM, HTN. Sibling: Hyperlipidemia. No known family history of cancer.</div></div>`;
+  const it = document.getElementById('immunTable');
+  if (it) it.innerHTML = `<thead><tr><th>Vaccine</th><th>Date</th><th>Lot #</th><th>Administered By</th></tr></thead>
+    <tbody>${immunizations.map(im=>`<tr><td>${im.vaccine}</td><td style="font-family:var(--mono);font-size:11.5px;color:var(--t3)">${im.date}</td><td style="font-family:var(--mono);font-size:11.5px;color:var(--t3)">${im.lot}</td><td style="font-size:12px;color:var(--t2)">${im.by}</td></tr>`).join('')}</tbody>`;
+}
+
+function renderBilling() {
+  const el = document.getElementById('billingTable');
+  if (!el) return;
+  el.innerHTML = `<thead><tr><th>CPT / ICD</th><th>Description</th><th>Modifier</th><th>Date</th><th>Status</th></tr></thead>
+    <tbody>${billingCodes.map(b=>`<tr>
+      <td style="font-family:var(--mono);font-weight:600;color:var(--eb)">${b.cpt}</td>
+      <td>${b.desc}</td>
+      <td style="font-family:var(--mono);font-size:11.5px;color:var(--t3)">${b.modifier||'—'}</td>
+      <td style="font-family:var(--mono);font-size:11.5px;color:var(--t3)">${b.date}</td>
+      <td><span class="badge ${b.status==='pending'?'badge-warn':'badge-ok'}">${b.status}</span></td>
+    </tr>`).join('')}</tbody>`;
+}
+
+function renderCareTeam() {
+  const el = document.getElementById('careTeam');
+  if (!el) return;
+  const team = [{name:'Dr. A. Rivera, MD',role:'Primary Care · Internal Medicine'},{name:'Dr. S. Patel, MD',role:'Cardiology'},{name:'N. Torres, RN',role:'Nursing · Primary'}];
+  el.innerHTML = team.map(t=>`<div class="alitem" style="flex-direction:column;align-items:flex-start;gap:1px"><div style="font-weight:700;font-size:12.5px;color:var(--eb)">${t.name}</div><div class="tmuted tsm">${t.role}</div></div>`).join('');
+}
+
+function renderPatientInfoPanel() {
+  const el = document.getElementById('patientInfoPanel');
+  if (!el) return;
+  const p = patients[currentPatientIdx];
+  el.innerHTML = [
+    ['Insurance',p.insurance],['Blood Type',p.blood],['Phone',`<span style="font-family:var(--mono);font-size:12px">${p.phone}</span>`],
+    ['Language',p.lang],['Emergency',p.emg]
+  ].map(([k,v])=>`<div class="inforow"><span class="infokey">${k}</span><span class="infoval">${v}</span></div>`).join('');
+}
+
+function renderVitalsTrend() {
+  const el = document.getElementById('vitalsTrendBody');
+  if (!el) return;
+  el.innerHTML = vitalsHistory.map(v=>`<tr>
+    <td style="font-family:var(--mono);font-size:11.5px">${v.date}</td>
+    <td class="${parseInt(v.bp)>=140?'tabn':''}">${v.bp}</td>
+    <td>${v.hr}</td><td>${v.rr}</td><td>${v.temp}</td>
+    <td>${v.spo2}%</td><td>${v.wt} lb</td><td>${v.bmi}</td>
+  </tr>`).join('');
+}
+
+function renderReconcileTable() {
+  const el = document.getElementById('reconcileTable');
+  if (!el) return;
+  el.innerHTML = `<thead><tr><th>Medication</th><th>Dose</th><th>EHR Status</th><th>Pharmacy Status</th><th>Action</th></tr></thead>
+    <tbody>${meds.filter(m=>m.status==='active').map(m=>`<tr>
+      <td>${m.name}</td><td>${m.dose}</td>
+      <td><span class="badge badge-ok">Active</span></td>
+      <td><span class="badge badge-ok">Filled</span></td>
+      <td><span class="tlink tsm">Confirm</span></td>
+    </tr>`).join('')}</tbody>`;
+}
+
+function renderLookupDrop() {
+  const el = document.getElementById('lookupDrop');
+  el.innerHTML = patients.map((p,i)=>`
+    <div class="lookup-item" onclick="switchPatient(${i})">
+      <div class="lu-avatar" style="background:${p.color}">${p.initials}</div>
+      <div><div class="lu-name">${p.name}</div><div class="lu-meta">MRN: ${p.id} · DOB: ${p.dob} · ${p.sex}, ${p.age}y</div></div>
+    </div>`).join('');
+}
+
+function renderAlerts() {
+  const el = document.getElementById('alertsBody');
+  if (!el) return;
+  el.innerHTML = alerts.map(a=>`
+    <div style="padding:10px 12px;background:${a.level==='warn'?'var(--aml)':'var(--ebl)'};border-radius:3px;margin-bottom:8px;border-left:4px solid ${a.level==='warn'?'var(--am)':'var(--eb)'}">
+      <div style="font-weight:700;font-size:12px;color:${a.level==='warn'?'var(--am)':'var(--eb)'};text-transform:uppercase;letter-spacing:.05em">${a.type}</div>
+      <div style="font-size:13px;color:var(--t2);margin-top:3px">${a.msg}</div>
+    </div>`).join('');
+}
+
+function filterLookup(val) {
+  const drop = document.getElementById('lookupDrop');
+  const q = val.toLowerCase();
+  const filtered = patients.filter(p=>p.name.toLowerCase().includes(q)||p.id.includes(q));
+  if (!filtered.length) { drop.innerHTML='<div style="padding:12px;color:var(--t3);font-size:12.5px">No patients found</div>'; return; }
+  drop.innerHTML = filtered.map((p,_)=>`
+    <div class="lookup-item" onclick="switchPatient(${patients.indexOf(p)})">
+      <div class="lu-avatar" style="background:${p.color}">${p.initials}</div>
+      <div><div class="lu-name">${p.name}</div><div class="lu-meta">MRN: ${p.id} · DOB: ${p.dob}</div></div>
+    </div>`).join('');
+}
+
+// ===== INTERACTIONS =====
+function openModal(id) {
+  if (id==='allergyModal') renderAllergyModalBody();
+  if (id==='vitalsTrendModal') renderVitalsTrend();
+  if (id==='alertsModal') renderAlerts();
+  document.getElementById(id).classList.add('open');
+}
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',function(e){if(e.target===this)this.classList.remove('open');}));
+
+function toast(msg, type='', dur=3000) {
+  const area = document.getElementById('toastArea');
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  t.innerHTML = msg + `<button class="toast-close" onclick="this.parentElement.remove()">×</button>`;
+  area.appendChild(t);
+  setTimeout(()=>t.remove(), dur);
+}
+
+function setSysPage(name, el) {
+  document.querySelectorAll('.sbtn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  const sysPage = document.getElementById('sysPage');
+  const appBody = document.querySelector('.appbody');
+  const chartTabs = document.getElementById('chartTabs');
+  const toolbar = document.querySelector('.toolbar');
+  const hdr = document.getElementById('patientHeader');
+  if (name==='dashboard') {
+    sysPage.style.display='none';
+    appBody.style.display='flex';
+    chartTabs.style.display='';
+    toolbar.style.display='';
+    hdr.style.display='';
+    return;
+  }
+  appBody.style.display='none';
+  chartTabs.style.display='none';
+  toolbar.style.display='none';
+  sysPage.style.display='flex';
+  hdr.style.display='none';
+  const content = document.getElementById('sysPageContent');
+  if (name==='patients') {
+    content.innerHTML=`<h2 style="font-size:16px;font-weight:700;margin-bottom:12px">Patient List</h2>
+      <table class="dtbl" style="background:#fff;border-radius:3px;overflow:hidden;box-shadow:var(--sh)">
+        <thead><tr><th>Name</th><th>MRN</th><th>DOB</th><th>Sex</th><th>Age</th><th>PCP</th><th>Insurance</th><th></th></tr></thead>
+        <tbody>${patients.map((p,i)=>`<tr onclick="loadPatient(${i})" style="cursor:pointer">
+          <td><span style="display:flex;align-items:center;gap:8px"><span style="width:26px;height:26px;border-radius:50%;background:${p.color};display:inline-grid;place-items:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0">${p.initials}</span><span style="font-weight:500;color:var(--eb)">${p.name}</span></span></td>
+          <td style="font-family:var(--mono);font-size:11.5px;color:var(--t3)">${p.id}</td>
+          <td style="font-size:12px;color:var(--t3)">${p.dob}</td><td>${p.sex}</td><td>${p.age}</td>
+          <td style="font-size:12px">${p.pcp}</td><td style="font-size:12px;color:var(--t3)">${p.insurance}</td>
+          <td><span class="tlink tsm">Open Chart</span></td>
+        </tr>`).join('')}</tbody>
+      </table>`;
+  } else if (name==='schedule') {
+    const times=['8:00','8:30','9:00','9:30','10:00','10:30','11:00','11:30','12:00','1:00','1:30','2:00','2:30','3:00','3:30','4:00'];
+    const schedData={'9:00':{name:'Vasquez, Elena M.',type:'BP Follow-up'},'10:30':{name:'Chen, Marcus T.',type:'Diabetes Review'},'11:00':{name:'Nair, Priya S.',type:'Post-op Check'},'2:00':{name:'New Patient',type:'Intake'},'3:30':{name:'James O\'Brien',type:'COPD Follow-up'}};
+    content.innerHTML=`<h2 style="font-size:16px;font-weight:700;margin-bottom:12px">Schedule — Friday, March 13, 2026</h2>
+      <div style="background:#fff;border:1px solid var(--bd);border-radius:3px;overflow:hidden;box-shadow:var(--sh)">
+        <div class="sched-grid">${times.map(t=>`<div class="sched-time">${t}</div><div class="sched-slot ${schedData[t]?'has-appt':''}" onclick="${schedData[t]?'':'openModal(\'scheduleModal\')'}">${schedData[t]?`<div class="sched-appt-name">${schedData[t].name}</div><div class="sched-appt-type">${schedData[t].type}</div>`:''}</div>`).join('')}</div>
+      </div>`;
+  } else if (name==='reports') {
+    content.innerHTML=`<h2 style="font-size:16px;font-weight:700;margin-bottom:12px">Reports</h2>
+      <div class="grid2">
+        ${[['Quality Measures','HEDIS compliance: 86% — 3 gaps open'],['Panel Summary','847 active patients, 18 seen today'],['Preventive Care','Mammogram: 12 overdue, Colonoscopy: 8 overdue'],['Chronic Disease','HTN control rate: 74%, DM control: 81%']].map(([t,d])=>`
+          <div class="card"><div class="chead"><div class="chead-t">${t}</div></div><div style="padding:14px;font-size:13px;color:var(--t2)">${d}</div></div>`).join('')}
+      </div>`;
+  } else if (name==='messages') {
+    content.innerHTML=`<h2 style="font-size:16px;font-weight:700;margin-bottom:12px">Messages (Inbox)</h2>
+      <div class="card"><div class="chead"><div class="chead-t">InBasket</div><div class="chead-a"><button class="cact">+ New Message</button></div></div>
+        ${[{from:'N. Torres, RN',subj:'BP recheck result — Vasquez, Elena',time:'9:32 AM',unread:true},{from:'Lab — Quest',subj:'Results ready: Lipid Panel / HbA1c',time:'8:15 AM',unread:true},{from:'Dr. S. Patel, MD',subj:'Re: Referral — Vasquez cardiology consult',time:'Yesterday',unread:false},{from:'Scheduling',subj:'Appointment confirmed — Vasquez MAR 20',time:'Yesterday',unread:false}].map(m=>`
+          <div class="noteentry" style="${m.unread?'font-weight:600;background:#f0f5ff':''}">
+            <div style="display:flex;justify-content:space-between"><span style="${m.unread?'color:var(--eb)':''}">${m.from}</span><span class="noteauth">${m.time}</span></div>
+            <div style="font-size:12.5px;color:var(--t2);margin-top:2px">${m.subj}</div>
+          </div>`).join('')}
+      </div>`;
+  }
+}
+
+function loadPatient(idx) {
+  currentPatientIdx = idx;
+  renderBanner();
+  setSysPage('dashboard', document.querySelector('.sbtn'));
+  document.querySelector('.sbtn').classList.add('active');
+  toast(`Chart opened: ${patients[idx].name}`, 'blue');
+}
+
+function switchPatient(idx) {
+  document.getElementById('lookupDrop').classList.remove('open');
+  document.getElementById('lookupInput').value = '';
+  loadPatient(idx);
+}
+
+function switchChartTab(name, el) {
+  document.querySelectorAll('.ctab').forEach(t=>t.classList.remove('active'));
+  if (el) el.classList.add('active');
+  else document.querySelectorAll('.ctab').forEach(t=>{ if(t.textContent.toLowerCase().includes(name.substring(0,5))) t.classList.add('active'); });
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const pg = document.getElementById('page-'+name);
+  if (pg) pg.classList.add('active');
+  // Sync sidebar
+  const map = {summary:'Summary',visitnotes:'Visit',results:'Labs',orders:'Pending',medications:'Medications',history:'Family',billing:'Billing',imaging:'Radiology'};
+  document.querySelectorAll('.nitem').forEach(n=>{ n.classList.remove('active'); if(map[name]&&n.textContent.includes(map[name])) n.classList.add('active'); });
+  // Render page-specific content
+  if(name==='history') renderHistory();
+  if(name==='billing') renderBilling();
+  if(name==='imaging') renderImaging();
+  if(name==='orders') renderOrders();
+  if(name==='medications') renderMeds();
+}
+
+function setNavItem(el, page) {
+  document.querySelectorAll('.nitem').forEach(n=>n.classList.remove('active'));
+  el.classList.add('active');
+  const pageMap = {problems:'summary',allergies:'summary',immunizations:'history',familyhx:'history'};
+  const target = pageMap[page] || page;
+  const ctabMap = {summary:'Chart Summary',visitnotes:'Visit Notes',results:'Results',orders:'Orders',medications:'Medications',history:'History',billing:'Billing',imaging:'Imaging'};
+  document.querySelectorAll('.ctab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.ctab').forEach(t=>{ if(ctabMap[target]&&t.textContent.includes(ctabMap[target].substring(0,5))) t.classList.add('active'); });
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const pg = document.getElementById('page-'+target);
+  if(pg) pg.classList.add('active');
+  if(target==='history') renderHistory();
+  if(target==='billing') renderBilling();
+}
+
+function toggleNavGrp(hdr) {
+  hdr.classList.toggle('collapsed');
+  hdr.nextElementSibling.classList.toggle('collapsed');
+}
+
+// ===== FORM SUBMISSIONS =====
+function submitNote() {
+  const type=document.getElementById('noteType').value;
+  const cc=document.getElementById('noteCC').value;
+  const s=document.getElementById('noteS').value;
+  const o=document.getElementById('noteO').value;
+  const a=document.getElementById('noteA').value;
+  const p=document.getElementById('noteP').value;
+  if(!cc){toast('Chief Complaint is required','red'); return;}
+  notes.unshift({type,date:new Date().toLocaleDateString('en-US',{month:'2-digit',day:'2-digit',year:'numeric'}),author:'Dr. A. Rivera, MD',cc,s,o,a,p,signed:true});
+  renderNotes();
+  closeModal('noteModal');
+  ['noteCC','noteS','noteO','noteA','noteP'].forEach(id=>document.getElementById(id).value='');
+  toast('Note signed and submitted', 'green');
+}
+
+function saveDraftNote() {
+  const type=document.getElementById('noteType').value;
+  const cc=document.getElementById('noteCC').value||'(untitled)';
+  notes.unshift({type,date:new Date().toLocaleDateString('en-US',{month:'2-digit',day:'2-digit',year:'numeric'}),author:'Dr. A. Rivera, MD',cc,s:'',o:'',a:'',p:'',signed:false});
+  renderNotes();
+  closeModal('noteModal');
+  toast('Draft saved');
+}
+
+function submitRx() {
+  const med=document.getElementById('rxMed').value;
+  const dose=document.getElementById('rxDose').value;
+  const route=document.getElementById('rxRoute').value;
+  const freq=document.getElementById('rxFreq').value;
+  if(!med||!dose){toast('Medication and dose required','red'); return;}
+  meds.push({name:med,dose,route,freq,start:new Date().toLocaleDateString('en-US',{month:'2-digit',year:'numeric'}),presc:'Rivera',indication:'',notes:'',status:'active'});
+  renderMeds();
+  closeModal('rxModal');
+  ['rxMed','rxDose','rxDur','rxQty','rxRefills','rxInstr'].forEach(id=>document.getElementById(id).value='');
+  toast(`${med} ${dose} ordered`, 'green');
+}
+
+function submitLabOrder() {
+  const panel=document.getElementById('labPanel').value||'Custom';
+  const custom=document.getElementById('labCustom').value;
+  const priority=document.getElementById('labPriority').value;
+  const desc=custom||(panel==='Custom'?'Lab Order':panel);
+  orders.push({id:'ORD-'+String(orders.length+91).padStart(4,'0'),type:'Lab',desc,priority,date:new Date().toLocaleDateString('en-US',{month:'2-digit',day:'2-digit',year:'2-digit'}),status:'pending',provider:'Rivera'});
+  renderOrders();
+  closeModal('labOrderModal');
+  document.getElementById('labCustom').value='';
+  toast(`Lab order submitted: ${desc}`, 'green');
+}
+
+function submitImagingOrder() {
+  const type=document.getElementById('imgType').value;
+  const region=document.getElementById('imgRegion').value;
+  const priority=document.getElementById('imgPriority').value;
+  if(!region){toast('Body region is required','red');return;}
+  orders.push({id:'ORD-'+String(orders.length+91).padStart(4,'0'),type:'Imaging',desc:`${type} — ${region}`,priority,date:new Date().toLocaleDateString('en-US',{month:'2-digit',day:'2-digit',year:'2-digit'}),status:'pending',provider:'Rivera'});
+  renderOrders();
+  closeModal('imagingOrderModal');
+  document.getElementById('imgRegion').value='';
+  document.getElementById('imgIndication').value='';
+  toast(`Imaging ordered: ${type} — ${region}`, 'green');
+}
+
+function submitReferral() {
+  const spec=document.getElementById('refSpec').value;
+  const phys=document.getElementById('refPhysician').value;
+  const urgency=document.getElementById('refUrgency').value;
+  orders.push({id:'ORD-'+String(orders.length+91).padStart(4,'0'),type:'Referral',desc:`${spec}${phys?' — '+phys:''}`,priority:urgency,date:new Date().toLocaleDateString('en-US',{month:'2-digit',day:'2-digit',year:'2-digit'}),status:'pending',provider:'Rivera'});
+  renderOrders();
+  closeModal('referralModal');
+  ['refPhysician','refAuth','refReason'].forEach(id=>document.getElementById(id).value='');
+  toast(`Referral submitted: ${spec}`, 'green');
+}
+
+function submitProcedure() {
+  const proc=document.getElementById('procType').value;
+  const priority=document.getElementById('procPri').value;
+  orders.push({id:'ORD-'+String(orders.length+91).padStart(4,'0'),type:'Procedure',desc:proc,priority,date:new Date().toLocaleDateString('en-US',{month:'2-digit',day:'2-digit',year:'2-digit'}),status:'pending',provider:'Rivera'});
+  renderOrders();
+  closeModal('procedureModal');
+  toast(`Procedure ordered: ${proc}`, 'green');
+}
+
+function saveVitals() {
+  const bpS=document.getElementById('vBpS').value;
+  const bpD=document.getElementById('vBpD').value;
+  const hr=document.getElementById('vHR').value;
+  const rr=document.getElementById('vRR').value;
+  const temp=document.getElementById('vTemp').value;
+  const spo2=document.getElementById('vSpo2').value;
+  const wt=document.getElementById('vWt').value;
+  const ht=document.getElementById('vHt').value;
+  if(!bpS||!bpD){toast('BP is required','red');return;}
+  const bmi = ht&&wt ? (parseFloat(wt)*703/(parseFloat(ht)*parseFloat(ht))).toFixed(1) : vitalsHistory[0].bmi;
+  vitalsHistory.unshift({date:new Date().toLocaleDateString('en-US',{month:'2-digit',day:'2-digit',year:'2-digit'}),bp:`${bpS}/${bpD}`,hr:hr||vitalsHistory[0].hr,rr:rr||vitalsHistory[0].rr,temp:temp||vitalsHistory[0].temp,spo2:spo2||vitalsHistory[0].spo2,wt:wt||vitalsHistory[0].wt,bmi});
+  patients[currentPatientIdx].bpFlag = parseInt(bpS)>=130||parseInt(bpD)>=85;
+  renderVitals();
+  renderBanner();
+  closeModal('vitalsModal');
+  ['vBpS','vBpD','vHR','vRR','vTemp','vSpo2','vWt','vHt'].forEach(id=>document.getElementById(id).value='');
+  toast('Vitals saved', 'green');
+}
+
+function addProblem() {
+  const name=document.getElementById('probName').value.trim();
+  const icd=document.getElementById('probICD').value.trim();
+  const onset=document.getElementById('probOnset').value;
+  const status=document.getElementById('probStatus').value;
+  if(!name){toast('Problem name is required','red');return;}
+  problems.push({num:problems.length+1,name,icd:icd||'—',onset:onset||new Date().getFullYear().toString(),status,notes:''});
+  renderProblems();
+  closeModal('addProblemModal');
+  ['probName','probICD','probOnset'].forEach(id=>document.getElementById(id).value='');
+  toast(`Problem added: ${name}`, 'green');
+}
+
+function addAllergy() {
+  const name=document.getElementById('alName').value.trim();
+  const reaction=document.getElementById('alReaction').value.trim();
+  const sev=document.getElementById('alSev').value;
+  if(!name){toast('Allergen name is required','red');return;}
+  allergies.push({name,reaction:reaction||'Unknown',sev});
+  renderAllergies();
+  closeModal('addAllergyModal');
+  ['alName','alReaction'].forEach(id=>document.getElementById(id).value='');
+  toast(`Allergy added: ${name}`, 'red');
+}
+
+function submitAppt() {
+  const type=document.getElementById('schedType').value;
+  const date=document.getElementById('schedDate').value;
+  const time=document.getElementById('schedTime').value;
+  const provider=document.getElementById('schedProvider').value;
+  if(!date){toast('Date is required','red');return;}
+  const d=new Date(date+'T00:00:00');
+  const months=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  appts.push({month:months[d.getMonth()],day:String(d.getDate()),type,detail:`${provider} · ${time}`,status:'confirmed'});
+  renderAppts();
+  closeModal('scheduleModal');
+  toast(`Appointment scheduled: ${type}`, 'green');
+}
+
+function addImmunization() {
+  const vax=document.getElementById('immunVax').value;
+  const date=document.getElementById('immunDate').value;
+  const lot=document.getElementById('immunLot').value;
+  const by=document.getElementById('immunBy').value;
+  if(!date){toast('Date is required','red');return;}
+  immunizations.unshift({vaccine:vax,date:new Date(date+'T00:00:00').toLocaleDateString('en-US',{month:'2-digit',day:'2-digit',year:'numeric'}),lot:lot||'N/A',by});
+  renderHistory();
+  closeModal('immunModal');
+  ['immunDate','immunLot'].forEach(id=>document.getElementById(id).value='');
+  toast(`Immunization added: ${vax}`, 'green');
+}
+
+function addBilling() {
+  const cpt=document.getElementById('billCpt').value.trim();
+  const desc=document.getElementById('billDesc').value.trim();
+  const mod=document.getElementById('billMod').value.trim();
+  if(!cpt||!desc){toast('CPT and description required','red');return;}
+  billingCodes.push({cpt,desc,modifier:mod,date:new Date().toLocaleDateString('en-US',{month:'2-digit',day:'2-digit',year:'2-digit'}),status:'pending'});
+  renderBilling();
+  closeModal('billingModal');
+  ['billCpt','billDesc','billMod'].forEach(id=>document.getElementById(id).value='');
+  toast(`Billing code added: ${cpt}`, 'green');
+}
+
+function savePatientInfo() {
+  const p=patients[currentPatientIdx];
+  p.name=`${document.getElementById('piLast').value}, ${document.getElementById('piFirst').value} M.`;
+  p.phone=document.getElementById('piPhone').value;
+  p.insurance=document.getElementById('piIns').value;
+  p.blood=document.getElementById('piBT').value;
+  p.emg=document.getElementById('piEmg').value;
+  renderBanner();
+  closeModal('patientInfoModal');
+  toast('Patient info updated', 'green');
+}
+
+// ===== DETAIL MODALS =====
+function openProblemDetail(idx) {
+  activeProblemIdx=idx;
+  const p=problems[idx];
+  document.getElementById('probDetailTitle').textContent=`Problem: ${p.name}`;
+  document.getElementById('probDetailBody').innerHTML=`
+    <div class="detail-block"><div class="detail-label">Diagnosis</div><div class="detail-text" style="font-size:15px;font-weight:600">${p.name}</div></div>
+    <div class="detail-block"><div class="detail-label">ICD-10 Code</div><div class="detail-text" style="font-family:var(--mono)">${p.icd}</div></div>
+    <div class="detail-block"><div class="detail-label">Status</div><div class="detail-text"><span class="pstat s-${p.status}">${p.status}</span></div></div>
+    <div class="detail-block"><div class="detail-label">Onset</div><div class="detail-text">${p.onset}</div></div>
+    <div class="detail-block"><div class="detail-label">Clinical Notes</div><div class="detail-text">${p.notes||'No additional notes.'}</div></div>`;
+  openModal('problemDetailModal');
+}
+
+function removeProblem() {
+  if(activeProblemIdx===null) return;
+  const name=problems[activeProblemIdx].name;
+  problems.splice(activeProblemIdx,1);
+  problems.forEach((p,i)=>p.num=i+1);
+  renderProblems();
+  closeModal('problemDetailModal');
+  toast(`Problem removed: ${name}`);
+}
+
+function openNoteDetail(idx) {
+  const n=notes[idx];
+  document.getElementById('noteDetailTitle').textContent=`${n.type} — ${n.date}`;
+  document.getElementById('noteDetailBody').innerHTML=`
+    <div style="display:flex;gap:12px;margin-bottom:12px;font-size:12.5px;color:var(--t3)"><span>${n.author}</span><span>${n.date}</span><span class="badge ${n.signed?'badge-ok':'badge-warn'}">${n.signed?'Signed':'Draft'}</span></div>
+    ${n.cc?`<div class="detail-block"><div class="detail-label">Chief Complaint</div><div class="detail-text">${n.cc}</div></div>`:''}
+    ${n.s?`<div class="detail-block"><div class="detail-label">Subjective (S)</div><div class="detail-text">${n.s}</div></div>`:''}
+    ${n.o?`<div class="detail-block"><div class="detail-label">Objective (O)</div><div class="detail-text">${n.o}</div></div>`:''}
+    ${n.a?`<div class="detail-block"><div class="detail-label">Assessment (A)</div><div class="detail-text">${n.a}</div></div>`:''}
+    ${n.p?`<div class="detail-block"><div class="detail-label">Plan (P)</div><div class="detail-text">${n.p}</div></div>`:''}`;
+  openModal('noteDetailModal');
+}
+
+function openLabDetail(idx) {
+  const l=labs[idx];
+  document.getElementById('labDetailTitle').textContent=`Lab Result: ${l.name}`;
+  document.getElementById('labDetailBody').innerHTML=`
+    <div class="detail-block"><div class="detail-label">Test</div><div class="detail-text" style="font-size:15px;font-weight:600">${l.name}</div></div>
+    <div class="detail-block"><div class="detail-label">Result</div><div class="detail-text" style="font-size:20px;font-weight:700;font-family:var(--mono);color:${l.flag?'var(--rd)':'var(--gr)'}">${l.val} ${l.flag?'▲ ABNORMAL':''}</div></div>
+    <div class="detail-block"><div class="detail-label">Reference Range</div><div class="detail-text" style="font-family:var(--mono)">${l.ref}</div></div>
+    <div class="detail-block"><div class="detail-label">Panel</div><div class="detail-text">${l.panel}</div></div>
+    <div class="detail-block"><div class="detail-label">Date Resulted</div><div class="detail-text" style="font-family:var(--mono)">${l.date}</div></div>
+    <div class="detail-block"><div class="detail-label">Interpretation</div><div class="detail-text">${l.interp}</div></div>`;
+  openModal('labDetailModal');
+}
+
+function openMedDetail(idx) {
+  activeMedIdx=idx;
+  const m=meds[idx];
+  document.getElementById('medDetailTitle').textContent=`Medication: ${m.name}`;
+  document.getElementById('medDetailBody').innerHTML=`
+    <div class="detail-block"><div class="detail-label">Medication</div><div class="detail-text" style="font-size:15px;font-weight:600">${m.name}</div></div>
+    <div class="detail-block"><div class="detail-label">Dose / Route</div><div class="detail-text" style="font-family:var(--mono)">${m.dose} ${m.route}</div></div>
+    <div class="detail-block"><div class="detail-label">Frequency</div><div class="detail-text">${m.freq}</div></div>
+    <div class="detail-block"><div class="detail-label">Indication</div><div class="detail-text">${m.indication||'—'}</div></div>
+    <div class="detail-block"><div class="detail-label">Start Date</div><div class="detail-text" style="font-family:var(--mono)">${m.start}</div></div>
+    <div class="detail-block"><div class="detail-label">Prescriber</div><div class="detail-text">Dr. ${m.presc}</div></div>
+    <div class="detail-block"><div class="detail-label">Clinical Notes</div><div class="detail-text">${m.notes||'No special instructions.'}</div></div>`;
+  openModal('medDetailModal');
+}
+
+function discontinueMed() {
+  if(activeMedIdx===null) return;
+  const name=meds[activeMedIdx].name;
+  meds[activeMedIdx].status='discontinued';
+  renderMeds();
+  closeModal('medDetailModal');
+  toast(`${name} discontinued`, 'red');
+}
+
+function modifyMed() {
+  closeModal('medDetailModal');
+  openModal('rxModal');
+  document.getElementById('rxMed').value=meds[activeMedIdx].name;
+  document.getElementById('rxDose').value=meds[activeMedIdx].dose;
+}
+
+function openApptDetail(idx) {
+  const a=appts[idx];
+  toast(`Appointment: ${a.type} — ${a.month} ${a.day} · ${a.detail}`, 'blue', 4000);
+}
+
+function rxSearch(val) {
+  const sugg=document.getElementById('rxSuggestions');
+  const allMeds=['Lisinopril','Amlodipine','Atorvastatin','Metformin','Omeprazole','Sertraline','Aspirin','Metoprolol','Losartan','Furosemide','Levothyroxine','Albuterol','Prednisone','Gabapentin','Amoxicillin'];
+  if(!val||val.length<2){sugg.style.display='none';return;}
+  const matches=allMeds.filter(m=>m.toLowerCase().includes(val.toLowerCase()));
+  if(!matches.length){sugg.style.display='none';return;}
+  sugg.style.display='block';
+  sugg.innerHTML=matches.map(m=>`<div style="padding:7px 10px;cursor:pointer;font-size:13px;border-bottom:1px solid #eef0f4;font-family:var(--sans)" onmousedown="document.getElementById('rxMed').value='${m}';document.getElementById('rxSuggestions').style.display='none'">${m}</div>`).join('');
+}
+
+function printChart() { toast('Sending chart to printer…', 'blue'); }
+function exportChart() { toast('Chart exported as PDF', 'green'); }
+
+// Set default datetime for note modal
+document.getElementById('noteDateTime').value = new Date().toISOString().slice(0,16);
+// Set default date for lab/sched
+document.getElementById('labDate').value = new Date().toISOString().slice(0,10);
+document.getElementById('schedDate').value = new Date(Date.now()+7*86400000).toISOString().slice(0,10);
+document.getElementById('immunDate').value = new Date().toISOString().slice(0,10);
+
+// ===== INIT =====
+renderBanner();
+renderVitals();
+renderProblems();
+renderAllergies();
+renderMeds();
+renderLabs();
+renderNotes();
+renderAppts();
+renderCareTeam();
+renderLookupDrop();
+renderOrders();
+</script>
+</body>
+</html>
