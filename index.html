@@ -190,8 +190,16 @@
         /* ── PRINT STYLES & FIXES ── */
         #print-container { display: none; } /* Hide completely during normal web viewing */
         @media print {
-            body * { visibility: hidden; }
-            #print-container { display: block !important; position: absolute; left: 0; top: 0; width: 100%; background: white !important; color: black !important; z-index: 9999; }
+            body, html { overflow: visible !important; height: auto !important; background: white !important; }
+            body > *:not(#print-container) { display: none !important; } /* Hide all normal UI flow */
+            #print-container { 
+                display: block !important; 
+                position: relative !important; /* Allow natural browser pagination */
+                width: 100%; 
+                background: white !important; 
+                color: black !important; 
+                z-index: 9999; 
+            }
             #print-container * { visibility: visible; }
         }
 
@@ -218,24 +226,30 @@
             .modal-print-btn { padding: 6px 12px; font-size: 0.8rem; gap: 6px; }
             .modal-close-btn { right: 15px; top: 25px; }
             
-            .hex-node { width: 70px; height: 80px; font-size: 24px; } .hex-node span { font-size: 9px; }
+            .hex-node { width: 65px; height: 75px; font-size: 20px; } 
+            .hex-node span { font-size: 8px; margin-top: 4px;}
             
-            /* Give mobile dragging more scattered room at top */
-            .node-1 { top: 8%; left: 10%; }
-            .node-2 { top: 25%; left: 25%; }
-            .node-3 { top: 12%; left: 48%; }
-            .node-4 { top: 28%; left: 68%; }
-            .node-5 { top: 8%; left: 75%; }
+            /* Give mobile dragging more structured room at top (zigzag pattern) */
+            .node-1 { top: 5%; left: 8%; }
+            .node-2 { top: 20%; left: 25%; }
+            .node-3 { top: 5%; left: 45%; }
+            .node-4 { top: 20%; left: 62%; }
+            .node-5 { top: 5%; left: 78%; }
 
             /* Bottom Sheet Panel */
             .modal-info-panel { 
-                position: absolute; bottom: 0; left: 0; right: 0; top: 45%; width: 100%; height: auto; 
+                position: absolute; bottom: 0; left: 0; right: 0; top: 38%; width: 100%; height: auto; 
                 border-radius: 24px 24px 0 0; padding: 25px 20px; box-shadow: 0 -10px 30px rgba(0,0,0,0.08); border: none;
+                display: flex; flex-direction: column; z-index: 100; overflow: hidden;
+            }
+            .modal-panel-content {
+                flex-grow: 1; overflow-y: auto; padding-bottom: 20px;
             }
         }
         @media (max-width: 400px) {
             .glitch-title { font-size: clamp(3rem, 20vw, 5rem); } .search-wrapper.active .search-input { width: 120px; } .hiring-title { font-size: clamp(3rem, 16vw, 5rem); }
-            .node-1 { left: 5%; } .node-2 { left: 28%; } .node-3 { left: 48%; } .node-4 { left: 70%; } .node-5 { left: 82%; }
+            /* Shift nodes slightly left for very small screens */
+            .node-1 { left: 4%; } .node-2 { left: 22%; } .node-3 { left: 42%; } .node-4 { left: 60%; } .node-5 { left: 76%; }
         }
     </style>
 </head>
@@ -676,9 +690,17 @@
             }
             html += '</div>';
             
-            // Set HTML and print
+            // Set HTML
             printDiv.innerHTML = html;
-            window.print();
+
+            // Temp un-hide body overflow so mobile browsers accurately measure page lengths
+            const oldOverflow = document.body.style.overflow;
+            document.body.style.overflow = 'visible';
+
+            // Wait brief moment for the DOM to process the printable container, then trigger print
+            setTimeout(() => {
+                window.print();
+            }, 100);
         }
 
         // Cleanup function to permanently remove the print element when print dialog is dismissed
@@ -686,6 +708,11 @@
             const printDiv = document.getElementById('print-container');
             if (printDiv) {
                 printDiv.remove();
+            }
+            
+            // Restore hidden overflow if the modal is currently open
+            if(document.getElementById('personalityModal').classList.contains('active')) {
+                document.body.style.overflow = 'hidden';
             }
         });
 
