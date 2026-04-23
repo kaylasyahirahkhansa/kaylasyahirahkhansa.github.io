@@ -2,13 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>Kayla Syahirah Khansa</title>
     <meta name="description" content="Kayla Syahirah Khansa — Student from Bondowoso, East Java. Connect via WhatsApp, LinkedIn, Instagram, or Email.">
-    <meta name="keywords" content="Kayla Syahirah Khansa, kayla syahirah khansa, kayla khansa, bondowoso, jawa timur, portfolio">
-    <meta name="author" content="Kayla Syahirah Khansa">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://kaylasyahirahkhansa.my.id">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,8 +19,6 @@
             --text-light: #a0a0a0;
             --hairline: rgba(255, 255, 255, 0.25);
             --accent: #be8248; 
-            
-            /* Modal Variables */
             --modal-bg: #ffffff;
             --modal-text: #222222;
             --modal-text-light: #666666;
@@ -32,20 +26,22 @@
         }
 
         body.light-mode { --bg: #FFFFFF; --text: #0A0A0A; --text-light: #666666; --hairline: rgba(0, 0, 0, 0.2); }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        /* STRICT BOUNDARIES to fix mobile zoomed-out issue */
+        * { margin: 0; padding: 0; box-sizing: border-box; max-width: 100vw; }
+        html, body { width: 100%; max-width: 100vw; overflow-x: hidden; }
         
         body {
             background-color: var(--bg); color: var(--text); font-family: 'Space Grotesk', sans-serif; font-weight: 300;
-            transition: background-color 1.5s cubic-bezier(0.2, 0.8, 0.2, 1), color 1.5s ease; overflow-x: hidden; -webkit-font-smoothing: antialiased;
+            transition: background-color 1.5s cubic-bezier(0.2, 0.8, 0.2, 1), color 1.5s ease; -webkit-font-smoothing: antialiased;
         }
 
-        /* ── PORTFOLIO UI ELEMENTS ── */
         #progress { position: fixed; bottom: 0; left: 0; height: 6px; background: var(--accent); width: 0%; z-index: 1000; transition: width 0.1s ease-out; }
         .header-controls { position: fixed; top: 45px; right: 10vw; z-index: 2000; display: flex; align-items: center; gap: 20px; }
         .translate-control { position: fixed; top: 45px; left: 10vw; z-index: 2000; display: flex; align-items: center; }
         .translate-btn { background: none; border: none; cursor: pointer; color: var(--text); display: flex; align-items: center; justify-content: center; outline: none; transition: color 0.4s ease; line-height: 1; padding: 0; }
         .translate-btn:hover { color: var(--accent); }
-        .translate-bubble { position: absolute; top: calc(100% + 14px); left: 0; width: 260px; background: rgba(150, 150, 150, 0.1); backdrop-filter: blur(15px); border: 1px solid var(--hairline); padding: 20px; border-radius: 20px; opacity: 0; pointer-events: none; transform: translateY(-10px); transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); color: var(--text); font-size: 0.75rem; line-height: 1.5; }
+        .translate-bubble { position: absolute; top: calc(100% + 14px); left: 0; width: 260px; max-width: 85vw; background: rgba(150, 150, 150, 0.1); backdrop-filter: blur(15px); border: 1px solid var(--hairline); padding: 20px; border-radius: 20px; opacity: 0; pointer-events: none; transform: translateY(-10px); transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); color: var(--text); font-size: 0.75rem; line-height: 1.5; }
         .translate-bubble.active { opacity: 1; pointer-events: all; transform: translateY(0); }
         .translate-bubble hr { border: 0; border-top: 1px solid var(--hairline); margin: 12px 0; }
         .search-wrapper { display: flex; align-items: center; position: relative; }
@@ -67,36 +63,24 @@
         .menu-link { font-family: 'Italiana', serif; font-size: clamp(3rem, 8vw, 6rem); color: #fff; text-decoration: none; margin: 10px 0; transition: all 0.4s ease; }
         .menu-link:hover { color: var(--accent); font-style: italic; transform: translateX(20px); }
 
-        /* ── LAYOUT & TYPOGRAPHY ── */
         .font-serif { font-family: 'Cormorant Garamond', serif; font-weight: 400; }
         #cursor-follower { position: fixed; top: 0; left: 0; width: 10px; height: 10px; background: var(--text); border-radius: 50%; pointer-events: none; z-index: 9999; mix-blend-mode: difference; opacity: 0; transition: opacity 0.3s ease, width 0.3s ease, height 0.3s ease; margin-left: -5px; margin-top: -5px; }
         .frame-line { position: fixed; background: var(--text); opacity: 0.2; z-index: 50; transition: background 1.5s ease; width: 3px; height: 100vh; top: 0; }
-        .hero { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; cursor: none; }
-        .glitch-title { font-family: 'Italiana', serif; font-size: clamp(4rem, 15vw, 18rem); line-height: 0.8; letter-spacing: -0.05em; text-align: center; z-index: 10; }
+        .hero { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; cursor: none; width: 100%; }
+        .glitch-title { font-family: 'Italiana', serif; font-size: clamp(4rem, 15vw, 18rem); line-height: 0.8; letter-spacing: -0.05em; text-align: center; z-index: 10; width: 100%; }
         .hero-img-container { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 30vw; max-width: 450px; aspect-ratio: 0.7; overflow: hidden; z-index: 1; opacity: 0.4; transition: opacity 0.8s ease, width 1s cubic-bezier(0.2, 0.8, 0.2, 1); pointer-events: none; }
         .hero-img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%) brightness(60%); transition: filter 0.8s ease, transform 1s cubic-bezier(0.2, 0.8, 0.2, 1); }
         .hero:has(.glitch-title:hover) .hero-img-container, .hero-img-container.colored-container { opacity: 0.9; width: 32vw; }
         .hero:has(.glitch-title:hover) .hero-img, .hero-img.colored { filter: grayscale(0%) brightness(100%); transform: scale(1.05); }
 
-        /* Glowing Text Effect */
-        .glowing-text {
-            color: #ffffff;
-            font-weight: 500;
-            text-shadow: 0 0 5px rgba(255, 255, 255, 0.4), 0 0 15px var(--accent), 0 0 25px var(--accent);
-            animation: gentle-glow 2.5s ease-in-out infinite alternate;
-        }
-
-        @keyframes gentle-glow {
-            from { text-shadow: 0 0 3px rgba(255, 255, 255, 0.3), 0 0 10px rgba(190, 130, 72, 0.5); }
-            to { text-shadow: 0 0 8px rgba(255, 255, 255, 0.8), 0 0 20px rgba(190, 130, 72, 0.9), 0 0 35px rgba(190, 130, 72, 0.7); }
-        }
+        .glowing-text { color: #ffffff; font-weight: 500; text-shadow: 0 0 5px rgba(255, 255, 255, 0.4), 0 0 15px var(--accent), 0 0 25px var(--accent); animation: gentle-glow 2.5s ease-in-out infinite alternate; }
+        @keyframes gentle-glow { from { text-shadow: 0 0 3px rgba(255, 255, 255, 0.3), 0 0 10px rgba(190, 130, 72, 0.5); } to { text-shadow: 0 0 8px rgba(255, 255, 255, 0.8), 0 0 20px rgba(190, 130, 72, 0.9), 0 0 35px rgba(190, 130, 72, 0.7); } }
 
         .editorial { padding: 15vh 10vw 10vh 10vw; display: grid; grid-template-columns: 1.2fr 1fr; gap: 8vw; align-items: start; }
         .editorial-heading { font-size: clamp(2.5rem, 5vw, 4.5rem); line-height: 1.1; }
         .editorial-text { font-size: 1.15rem; line-height: 1.8; color: var(--text-light); }
         .editorial-text p { margin-bottom: 2em; }
 
-        /* ── HIGHLIGHT BUTTON ── */
         .btn-highlight { display: inline-flex; align-items: center; gap: 12px; background-color: var(--accent); color: #ffffff !important; padding: 16px 32px; border-radius: 50px; font-size: 1.1rem; font-weight: 600; border: none; cursor: pointer; margin-top: 20px; transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); position: relative; z-index: 10; }
         .btn-highlight:hover { transform: translateY(-5px) scale(1.02); background-color: #a66e39; }
         @keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(190, 130, 72, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(190, 130, 72, 0); } 100% { box-shadow: 0 0 0 0 rgba(190, 130, 72, 0); } }
@@ -123,14 +107,12 @@
         .reveal { opacity: 0; filter: blur(8px); transform: translateY(30px); transition: all 1.2s cubic-bezier(0.2, 0.8, 0.2, 1); }
         .reveal.active { opacity: 1; filter: blur(0); transform: translateY(0); }
 
-        /* ── PLAYABLE PERSONALITY MODAL OVERLAY ── */
-        .personality-modal { position: fixed; inset: 0; background-color: var(--modal-bg); z-index: 3000; opacity: 0; pointer-events: none; transition: opacity 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); color: var(--modal-text); display: flex; flex-direction: column; }
+        /* ── MODAL OVERLAY ── */
+        .personality-modal { position: fixed; inset: 0; background-color: var(--modal-bg); z-index: 3000; opacity: 0; pointer-events: none; transition: opacity 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); color: var(--modal-text); display: flex; flex-direction: column; width: 100%; height: 100%; overflow: hidden;}
         .personality-modal.active { opacity: 1; pointer-events: all; }
         
-        /* Updated Top Nav layout to center the print button */
         .modal-top-nav { display: flex; justify-content: center; align-items: center; padding: 20px 40px; background: transparent; z-index: 10; border-bottom: 1px solid #e0e0e0; position: relative; min-height: 110px; }
         .nav-center-stack { display: flex; flex-direction: column; align-items: center; gap: 14px; }
-        .modal-nav-title { font-family: 'Italiana', serif; font-size: 2rem; color: var(--modal-text); line-height: 1; }
         
         .modal-print-btn { display: flex; align-items: center; gap: 8px; background-color: rgba(190, 130, 72, 0.1); border: 1px solid var(--modal-accent); color: var(--modal-accent); font-family: 'Space Grotesk', sans-serif; padding: 8px 20px; border-radius: 30px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
         .modal-print-btn:hover { background-color: var(--modal-accent); color: #fff; transform: translateY(-2px); }
@@ -138,9 +120,8 @@
         .modal-close-btn { position: absolute; right: 40px; top: 35px; font-size: 24px; color: var(--modal-text); cursor: pointer; transition: color 0.3s ease, transform 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; }
         .modal-close-btn:hover { color: var(--modal-accent); transform: rotate(90deg); background-color: rgba(0,0,0,0.05); }
 
-        .modal-scene-area { flex-grow: 1; position: relative; background: linear-gradient(to bottom, #ffffff 0%, #fffbf7 50%, #f6eee5 100%); overflow: hidden; }
+        .modal-scene-area { flex-grow: 1; position: relative; background: linear-gradient(to bottom, #ffffff 0%, #fffbf7 50%, #f6eee5 100%); overflow: hidden; width: 100%; }
 
-        /* Playable Hexagons */
         .hex-node {
             position: absolute; width: 85px; height: 95px; background-color: var(--modal-accent);
             clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
@@ -156,7 +137,6 @@
         .hex-node.outlined { background-color: rgba(190, 130, 72, 0.85); border: 2px solid white; }
         .hex-node.active-node { background-color: #8c5725 !important; transform: scale(1.15) !important; z-index: 50 !important; animation-play-state: paused; }
 
-        /* Initial Hex Positions (Desktop) */
         .node-1 { top: 20%; left: 15%; animation-delay: 0s; }
         .node-2 { top: 60%; left: 22%; animation-delay: 1s; }
         .node-3 { top: 35%; left: 35%; animation-delay: 0.5s; }
@@ -165,7 +145,6 @@
 
         @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-12px); } 100% { transform: translateY(0px); } }
 
-        /* Interactive Info Panel */
         .modal-info-panel {
             position: absolute; right: 40px; top: 40px; bottom: 40px; width: 420px;
             background: #ffffff; border-radius: 16px; padding: 30px 25px;
@@ -178,7 +157,6 @@
         .modal-panel-content::-webkit-scrollbar-track { background: transparent; }
         .modal-panel-content::-webkit-scrollbar-thumb { background-color: #ddd; border-radius: 4px; }
 
-        /* Game-like Animated Chart Bars */
         .score-section { margin-bottom: 24px; }
         .score-title { font-weight: 600; font-size: 14px; color: var(--modal-text); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: flex; justify-content: space-between;}
         .trait-item { margin-bottom: 10px; }
@@ -187,69 +165,60 @@
         .bar-bg { width: 100%; height: 6px; background: #f0f0f0; border-radius: 4px; overflow: hidden; position: relative; }
         .bar-fill { height: 100%; background: var(--modal-accent); width: 0%; border-radius: 4px; transition: width 1.2s cubic-bezier(0.2, 0.8, 0.2, 1); }
 
-        /* ── PRINT STYLES & FIXES ── */
-        #print-container { display: none; } /* Hide completely during normal web viewing */
-        @media print {
-            body, html { overflow: visible !important; height: auto !important; background: white !important; }
-            body > *:not(#print-container) { display: none !important; } /* Hide all normal UI flow */
-            #print-container { 
-                display: block !important; 
-                position: relative !important; /* Allow natural browser pagination */
-                width: 100%; 
-                background: white !important; 
-                color: black !important; 
-                z-index: 9999; 
-            }
-            #print-container * { visibility: visible; }
-        }
-
-        /* ── MOBILE OVERRIDES ── */
+        /* ── MOBILE OVERRIDES (Fixed Zoom/Overflow Issues) ── */
         @media (max-width: 768px) {
             .header-controls { top: 28px; right: 6vw; gap: 12px; } .translate-control { top: 28px; left: 6vw; } .frame-line { display: none; }
             .hero-img-container { width: 65vw; } .hero:has(.glitch-title:hover) .hero-img-container, .hero-img-container.colored-container { width: 68vw; }
-            .glitch-title { font-size: clamp(3.5rem, 18vw, 7rem); letter-spacing: -0.03em; }
+            
+            /* Guaranteed to not exceed screen width */
+            .glitch-title { font-size: 13vw; letter-spacing: -0.02em; line-height: 0.9; }
+            .hiring-title { font-size: 14vw; }
+            
             .editorial { grid-template-columns: 1fr; gap: 4vh; padding: 10vh 6vw 8vh 6vw; } .editorial-heading { font-size: clamp(2rem, 8vw, 3rem); }
             .btn-highlight { font-size: 1rem; padding: 14px 24px; width: 100%; justify-content: center; }
             .skills-prose { padding: 8vh 6vw; font-size: clamp(1.3rem, 5.5vw, 2rem); line-height: 1.5; } .skill-hl::after { bottom: 4px; height: 2px; }
-            
-            /* Responsive Content Grid with Image Stack */
             .content-grid { grid-template-columns: 1fr; gap: 4vh; padding: 6vh 6vw 10vh 6vw; } 
             .skill-item { font-size: clamp(1.3rem, 6vw, 2rem); padding: 16px 0; }
-            
             .hiring-footer { padding: 10vw 6vw; } .contact-grid-links { gap: 1.5rem 2.5rem; } .contact-link-modern { font-size: 1.1rem; }
-            .search-wrapper.active .search-input { width: 150px; } .translate-bubble { width: min(260px, 80vw); }
+            .search-wrapper.active .search-input { width: 150px; } 
 
-            /* Playable Mobile Hexagons */
-            .modal-top-nav { padding: 15px 20px; min-height: 90px;} 
-            .modal-nav-title { font-size: 1.5rem; } 
-            .nav-center-stack { gap: 8px; }
+            .modal-top-nav { padding: 15px 20px; min-height: 80px;} 
             .modal-print-btn { padding: 6px 12px; font-size: 0.8rem; gap: 6px; }
-            .modal-close-btn { right: 15px; top: 25px; }
+            .modal-close-btn { right: 15px; top: 20px; }
             
-            .hex-node { width: 65px; height: 75px; font-size: 20px; } 
-            .hex-node span { font-size: 8px; margin-top: 4px;}
+            .hex-node { width: 60px; height: 70px; font-size: 18px; } 
+            .hex-node span { font-size: 8px; margin-top: 2px;}
             
-            /* Give mobile dragging more structured room at top (zigzag pattern) */
-            .node-1 { top: 5%; left: 8%; }
-            .node-2 { top: 20%; left: 25%; }
-            .node-3 { top: 5%; left: 45%; }
-            .node-4 { top: 20%; left: 62%; }
-            .node-5 { top: 5%; left: 78%; }
+            /* Anchored to right and left strictly to prevent horizontal blowout */
+            .node-1 { top: 3%; left: 4%; }
+            .node-2 { top: 16%; left: 24%; }
+            .node-3 { top: 3%; left: 45%; }
+            .node-4 { top: 16%; right: 24%; left: auto; } 
+            .node-5 { top: 3%; right: 4%; left: auto; }
 
-            /* Bottom Sheet Panel */
+            /* Contained Bottom Sheet */
             .modal-info-panel { 
-                position: absolute; bottom: 0; left: 0; right: 0; top: 38%; width: 100%; height: auto; 
-                border-radius: 24px 24px 0 0; padding: 25px 20px; box-shadow: 0 -10px 30px rgba(0,0,0,0.08); border: none;
-                display: flex; flex-direction: column; z-index: 100; overflow: hidden;
+                position: absolute; bottom: 0; left: 0; right: 0; top: 36%; width: 100%; height: 64%; 
+                border-radius: 24px 24px 0 0; padding: 20px 15px; box-shadow: 0 -10px 30px rgba(0,0,0,0.08); border: none;
+                display: flex; flex-direction: column; z-index: 100;
             }
-            .modal-panel-content {
-                flex-grow: 1; overflow-y: auto; padding-bottom: 20px;
-            }
+            .modal-panel-content { padding-bottom: 20px; }
         }
-        @media (max-width: 400px) {
-            .glitch-title { font-size: clamp(3rem, 20vw, 5rem); } .search-wrapper.active .search-input { width: 120px; } .hiring-title { font-size: clamp(3rem, 16vw, 5rem); }
-            /* Shift nodes slightly left for very small screens */
-            .node-1 { left: 4%; } .node-2 { left: 22%; } .node-3 { left: 42%; } .node-4 { left: 60%; } .node-5 { left: 76%; }
+        
+        /* ── ULTIMATE PRINT RESET ── */
+        @media print {
+            body { background: white !important; color: black !important; margin: 0 !important; padding: 0 !important; }
+            #print-container { 
+                display: block !important; 
+                position: relative !important; 
+                width: 100% !important; 
+                margin: 0 !important; 
+                padding: 0 !important;
+                background: white !important; 
+                color: black !important; 
+                z-index: 999999; 
+            }
+            /* The JS function will manually hide other elements to guarantee mobile compatibility */
         }
     </style>
 </head>
@@ -265,8 +234,6 @@
         <div class="translate-bubble" id="translateBubble">
             <p><strong>Instruksi Terjemahan</strong></p>
             <p style="margin-top:8px;">Klik kanan di mana saja dan pilih <strong>'Terjemahkan ke Bahasa Indonesia'</strong> (Chrome) untuk melihat situs ini dalam Bahasa Indonesia atau bahasa lainnya.</p>
-            <hr>
-            <p>Right-click anywhere and select <strong>'Translate to Language'</strong> (Chrome) to view this site in Indonesian, English, or any other language.</p>
         </div>
     </div>
 
@@ -296,7 +263,7 @@
         <div class="hero-img-container"><img src="/profile.png" alt="Kayla" class="hero-img"></div>
         <h1 class="glitch-title">
             <span class="magnetic relative z-10 block">KAYLA</span>
-            <span class="magnetic relative z-10 block opacity-50 italic" style="margin-left: 20%;">SYAHIRAH</span>
+            <span class="magnetic relative z-10 block opacity-50 italic">SYAHIRAH</span>
             <span class="magnetic relative z-10 block">KHANSA</span>
         </h1>
         <div class="absolute bottom-10 left-[10vw] max-w-xs text-[10px] uppercase tracking-widest font-sans glowing-text">Methodical Analysis — Strategic Communication — Creative Intelligence</div>
@@ -320,12 +287,10 @@
     <section class="content-grid">
         <div class="content-left flex flex-col gap-6">
             <div class="section-label font-sans">Projects Example</div>
-            
             <div class="project-image-wrapper reveal relative w-full overflow-hidden rounded-xl mt-4">
                 <img src="/your-image.jpg" alt="Projects Overview" class="w-full aspect-[4/3] object-cover grayscale hover:grayscale-0 transition-all duration-700">
             </div>
         </div>
-        
         <div class="skills-container">
             <div class="skill-item reveal"><span>01</span>Data Analyst Intern</div>
             <div class="skill-item reveal"><span>02</span>Market Researcher</div>
@@ -392,7 +357,6 @@
     </div>
 
     <script>
-        /* ── PORTFOLIO BASE LOGIC ── */
         const cursor = document.getElementById('cursor-follower');
         const progress = document.getElementById('progress');
         const heroSection = document.querySelector('.hero');
@@ -426,13 +390,13 @@
         window.addEventListener('scroll', () => {
             let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
             let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            let scrolled = (winScroll / height) * 100;
+            let scrolled = height > 0 ? (winScroll / height) * 100 : 0;
             progress.style.width = scrolled + "%";
 
             if (winScroll > 50) { img.classList.add('colored'); imgContainer.classList.add('colored-container'); }
             else { img.classList.remove('colored'); imgContainer.classList.remove('colored-container'); }
 
-            const scrollPercent = winScroll / height;
+            const scrollPercent = height > 0 ? winScroll / height : 0;
             const contactTop = document.getElementById('contact').getBoundingClientRect().top;
             
             if (contactTop < window.innerHeight / 2) document.body.classList.remove('light-mode');
@@ -443,8 +407,6 @@
         });
         window.dispatchEvent(new Event('scroll'));
 
-        /* ── INTERACTIVE PERSONALITY ENGINE ── */
-        
         function openPersonalityModal() {
             document.getElementById('personalityModal').classList.add('active');
             document.body.style.overflow = 'hidden'; 
@@ -455,12 +417,9 @@
             document.body.style.overflow = ''; 
         }
 
-        // Structured JSON data for the analytics engine
         const analyticsData = {
             'HEXACO': {
-                title: 'HEXACO',
-                maxScore: 8,
-                note: 'Max possible score: 8',
+                title: 'HEXACO', maxScore: 8, note: 'Max possible score: 8',
                 groups: [
                     { title: 'Honesty-Humility', overall: 5.51, traits: { 'Sincerity': 2.49, 'Fairness': 5.69, 'Greed Avoidance': 7.46, 'Modesty': 5.28 } },
                     { title: 'Emotionality', overall: 2.97, traits: { 'Fearfulness': 4.37, 'Anxiety': 2.54, 'Dependence': 3.86, 'Sentimentality': 3.66 } },
@@ -472,9 +431,7 @@
                 ]
             },
             'BIG_FIVE': {
-                title: 'Big Five Framework',
-                maxScore: 20,
-                note: 'Max possible score: 20',
+                title: 'Big Five Framework', maxScore: 20, note: 'Max possible score: 20',
                 groups: [
                     { title: 'Neuroticism: LOW', color: '#be8248', traits: { 'Anxiety': 8, 'Anger': 6, 'Depression': 4, 'Self-Consciousness': 4, 'Immoderation': 5, 'Vulnerability': 4 } },
                     { title: 'Extraversion: HIGH', color: '#48876a', traits: { 'Friendliness': 19, 'Gregariousness': 18, 'Assertiveness': 13, 'Activity Level': 8, 'Excitement-Seeking': 20, 'Cheerfulness': 20 } },
@@ -484,25 +441,15 @@
                 ]
             },
             'ZKPQ': {
-                title: 'Zuckerman-Kuhlman',
-                maxScore: 10,
-                note: 'Max possible score: 10',
-                groups: [
-                    { title: 'Base Traits', traits: { 'Activity': 3.0, 'Aggression-Hostility': 4.0, 'Impulsive Sensation Seeking': 8.0, 'Neuroticism-Anxiety': 1.0, 'Sociability': 6.0 } }
-                ]
+                title: 'Zuckerman-Kuhlman', maxScore: 10, note: 'Max possible score: 10',
+                groups: [ { title: 'Base Traits', traits: { 'Activity': 3.0, 'Aggression-Hostility': 4.0, 'Impulsive Sensation Seeking': 8.0, 'Neuroticism-Anxiety': 1.0, 'Sociability': 6.0 } } ]
             },
             'DARK_TRIAD': {
-                title: 'Dark Triad',
-                maxScore: 5,
-                note: 'Max possible score: 5',
-                groups: [
-                    { title: 'Psychopathy Matrix', color: '#333333', traits: { 'Machiavellianism': 3.8, 'Narcissism': 1.9, 'Psychopathy': 1.8 } }
-                ]
+                title: 'Dark Triad', maxScore: 5, note: 'Max possible score: 5',
+                groups: [ { title: 'Psychopathy Matrix', color: '#333333', traits: { 'Machiavellianism': 3.8, 'Narcissism': 1.9, 'Psychopathy': 1.8 } } ]
             },
             'IPIP': {
-                title: 'IPIP-NEO Profile',
-                maxScore: 100,
-                note: 'Max possible score: 100',
+                title: 'IPIP-NEO Profile', maxScore: 100, note: 'Max possible score: 100',
                 groups: [
                     { title: 'Openness To Exp: 93', traits: { 'Imagination': 4, 'Artistic Interests': 87, 'Emotionality': 96, 'Adventurousness': 96, 'Intellect': 65, 'Liberalism': 99 } },
                     { title: 'Neuroticism: 3', traits: { 'Anxiety': 17, 'Anger': 1, 'Depression': 15, 'Self-Consciousness': 13, 'Immoderation': 6, 'Vulnerability': 43 } },
@@ -513,78 +460,52 @@
             }
         };
 
-        // Render the Interactive Chart Logic
         function renderEngine(testKey, nodeColor) {
             const data = analyticsData[testKey];
             const titleEl = document.getElementById('panelTitle');
             const contentEl = document.getElementById('panelContent');
-            
-            // Fade out current content
             contentEl.style.opacity = '0';
             
             setTimeout(() => {
                 titleEl.innerText = data.title;
-                
                 let htmlStr = `<p style="font-size:12px; margin-bottom:15px; color:#888; text-align: center;"><em>${data.note}</em></p>`;
                 
                 data.groups.forEach(group => {
                     const sectionColor = group.color || nodeColor || 'var(--modal-accent)';
                     const overallStr = group.overall ? `<span style="color:#888; font-size:12px;">(Overall: ${group.overall})</span>` : '';
-                    
-                    htmlStr += `
-                        <div class="score-section">
-                            <div class="score-title" style="color:${sectionColor}">${group.title} ${overallStr}</div>
-                    `;
+                    htmlStr += `<div class="score-section"><div class="score-title" style="color:${sectionColor}">${group.title} ${overallStr}</div>`;
                     
                     for (const [trait, value] of Object.entries(group.traits)) {
-                        // Calculate percentage for the animated bar
                         let percentage = (value / data.maxScore) * 100;
-                        if(percentage > 100) percentage = 100; // safety
-
+                        if(percentage > 100) percentage = 100;
                         htmlStr += `
                             <div class="trait-item">
-                                <div class="trait-header">
-                                    <span>${trait}</span>
-                                    <span class="trait-value">${value}</span>
-                                </div>
-                                <div class="bar-bg">
-                                    <div class="bar-fill" style="background-color:${sectionColor};" data-width="${percentage}%"></div>
-                                </div>
-                            </div>
-                        `;
+                                <div class="trait-header"><span>${trait}</span><span class="trait-value">${value}</span></div>
+                                <div class="bar-bg"><div class="bar-fill" style="background-color:${sectionColor};" data-width="${percentage}%"></div></div>
+                            </div>`;
                     }
                     htmlStr += `</div>`;
                 });
 
                 contentEl.innerHTML = htmlStr;
                 contentEl.scrollTop = 0;
-                
-                // Fade in text
                 contentEl.style.opacity = '1';
 
-                // Trigger Bar Animations after a tiny delay for CSS reflow
                 setTimeout(() => {
-                    document.querySelectorAll('.bar-fill').forEach(bar => {
-                        bar.style.width = bar.getAttribute('data-width');
-                    });
+                    document.querySelectorAll('.bar-fill').forEach(bar => { bar.style.width = bar.getAttribute('data-width'); });
                 }, 50);
-
             }, 200);
         }
 
-        // Draggable Mechanics Physics
         const hexNodes = document.querySelectorAll('.hex-node');
-        
         hexNodes.forEach(node => {
-            let startX = 0, startY = 0, currentX = 0, currentY = 0;
-            let isDragging = false;
+            let startX = 0, startY = 0, currentX = 0, currentY = 0, isDragging = false;
             
             node.addEventListener('mousedown', dragStart);
             node.addEventListener('touchstart', dragStart, {passive: false});
 
             function dragStart(e) {
-                if (e.type === 'touchstart') e.preventDefault(); // Stop screen scroll on mobile
-                
+                if (e.type === 'touchstart') e.preventDefault(); 
                 startX = e.clientX || e.touches[0].clientX;
                 startY = e.clientY || e.touches[0].clientY;
                 isDragging = false;
@@ -594,29 +515,19 @@
                 document.addEventListener('touchmove', dragActive, {passive: false});
                 document.addEventListener('touchend', dragEnd);
                 
-                // Visual feedback for picking up
-                node.style.zIndex = 1000;
-                node.style.animationPlayState = 'paused';
-                node.style.transform = 'scale(1.15)';
-                node.style.cursor = 'grabbing';
+                node.style.zIndex = 1000; node.style.animationPlayState = 'paused';
+                node.style.transform = 'scale(1.15)'; node.style.cursor = 'grabbing';
             }
 
             function dragActive(e) {
                 if (e.type === 'touchmove') e.preventDefault();
-                
                 let ex = e.clientX || e.touches[0].clientX;
                 let ey = e.clientY || e.touches[0].clientY;
                 
-                // If dragged more than 5 pixels, it's a drag not a click
-                if (Math.abs(ex - startX) > 5 || Math.abs(ey - startY) > 5) {
-                    isDragging = true;
-                }
+                if (Math.abs(ex - startX) > 5 || Math.abs(ey - startY) > 5) isDragging = true;
 
-                currentX = startX - ex;
-                currentY = startY - ey;
-                startX = ex;
-                startY = ey;
-                
+                currentX = startX - ex; currentY = startY - ey;
+                startX = ex; startY = ey;
                 node.style.top = (node.offsetTop - currentY) + "px";
                 node.style.left = (node.offsetLeft - currentX) + "px";
             }
@@ -627,60 +538,43 @@
                 document.removeEventListener('touchmove', dragActive);
                 document.removeEventListener('touchend', dragEnd);
                 
-                // Reset styling
-                node.style.zIndex = '';
-                node.style.transform = '';
-                node.style.cursor = 'grab';
+                node.style.zIndex = ''; node.style.transform = ''; node.style.cursor = 'grab';
 
                 if (!isDragging) {
-                    // This was a clean TAP/CLICK, execute logic!
-                    
-                    // Remove active state from all, add to this one
                     hexNodes.forEach(n => { n.classList.remove('active-node'); n.style.animationPlayState = 'running';});
                     node.classList.add('active-node');
-                    
-                    const testKey = node.getAttribute('data-key');
-                    const nodeColor = node.getAttribute('data-color');
-                    renderEngine(testKey, nodeColor);
+                    renderEngine(node.getAttribute('data-key'), node.getAttribute('data-color'));
                 } else {
-                    // Let the node resume floating from its new dropped location
                     node.style.animationPlayState = 'running';
                 }
             }
         });
 
-        /* ── PRINT FUNCTIONALITY ── */
+        /* ── BULLETPROOF JS PRINT METHOD FOR MOBILE ── */
         function printPersonalityData() {
-            let printDiv = document.getElementById('print-container');
+            // Remove old print container if it exists
+            let oldPrint = document.getElementById('print-container');
+            if (oldPrint) oldPrint.remove();
             
-            // Create the print container if it doesn't exist
-            if (!printDiv) {
-                printDiv = document.createElement('div');
-                printDiv.id = 'print-container';
-                document.body.appendChild(printDiv);
-            }
+            // Create a strictly-block formatted HTML string to prevent mobile printers from breaking Grids/Flex
+            let html = '<div style="padding: 20px; font-family: \'Space Grotesk\', sans-serif; background: white; color: black; max-width: 800px; margin: 0 auto; width: 100%; box-sizing: border-box;">';
+            html += '<h1 style="font-family: \'Italiana\', serif; font-size: 28px; text-align: center; margin-bottom: 30px; border-bottom: 2px solid #000; padding-bottom: 15px; color: #111;">Psychological Profile Data</h1>';
             
-            let html = '<div style="padding: 40px; font-family: \'Space Grotesk\', sans-serif;">';
-            html += '<h1 style="font-family: \'Italiana\', serif; font-size: 3rem; text-align: center; margin-bottom: 40px; color: #222;">Psychological Profile Data</h1>';
-            
-            // Iterate over all tests in analyticsData
             for (const key in analyticsData) {
                 const test = analyticsData[key];
-                html += `<div style="margin-bottom: 50px; page-break-inside: avoid;">`;
-                html += `<h2 style="color: #be8248; border-bottom: 2px solid #eaeaea; padding-bottom: 10px; margin-bottom: 25px; font-size: 1.8rem;">${test.title}</h2>`;
+                html += `<div style="margin-bottom: 40px; page-break-inside: avoid; break-inside: avoid;">`;
+                html += `<h2 style="color: #be8248; border-bottom: 1px solid #ddd; padding-bottom: 8px; margin-bottom: 15px; font-size: 22px;">${test.title}</h2>`;
                 
-                // Iterate over the test groups
                 test.groups.forEach(group => {
-                    const overallStr = group.overall ? `<span style="font-weight: normal; color: #777; font-size: 0.85em; margin-left: 10px;">(Overall Score: ${group.overall})</span>` : '';
-                    html += `<h3 style="margin-bottom: 15px; font-size: 1.2rem; color: #333;">${group.title} ${overallStr}</h3>`;
-                    html += `<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px;">`;
+                    const overallStr = group.overall ? `<span style="font-weight: normal; color: #666; font-size: 14px; margin-left: 10px;">(Overall: ${group.overall})</span>` : '';
+                    html += `<h3 style="margin-bottom: 12px; font-size: 18px; color: #222; margin-top: 25px;">${group.title} ${overallStr}</h3>`;
+                    html += `<div style="display: block; width: 100%;">`;
                     
-                    // Display all individual traits and their values
                     for (const [trait, value] of Object.entries(group.traits)) {
                         html += `
-                            <div style="background: #fafafa; padding: 12px 18px; border-radius: 8px; display: flex; justify-content: space-between; border: 1px solid #f0f0f0;">
-                                <span style="font-weight: 500; color: #444;">${trait}</span>
-                                <span style="font-weight: 700; color: #be8248;">${value} <span style="font-size: 0.8em; color: #aaa;">/ ${test.maxScore}</span></span>
+                            <div style="display: flex; justify-content: space-between; padding: 10px 15px; border-bottom: 1px solid #eee; background: #fafafa; margin-bottom: 4px; border-radius: 4px;">
+                                <span style="font-weight: 500; color: #333; font-size: 15px;">${trait}</span>
+                                <span style="font-weight: bold; color: #be8248; font-size: 15px;">${value} <span style="font-size: 12px; color: #999; font-weight: normal;">/ ${test.maxScore}</span></span>
                             </div>
                         `;
                     }
@@ -689,33 +583,49 @@
                 html += `</div>`;
             }
             html += '</div>';
-            
-            // Set HTML
-            printDiv.innerHTML = html;
 
-            // Temp un-hide body overflow so mobile browsers accurately measure page lengths
+            let printDiv = document.createElement('div');
+            printDiv.id = 'print-container';
+            printDiv.innerHTML = html;
+            document.body.appendChild(printDiv);
+
+            // MANUALLY hide every single direct child of body EXCEPT the print container
+            // This is the only 100% reliable way to force mobile browsers to focus on the print data
+            const allBodyChildren = Array.from(document.body.children);
+            allBodyChildren.forEach(child => {
+                if (child.id !== 'print-container' && child.tagName !== 'SCRIPT' && child.tagName !== 'STYLE') {
+                    child.setAttribute('data-original-display', child.style.display || 'none-original');
+                    child.style.display = 'none';
+                }
+            });
+
+            // Unlock the body
             const oldOverflow = document.body.style.overflow;
             document.body.style.overflow = 'visible';
 
-            // Wait brief moment for the DOM to process the printable container, then trigger print
+            // Give the DOM time to repaint the blank canvas before calling print
             setTimeout(() => {
                 window.print();
-            }, 100);
+            }, 400);
+
+            // Function to restore the view after printing
+            const cleanupPrint = () => {
+                allBodyChildren.forEach(child => {
+                    if (child.hasAttribute('data-original-display')) {
+                        const originalDisplay = child.getAttribute('data-original-display');
+                        child.style.display = originalDisplay === 'none-original' ? '' : originalDisplay;
+                        child.removeAttribute('data-original-display');
+                    }
+                });
+                document.body.style.overflow = oldOverflow;
+                if(printDiv) printDiv.remove();
+            };
+
+            // Listeners to trigger cleanup
+            window.addEventListener('afterprint', cleanupPrint, {once: true});
+            // Fallback for iOS Safari which sometimes misses the afterprint event
+            setTimeout(() => { window.addEventListener('focus', cleanupPrint, {once: true}); }, 1500);
         }
-
-        // Cleanup function to permanently remove the print element when print dialog is dismissed
-        window.addEventListener('afterprint', () => {
-            const printDiv = document.getElementById('print-container');
-            if (printDiv) {
-                printDiv.remove();
-            }
-            
-            // Restore hidden overflow if the modal is currently open
-            if(document.getElementById('personalityModal').classList.contains('active')) {
-                document.body.style.overflow = 'hidden';
-            }
-        });
-
     </script>
 </body>
 </html>
