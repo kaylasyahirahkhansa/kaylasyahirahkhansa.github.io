@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>Kayla Syahirah Khansa</title>
     <meta name="description" content="Kayla Syahirah Khansa — Student from Bondowoso, East Java. Connect via WhatsApp, LinkedIn, Instagram, or Email.">
+    <meta name="keywords" content="Kayla Syahirah Khansa, kayla syahirah khansa, kayla khansa, bondowoso, jawa timur, portfolio">
+    <meta name="author" content="Kayla Syahirah Khansa">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://kaylasyahirahkhansa.my.id">
+    <meta property="og:title" content="Kayla Syahirah Khansa">
+    <meta property="og:description" content="Student from Bondowoso, East Java.">
+    <meta property="og:type" content="profile">
+    <meta property="og:url" content="https://kaylasyahirahkhansa.my.id">
+    <meta property="og:image" content="https://kaylasyahirahkhansa.my.id/preview.png">
+    <meta name="twitter:card" content="summary_large_image">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -111,7 +121,7 @@
         .personality-modal.active { opacity: 1; pointer-events: all; }
         
         .modal-top-nav { display: flex; justify-content: center; align-items: center; padding: 20px 40px; background: transparent; z-index: 10; border-bottom: 1px solid #e0e0e0; position: relative; min-height: 110px; }
-        .nav-center-stack { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+        .nav-center-stack { display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 14px; }
         
         .modal-print-btn { display: flex; align-items: center; gap: 8px; background-color: rgba(190, 130, 72, 0.1); border: 1px solid var(--modal-accent); color: var(--modal-accent); font-family: 'Space Grotesk', sans-serif; padding: 8px 20px; border-radius: 30px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
         .modal-print-btn:hover { background-color: var(--modal-accent); color: #fff; transform: translateY(-2px); }
@@ -187,12 +197,12 @@
             .hex-node { width: 60px; height: 70px; font-size: 18px; } 
             .hex-node span { font-size: 8px; margin-top: 2px;}
             
-            /* TIGHT HONEYCOMB CLUSTER (Gaps are perfectly locked using absolute center calculation) */
-            .node-3 { top: 3%; left: calc(50% - 30px); } /* Center Top */
-            .node-2 { top: 15%; left: calc(50% - 85px); } /* Mid Left */
-            .node-4 { top: 15%; left: calc(50% + 25px); } /* Mid Right */
-            .node-1 { top: 27%; left: calc(50% - 130px); } /* Bottom Left */
-            .node-5 { top: 27%; left: calc(50% + 70px); } /* Bottom Right */
+            /* TIGHT HONEYCOMB CLUSTER */
+            .node-3 { top: 3%; left: calc(50% - 30px); } 
+            .node-2 { top: 15%; left: calc(50% - 85px); } 
+            .node-4 { top: 15%; left: calc(50% + 25px); } 
+            .node-1 { top: 27%; left: calc(50% - 130px); } 
+            .node-5 { top: 27%; left: calc(50% + 70px); } 
 
             /* Contained Bottom Sheet */
             .modal-info-panel { 
@@ -206,7 +216,6 @@
         /* ── ULTIMATE PRINT RESET ── */
         @media print {
             body { background: white !important; color: black !important; margin: 0 !important; padding: 0 !important; }
-            /* The JS function will manually hide other elements to guarantee mobile compatibility */
         }
     </style>
 </head>
@@ -308,6 +317,9 @@
             <div class="nav-center-stack">
                 <button class="modal-print-btn" onclick="printPersonalityData()" title="Print My Personalities Data">
                     <i class="fas fa-print"></i> <span>Print Report</span>
+                </button>
+                <button class="modal-print-btn" onclick="downloadPersonalityTxt()" title="Download Text Data">
+                    <i class="fas fa-file-alt"></i> <span>Download .txt</span>
                 </button>
             </div>
             <div class="modal-close-btn" onclick="closePersonalityModal()" title="Close Profile">
@@ -540,33 +552,32 @@
             }
         });
 
-        /* ── TWO-COLUMN PRINT FORCING METHOD ── */
+        /* ── SINGLE COLUMN CONCISE PRINT METHOD ── */
         function printPersonalityData() {
             let oldPrint = document.getElementById('print-container');
             if (oldPrint) oldPrint.remove();
             
-            // By wrapping this in a rigidly sized container, we trick the mobile print spooler 
-            // into rendering a desktop-sized page layout onto standard A4 paper.
-            let html = '<div style="padding: 40px; font-family: \'Space Grotesk\', sans-serif; background: white; color: black; box-sizing: border-box; width: 100%; min-width: 800px; margin: 0 auto;">';
-            html += '<h1 style="font-family: \'Italiana\', serif; font-size: 32px; text-align: center; margin-bottom: 30px; border-bottom: 2px solid #000; padding-bottom: 15px; color: #111;">Psychological Profile Data</h1>';
+            let html = '<div style="padding: 40px; font-family: \'Cormorant Garamond\', serif; background: white; color: black; box-sizing: border-box; width: 100%; max-width: 800px; margin: 0 auto; line-height: 1.6;">';
+            // Adjusted margin-bottom to 0 to remove gap
+            html += '<h1 style="font-family: \'Italiana\', serif; font-size: 36px; text-align: center; margin-bottom: 0px; border-bottom: 2px solid #000; padding-bottom: 10px; color: #000;">Psychological Profile Report</h1>';
             
             for (const key in analyticsData) {
                 const test = analyticsData[key];
-                html += `<div style="margin-bottom: 40px; page-break-inside: avoid; break-inside: avoid;">`;
-                html += `<h2 style="color: #be8248; border-bottom: 1px solid #ddd; padding-bottom: 8px; margin-bottom: 15px; font-size: 24px;">${test.title}</h2>`;
+                // Added margin-top to separate sections cleanly without a giant title gap
+                html += `<div style="margin-top: 30px; margin-bottom: 30px; page-break-inside: avoid; break-inside: avoid;">`;
+                html += `<h2 style="color: #000; border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-bottom: 15px; font-size: 26px; text-transform: uppercase; font-family: \'Space Grotesk\', sans-serif; font-weight: 600;">${test.title}</h2>`;
                 
                 test.groups.forEach(group => {
-                    const overallStr = group.overall ? `<span style="font-weight: normal; color: #666; font-size: 14px; margin-left: 10px;">(Overall: ${group.overall})</span>` : '';
-                    html += `<h3 style="margin-bottom: 15px; font-size: 18px; color: #222; margin-top: 25px;">${group.title} ${overallStr}</h3>`;
+                    const overallStr = group.overall ? `<span style="font-weight: normal; color: #555; font-size: 16px; margin-left: 8px;">(Overall Score: ${group.overall})</span>` : '';
+                    html += `<h3 style="margin-bottom: 10px; font-size: 20px; color: #222; margin-top: 25px; font-weight: bold;">${group.title} ${overallStr}</h3>`;
                     
-                    // Desktop-style Two-Column Flex Layout
-                    html += `<div style="display: flex; flex-wrap: wrap; gap: 15px;">`;
+                    html += `<div style="display: flex; flex-direction: column; gap: 6px; margin-left: 10px;">`;
                     
                     for (const [trait, value] of Object.entries(group.traits)) {
                         html += `
-                            <div style="width: calc(50% - 8px); box-sizing: border-box; display: flex; justify-content: space-between; padding: 12px 15px; border: 1px solid #eee; background: #fafafa; border-radius: 6px;">
-                                <span style="font-weight: 500; color: #333; font-size: 14px;">${trait}</span>
-                                <span style="font-weight: bold; color: #be8248; font-size: 14px;">${value} <span style="font-size: 11px; color: #999; font-weight: normal;">/ ${test.maxScore}</span></span>
+                            <div style="width: 100%; box-sizing: border-box; display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed #e0e0e0; font-family: \'Space Grotesk\', sans-serif;">
+                                <span style="font-weight: 500; color: #111; font-size: 15px;">${trait}</span>
+                                <span style="font-weight: bold; color: #000; font-size: 15px;">${value} <span style="font-size: 12px; color: #888; font-weight: normal;">/ ${test.maxScore}</span></span>
                             </div>
                         `;
                     }
@@ -578,12 +589,10 @@
 
             let printDiv = document.createElement('div');
             printDiv.id = 'print-container';
-            // Absolute positioning with a minimum width forces a zoom-out for the printer canvas
-            printDiv.style.cssText = "position: absolute; top: 0; left: 0; right: 0; min-width: 800px; width: 100%; background: white; z-index: 999999; padding: 0; margin: 0;";
+            printDiv.style.cssText = "position: absolute; top: 0; left: 0; right: 0; min-width: 100%; width: 100%; background: white; z-index: 999999; padding: 0; margin: 0; display: flex; justify-content: center;";
             printDiv.innerHTML = html;
             document.body.appendChild(printDiv);
 
-            // Hide everything else so only the print block goes to the spooler
             const allBodyChildren = Array.from(document.body.children);
             allBodyChildren.forEach(child => {
                 if (child.id !== 'print-container' && child.tagName !== 'SCRIPT' && child.tagName !== 'STYLE') {
@@ -595,12 +604,10 @@
             const oldOverflow = document.body.style.overflow;
             document.body.style.overflow = 'visible';
 
-            // Allow the browser to repaint the dom before triggering print
             setTimeout(() => {
                 window.print();
             }, 400);
 
-            // Cleanup routine to put the site back to normal after printing
             const cleanupPrint = () => {
                 allBodyChildren.forEach(child => {
                     if (child.hasAttribute('data-original-display')) {
@@ -615,6 +622,40 @@
 
             window.addEventListener('afterprint', cleanupPrint, {once: true});
             setTimeout(() => { window.addEventListener('focus', cleanupPrint, {once: true}); }, 1500);
+        }
+
+        /* ── TXT DOWNLOAD METHOD ── */
+        function downloadPersonalityTxt() {
+            let txtContent = "PSYCHOLOGICAL PROFILE REPORT\n";
+            txtContent += "========================================\n\n";
+
+            for (const key in analyticsData) {
+                const test = analyticsData[key];
+                txtContent += `${test.title.toUpperCase()}\n`;
+                txtContent += `----------------------------------------\n`;
+
+                test.groups.forEach(group => {
+                    const overallStr = group.overall ? ` (Overall Score: ${group.overall})` : '';
+                    txtContent += `\n* ${group.title}${overallStr}\n`;
+
+                    for (const [trait, value] of Object.entries(group.traits)) {
+                        txtContent += `  - ${trait}: ${value} / ${test.maxScore}\n`;
+                    }
+                });
+                txtContent += `\n========================================\n\n`;
+            }
+
+            const blob = new Blob([txtContent], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Kayla_Syahirah_Khansa_Profile.txt';
+            document.body.appendChild(a);
+            a.click();
+            
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         }
     </script>
 </body>
