@@ -27,7 +27,6 @@
 
         body.light-mode { --bg: #FFFFFF; --text: #0A0A0A; --text-light: #666666; --hairline: rgba(0, 0, 0, 0.2); }
         
-        /* STRICT BOUNDARIES to fix mobile zoomed-out issue */
         * { margin: 0; padding: 0; box-sizing: border-box; max-width: 100vw; }
         html, body { width: 100%; max-width: 100vw; overflow-x: hidden; }
         
@@ -165,12 +164,11 @@
         .bar-bg { width: 100%; height: 6px; background: #f0f0f0; border-radius: 4px; overflow: hidden; position: relative; }
         .bar-fill { height: 100%; background: var(--modal-accent); width: 0%; border-radius: 4px; transition: width 1.2s cubic-bezier(0.2, 0.8, 0.2, 1); }
 
-        /* ── MOBILE OVERRIDES (Fixed Zoom/Overflow Issues) ── */
+        /* ── MOBILE OVERRIDES ── */
         @media (max-width: 768px) {
             .header-controls { top: 28px; right: 6vw; gap: 12px; } .translate-control { top: 28px; left: 6vw; } .frame-line { display: none; }
             .hero-img-container { width: 65vw; } .hero:has(.glitch-title:hover) .hero-img-container, .hero-img-container.colored-container { width: 68vw; }
             
-            /* Guaranteed to not exceed screen width */
             .glitch-title { font-size: 13vw; letter-spacing: -0.02em; line-height: 0.9; }
             .hiring-title { font-size: 14vw; }
             
@@ -189,16 +187,16 @@
             .hex-node { width: 60px; height: 70px; font-size: 18px; } 
             .hex-node span { font-size: 8px; margin-top: 2px;}
             
-            /* Anchored to right and left strictly to prevent horizontal blowout */
-            .node-1 { top: 3%; left: 4%; }
-            .node-2 { top: 16%; left: 24%; }
-            .node-3 { top: 3%; left: 45%; }
-            .node-4 { top: 16%; right: 24%; left: auto; } 
-            .node-5 { top: 3%; right: 4%; left: auto; }
+            /* TIGHT HONEYCOMB CLUSTER (Gaps are perfectly locked using absolute center calculation) */
+            .node-3 { top: 3%; left: calc(50% - 30px); } /* Center Top */
+            .node-2 { top: 15%; left: calc(50% - 85px); } /* Mid Left */
+            .node-4 { top: 15%; left: calc(50% + 25px); } /* Mid Right */
+            .node-1 { top: 27%; left: calc(50% - 130px); } /* Bottom Left */
+            .node-5 { top: 27%; left: calc(50% + 70px); } /* Bottom Right */
 
             /* Contained Bottom Sheet */
             .modal-info-panel { 
-                position: absolute; bottom: 0; left: 0; right: 0; top: 36%; width: 100%; height: 64%; 
+                position: absolute; bottom: 0; left: 0; right: 0; top: 38%; width: 100%; height: 62%; 
                 border-radius: 24px 24px 0 0; padding: 20px 15px; box-shadow: 0 -10px 30px rgba(0,0,0,0.08); border: none;
                 display: flex; flex-direction: column; z-index: 100;
             }
@@ -208,16 +206,6 @@
         /* ── ULTIMATE PRINT RESET ── */
         @media print {
             body { background: white !important; color: black !important; margin: 0 !important; padding: 0 !important; }
-            #print-container { 
-                display: block !important; 
-                position: relative !important; 
-                width: 100% !important; 
-                margin: 0 !important; 
-                padding: 0 !important;
-                background: white !important; 
-                color: black !important; 
-                z-index: 999999; 
-            }
             /* The JS function will manually hide other elements to guarantee mobile compatibility */
         }
     </style>
@@ -550,31 +538,33 @@
             }
         });
 
-        /* ── BULLETPROOF JS PRINT METHOD FOR MOBILE ── */
+        /* ── TWO-COLUMN PRINT FORCING METHOD ── */
         function printPersonalityData() {
-            // Remove old print container if it exists
             let oldPrint = document.getElementById('print-container');
             if (oldPrint) oldPrint.remove();
             
-            // Create a strictly-block formatted HTML string to prevent mobile printers from breaking Grids/Flex
-            let html = '<div style="padding: 20px; font-family: \'Space Grotesk\', sans-serif; background: white; color: black; max-width: 800px; margin: 0 auto; width: 100%; box-sizing: border-box;">';
-            html += '<h1 style="font-family: \'Italiana\', serif; font-size: 28px; text-align: center; margin-bottom: 30px; border-bottom: 2px solid #000; padding-bottom: 15px; color: #111;">Psychological Profile Data</h1>';
+            // By wrapping this in a rigidly sized container, we trick the mobile print spooler 
+            // into rendering a desktop-sized page layout onto standard A4 paper.
+            let html = '<div style="padding: 40px; font-family: \'Space Grotesk\', sans-serif; background: white; color: black; box-sizing: border-box; width: 100%; min-width: 800px; margin: 0 auto;">';
+            html += '<h1 style="font-family: \'Italiana\', serif; font-size: 32px; text-align: center; margin-bottom: 30px; border-bottom: 2px solid #000; padding-bottom: 15px; color: #111;">Psychological Profile Data</h1>';
             
             for (const key in analyticsData) {
                 const test = analyticsData[key];
                 html += `<div style="margin-bottom: 40px; page-break-inside: avoid; break-inside: avoid;">`;
-                html += `<h2 style="color: #be8248; border-bottom: 1px solid #ddd; padding-bottom: 8px; margin-bottom: 15px; font-size: 22px;">${test.title}</h2>`;
+                html += `<h2 style="color: #be8248; border-bottom: 1px solid #ddd; padding-bottom: 8px; margin-bottom: 15px; font-size: 24px;">${test.title}</h2>`;
                 
                 test.groups.forEach(group => {
                     const overallStr = group.overall ? `<span style="font-weight: normal; color: #666; font-size: 14px; margin-left: 10px;">(Overall: ${group.overall})</span>` : '';
-                    html += `<h3 style="margin-bottom: 12px; font-size: 18px; color: #222; margin-top: 25px;">${group.title} ${overallStr}</h3>`;
-                    html += `<div style="display: block; width: 100%;">`;
+                    html += `<h3 style="margin-bottom: 15px; font-size: 18px; color: #222; margin-top: 25px;">${group.title} ${overallStr}</h3>`;
+                    
+                    // Desktop-style Two-Column Flex Layout
+                    html += `<div style="display: flex; flex-wrap: wrap; gap: 15px;">`;
                     
                     for (const [trait, value] of Object.entries(group.traits)) {
                         html += `
-                            <div style="display: flex; justify-content: space-between; padding: 10px 15px; border-bottom: 1px solid #eee; background: #fafafa; margin-bottom: 4px; border-radius: 4px;">
-                                <span style="font-weight: 500; color: #333; font-size: 15px;">${trait}</span>
-                                <span style="font-weight: bold; color: #be8248; font-size: 15px;">${value} <span style="font-size: 12px; color: #999; font-weight: normal;">/ ${test.maxScore}</span></span>
+                            <div style="width: calc(50% - 8px); box-sizing: border-box; display: flex; justify-content: space-between; padding: 12px 15px; border: 1px solid #eee; background: #fafafa; border-radius: 6px;">
+                                <span style="font-weight: 500; color: #333; font-size: 14px;">${trait}</span>
+                                <span style="font-weight: bold; color: #be8248; font-size: 14px;">${value} <span style="font-size: 11px; color: #999; font-weight: normal;">/ ${test.maxScore}</span></span>
                             </div>
                         `;
                     }
@@ -586,11 +576,12 @@
 
             let printDiv = document.createElement('div');
             printDiv.id = 'print-container';
+            // Absolute positioning with a minimum width forces a zoom-out for the printer canvas
+            printDiv.style.cssText = "position: absolute; top: 0; left: 0; right: 0; min-width: 800px; width: 100%; background: white; z-index: 999999; padding: 0; margin: 0;";
             printDiv.innerHTML = html;
             document.body.appendChild(printDiv);
 
-            // MANUALLY hide every single direct child of body EXCEPT the print container
-            // This is the only 100% reliable way to force mobile browsers to focus on the print data
+            // Hide everything else so only the print block goes to the spooler
             const allBodyChildren = Array.from(document.body.children);
             allBodyChildren.forEach(child => {
                 if (child.id !== 'print-container' && child.tagName !== 'SCRIPT' && child.tagName !== 'STYLE') {
@@ -599,16 +590,15 @@
                 }
             });
 
-            // Unlock the body
             const oldOverflow = document.body.style.overflow;
             document.body.style.overflow = 'visible';
 
-            // Give the DOM time to repaint the blank canvas before calling print
+            // Allow the browser to repaint the dom before triggering print
             setTimeout(() => {
                 window.print();
             }, 400);
 
-            // Function to restore the view after printing
+            // Cleanup routine to put the site back to normal after printing
             const cleanupPrint = () => {
                 allBodyChildren.forEach(child => {
                     if (child.hasAttribute('data-original-display')) {
@@ -621,9 +611,7 @@
                 if(printDiv) printDiv.remove();
             };
 
-            // Listeners to trigger cleanup
             window.addEventListener('afterprint', cleanupPrint, {once: true});
-            // Fallback for iOS Safari which sometimes misses the afterprint event
             setTimeout(() => { window.addEventListener('focus', cleanupPrint, {once: true}); }, 1500);
         }
     </script>
