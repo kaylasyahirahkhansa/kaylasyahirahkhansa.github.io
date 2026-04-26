@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>无宗无派学 by 无名</title>
+    <style>
+        /* CSS Variables */
+        :root {
+            --bg-color: #ffffff;
+            --text-main: #1a1a1a;
+            --text-muted: #737373;
+            --accent-line: #eaeaea;
+            --seal-red: #ba3232;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: "Georgia", "Times New Roman", serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            position: relative;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            position: relative;
+            z-index: 1; /* Keeps text above floating background */
+        }
+
+        /* Floating Background Elements */
+        .bg-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .floating-shape {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0,0,0,0.025) 0%, rgba(0,0,0,0) 70%);
+            animation: float 20s infinite ease-in-out alternate;
+        }
+
+        .shape1 { width: 400px; height: 400px; top: 5%; left: -10%; animation-duration: 25s; }
+        .shape2 { width: 600px; height: 600px; bottom: -15%; right: -10%; animation-duration: 32s; animation-direction: alternate-reverse; }
+        .shape3 { width: 300px; height: 300px; top: 45%; left: 70%; animation-duration: 28s; }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(40px, -40px) scale(1.05); }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 1.2s ease-out forwards;
+            opacity: 0;
+        }
+
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
+        .delay-4 { animation-delay: 0.8s; }
+
+        /* Typography */
+        h1, h2 {
+            font-weight: normal;
+            margin-bottom: 5px;
+            color: var(--text-main);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            letter-spacing: 3px;
+            margin-top: 0;
+        }
+
+        .author-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+        }
+
+        .author {
+            font-style: italic;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        .seal {
+            border: 1px solid var(--seal-red);
+            color: var(--seal-red);
+            font-size: 0.8rem;
+            padding: 2px 4px;
+            border-radius: 2px;
+            font-family: "Noto Serif SC", "SimSun", serif;
+            opacity: 0.85;
+            user-select: none;
+        }
+
+        /* Full Audio Player UI */
+        .audio-section {
+            text-align: center;
+            margin: 10px 0 30px 0;
+        }
+
+        .audio-section p {
+            margin: 0 0 10px 0;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        audio {
+            width: 100%;
+            max-width: 350px;
+            outline: none;
+            border-radius: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        /* Chapter Styling */
+        .chapter {
+            margin-bottom: 35px;
+            text-align: center;
+        }
+
+        .chapter h2 {
+            font-size: 1rem;
+            text-transform: uppercase;
+            color: #999;
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+        }
+
+        .zh {
+            font-size: 1.5rem;
+            margin: 10px 0 5px 0;
+            font-family: "Noto Serif SC", "SimSun", serif;
+            font-weight: 500;
+        }
+
+        .py {
+            font-size: 0.9rem;
+            color: #a3a3a3;
+            margin: 0 0 5px 0;
+            letter-spacing: 1px;
+        }
+
+        .en {
+            font-size: 1.05rem;
+            margin: 0 0 15px 0;
+            color: var(--text-muted);
+        }
+
+        /* Divider */
+        hr {
+            width: 30px;
+            height: 1px;
+            background-color: var(--accent-line);
+            border: none;
+            margin: 40px auto;
+        }
+
+        /* Commentary Styling */
+        .commentary {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .commentary h2 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+        }
+
+        .sequence {
+            margin-bottom: 25px;
+            font-size: 1rem;
+            color: var(--text-main);
+            line-height: 1.8;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed var(--accent-line);
+            display: inline-block;
+        }
+
+        .sequence span {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-style: italic;
+            margin-top: 5px;
+        }
+
+        .commentary p {
+            text-align: justify;
+            text-align-last: center; /* Keeps the last line of justified text centered */
+            margin-bottom: 15px;
+            font-size: 1rem;
+            color: #4a4a4a;
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg-elements">
+    <div class="floating-shape shape1"></div>
+    <div class="floating-shape shape2"></div>
+    <div class="floating-shape shape3"></div>
+</div>
+
+<div class="container">
+    <header class="fade-in">
+        <h1>无宗无派学</h1>
+        <div class="author-wrapper">
+            <p class="author">by. 无名</p>
+            <span class="seal">无名</span>
+        </div>
+        
+        <div class="audio-section">
+            <p>Listen to Original Text</p>
+            <audio controls>
+                <source src="text.mp3" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+        </div>
+    </header>
+
+    <main>
+        <section class="chapter fade-in delay-1">
+            <h2>Chapter 1 (欲)</h2>
+            <div class="stanza">
+                <p class="zh">无欲，万物皆明。</p>
+                <p class="py">Wú yù, wànwù jiē míng.</p>
+                <p class="en">Without desire, all is clear.</p>
+            </div>
+            <div class="stanza">
+                <p class="zh">而欲无欲，一也。</p>
+                <p class="py">Ér yù wú yù, yī yě.</p>
+                <p class="en">Yet desire and its absence are one.</p>
+            </div>
+        </section>
+
+        <section class="chapter fade-in delay-2">
+            <h2>Chapter 2 (自然)</h2>
+            <div class="stanza">
+                <p class="zh">万物自运，无所为也。</p>
+                <p class="py">Wànwù zì yùn, wú suǒ wéi yě.</p>
+                <p class="en">All things run their own course.<br>Nothing needs to be done.</p>
+            </div>
+        </section>
+
+        <section class="chapter fade-in delay-3">
+            <h2>Chapter 3 (忘)</h2>
+            <div class="stanza">
+                <p class="zh">我忘矣，如此而已。</p>
+                <p class="py">Wǒ wàng yǐ, rúcǐ ér yǐ.</p>
+                <p class="en">I forgot. That's it.</p>
+            </div>
+        </section>
+
+        <section class="chapter fade-in delay-4">
+            <h2>Chapter 4 (复)</h2>
+            <div class="stanza">
+                <p class="zh">复无。</p>
+                <p class="py">Fù wú.</p>
+                <p class="en">Return to nothing.</p>
+            </div>
+        </section>
+
+        <hr>
+
+        <section class="commentary fade-in delay-4">
+            <h2>Critical Commentary</h2>
+            
+            <div class="audio-section" style="margin-bottom: 25px;">
+                <p>Listen to Commentary</p>
+                <audio controls>
+                    <source src="commentary.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+
+            <p class="sequence">
+                欲 → 自然 → 忘 → 无
+                <span>Desire → Naturalness → Forgetting → Nothing</span>
+            </p>
+
+            <p>The four chapters of Wu Zong Wu Pai Xue starts with the messy reality of desire. The <strong>first chapter</strong> walks through feeling it, releasing it, and ultimately realizing that wanting something and not wanting it are practically the same state. That non-dual realization brings a kind of baseline clarity, which naturally sets up everything that follows.</p>
+
+            <p>Once that clarity hits, intervention becomes pointless (<strong>Chapter Two</strong>). When you actually see the world exactly as it is, you realize it’s running itself just fine. Non-action isn't presented here as some rigorous ascetic discipline you have to master; it’s just the inevitable byproduct of paying attention. You stop doing things because you see that nothing needs to be done.</p>
+
+            <p>Then, in <strong>Chapter Three</strong>, things take a very quiet turn. The self that was doing all this observing and clarifying simply starts to fade. It just offers a simple, almost casual confession: "I forgot." It’s just what happens when there's no action left to take.</p>
+
+            <p>By <strong>Chapter Four</strong>, we reach the end. The number four carries traditional associations with death and finality, and the text leans all the way in with a single, blunt instruction: Return to nothing. There is no promise of the eternal Dao here. No ultimate unity, no enlightenment, no comfort. It is exactly what its title claims; the study of no school and no sect, written by a nameless author. The text doesn't try to sell you a doctrine or leave you with a warm sense of closure. It simply finishes its thought, leaves nothing behind, and goes quiet.</p>
+        </section>
+    </main>
+</div>
+
+<script>
+    document.addEventListener('play', function(e) {
+        var audios = document.getElementsByTagName('audio');
+        for(var i = 0, len = audios.length; i < len; i++){
+            if(audios[i] != e.target){
+                audios[i].pause();
+            }
+        }
+    }, true);
+</script>
+
+</body>
+</html>
