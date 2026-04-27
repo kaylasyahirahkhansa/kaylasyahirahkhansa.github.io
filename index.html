@@ -86,9 +86,9 @@
         .editorial-text { font-size: 1.15rem; line-height: 1.8; color: var(--text-light); }
         .editorial-text p { margin-bottom: 2em; }
 
-        /* Updated Skills/Methodology Section Styles */
+        /* Updated Skills/Methodology Section Styles for Stretching Image to Horizontal Borders */
         .skills-prose { 
-            padding: 12vh 10vw; 
+            padding: 0 10vw; /* 0 padding top and bottom so elements can touch the horizontal borders */
             text-align: left; 
             font-size: clamp(1.2rem, 2.5vw, 2rem); 
             line-height: 1.6; 
@@ -97,22 +97,24 @@
             border-bottom: 3px solid var(--hairline); 
             margin: 5vh 0; 
             display: grid;
-            grid-template-columns: 0.8fr 1.2fr;
+            grid-template-columns: 0.9fr 1.1fr; 
             gap: 6vw;
-            align-items: center;
+            align-items: stretch; /* Stretches the children to the absolute top and bottom */
         }
         
         .skills-img-wrapper {
             width: 100%;
-            aspect-ratio: 3/4;
+            height: 100%; /* Fill the height entirely */
+            display: flex; /* Ensures the image inside is forced to fill the container without baseline gaps */
             overflow: hidden;
-            border-radius: 8px;
+            border-radius: 0; /* Flat edges to sit perfectly flush against the lines */
         }
         
         .skills-img {
+            display: block; /* Removes the tiny default bottom gap that images naturally have */
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: cover; /* Ensures image isn't distorted regardless of dynamic size */
             filter: grayscale(100%);
             transition: filter 0.8s ease, transform 0.8s ease;
         }
@@ -120,6 +122,12 @@
         .skills-img-wrapper:hover .skills-img {
             filter: grayscale(0%);
             transform: scale(1.05);
+        }
+        
+        .skills-text-wrapper {
+            padding: 12vh 0; /* Padding applied to text container so it stays vertically centered */
+            display: flex;
+            align-items: center;
         }
 
         .skill-hl { color: var(--text); font-style: italic; font-family: 'Cormorant Garamond', serif; position: relative; display: inline-block; transition: color 0.4s ease; cursor: pointer; }
@@ -154,13 +162,19 @@
             
             /* Updated Mobile Skills Section */
             .skills-prose { 
-                grid-template-columns: 1fr; /* Stacks image and text vertically */
-                gap: 4vh;
-                padding: 8vh 6vw; 
+                grid-template-columns: 1fr;
+                gap: 0;
+                padding: 0; /* Lets elements hit the screen edges too if desired */
                 font-size: clamp(1.2rem, 5vw, 1.8rem); 
-                line-height: 1.5; 
             } 
-            .skills-img-wrapper { max-width: 300px; margin: 0 auto; } /* Keep image reasonable size on mobile */
+            .skills-img-wrapper { 
+                max-width: 100%; 
+                height: 45vh; /* Set a fixed vertical height on mobile since aspect ratio is removed */
+                margin: 0; 
+            }
+            .skills-text-wrapper {
+                padding: 6vh 6vw 8vh 6vw; /* Restore spacing inside text section on mobile */
+            } 
             
             .content-grid { grid-template-columns: 1fr; gap: 4vh; padding: 6vh 6vw 10vh 6vw; } 
             .skill-item { font-size: clamp(1.3rem, 6vw, 2rem); padding: 16px 0; }
@@ -181,7 +195,7 @@
 
     <div class="translate-control">
         <button class="translate-btn" onclick="toggleTranslate()" aria-label="Translate">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
         </button>
         <div class="translate-bubble" id="translateBubble">
             <p><strong>Instruksi Terjemahan</strong></p>
@@ -214,7 +228,7 @@
     <div class="frame-line v-line" style="right: 5vw;"></div>
 
     <section class="hero">
-        <div class="hero-img-container"><img src="/profile.png" alt="Kayla" class="hero-img"></div>
+        <div class="hero-img-container"><img src="profile.png" alt="Kayla" class="hero-img"></div>
         <h1 class="glitch-title">
             <span class="magnetic relative z-10 block">KAYLA</span>
             <span class="magnetic relative z-10 block opacity-50 italic">SYAHIRAH</span>
@@ -232,10 +246,12 @@
 
     <section class="skills-prose reveal font-sans">
         <div class="skills-img-wrapper">
-            <img src="/meincoat.png" alt="Methodology" class="skills-img">
+            <img src="meincoat.png" alt="Methodology" class="skills-img">
         </div>
-        <div>
-            My methodology relies heavily on <span class="skill-hl">Data Analysis</span> and <span class="skill-hl">Research</span>. I thrive in environments that require <span class="skill-hl">Strategic Planning</span>, <span class="skill-hl">Team Collaboration</span>, and <span class="skill-hl">Problem Solving</span>. Everything is bridged by transparent <span class="skill-hl">Communication</span> and <span class="skill-hl">Critical Thinking</span>.
+        <div class="skills-text-wrapper">
+            <div>
+                My methodology relies heavily on <span class="skill-hl">Data Analysis</span> and <span class="skill-hl">Research</span>. I thrive in environments that require <span class="skill-hl">Strategic Planning</span>, <span class="skill-hl">Team Collaboration</span>, and <span class="skill-hl">Problem Solving</span>. Everything is bridged by transparent <span class="skill-hl">Communication</span> and <span class="skill-hl">Critical Thinking</span>.
+            </div>
         </div>
     </section>
 
@@ -243,7 +259,7 @@
         <div class="content-left flex flex-col gap-6">
             <div class="section-label font-sans">Projects Example</div>
             <div class="project-image-wrapper reveal relative w-full overflow-hidden rounded-xl mt-4">
-                <img src="/your-image.jpg" alt="Projects Overview" class="w-full aspect-[4/3] object-cover grayscale hover:grayscale-0 transition-all duration-700">
+                <img src="your-image.jpg" alt="Projects Overview" class="w-full aspect-[4/3] object-cover grayscale hover:grayscale-0 transition-all duration-700">
             </div>
         </div>
         <div class="skills-container">
