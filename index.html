@@ -155,6 +155,52 @@
          color: var(--accent);
         }
 
+.skill-static { 
+    color: var(--accent); 
+    font-style: italic; 
+    font-family: 'Cormorant Garamond', serif; 
+    display: inline-block; 
+}
+
+/* Cascading Scrolling Arrows */
+html { scroll-behavior: smooth; }
+
+.scroll-arrows {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+.scroll-arrows:hover {
+    transform: scale(1.1);
+}
+.scroll-arrows span {
+    display: block;
+    width: 24px;
+    height: 24px;
+    border-bottom: 3px solid var(--accent);
+    border-right: 3px solid var(--accent);
+    transform: rotate(45deg);
+    margin: -8px; /* overlaps them slightly */
+    animation: scroll-cascade 2s infinite;
+}
+.scroll-arrows span:nth-child(2) {
+    animation-delay: -0.2s;
+}
+.scroll-arrows span:nth-child(3) {
+    animation-delay: -0.4s;
+}
+@keyframes scroll-cascade {
+    0% { opacity: 0; transform: rotate(45deg) translate(-15px, -15px); }
+    50% { opacity: 1; }
+    100% { opacity: 0; transform: rotate(45deg) translate(15px, 15px); }
+}
+
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
         /* ── MOBILE OVERRIDES ── */
         @media (max-width: 768px) {
             .header-controls { top: 28px; right: 6vw; gap: 12px; } .translate-control { top: 28px; left: 6vw; } .frame-line { display: none; }
@@ -242,14 +288,14 @@
             <span class="magnetic relative z-10 block opacity-50 italic">SYAHIRAH</span>
             <span class="magnetic relative z-10 block">KHANSA</span>
         </h1>
-        <div class="absolute bottom-10 left-[10vw] max-w-xs text-[10px] uppercase tracking-widest font-sans glowing-text">Jember, Jawa Timur, Indonesia</div>
+        <div class="absolute bottom-10 left-[10vw] max-w-xs text-[10px] uppercase tracking-widest font-sans glowing-text">Jember, East Java, Indonesia</div>
     </section>
 
     <section class="editorial" id="about">
         <h2 class="editorial-heading font-serif italic reveal"><span class="accent">Who's</span> <br>Kayla Syahirah Khansa?</h2>
         <div class="editorial-text reveal font-sans">
-            <p><strong>Kayla</strong> is a driven and visionary managament student at <strong>Universitas Jember</strong> , Indonesia. With a strong academic foundation and certified <strong>English proficiency at C1 level. </strong> </p>
-            <p>She has <strong>hands-on entrepreneurial experience</strong> and is actively expanding her linguistic range with <strong>Mandarin</strong> at <strong>HSK level 2</strong>.</p>
+            <p><strong>Kayla Syahirah Khansa</strong> is a management student at <strong>Universitas Jember</strong>, Indonesia. </p>
+            <p>They work across<strong> English proficiency at C1 level, </strong> <strong>Mandarin HSK 2,</strong> and the intersection of <strong> systemic reasoning</strong> with<strong> real-world entrepreneurial </strong>practice.</p>
         </div>
     </section>
 
@@ -257,27 +303,167 @@
         <div class="skills-img-wrapper">
             <img src="meincoat.png" alt="Methodology" class="skills-img">
         </div>
-        <div class="skills-text-wrapper">
-            <div>
-                My cognition relies heavily on <span class="skill-hl">Systemic Thinking</span> and <span class="skill-hl">Research</span>. I thrive in environments that require <span class="skill-hl">Strategic Planning</span>, <span class="skill-hl">Team Collaboration</span>, and <span class="skill-hl">Problem Solving</span>. Everything is bridged by transparent <span class="skill-hl">Communication</span> and <span class="skill-hl">Critical Thinking</span>.
-            </div>
+       <div class="skills-text-wrapper">
+    <div>
+        <p>My cognition relies heavily on <span class="skill-hl">Extreme Systemic Thinking</span> and <span class="skill-hl">Abstract-spatial Reasoning</span>. I process complexity through <span class="skill-hl"> Pattern Recognition</span>, <span class="skill-hl">Team Collaboration</span>, and <span class="skill-hl">Problem Solving</span>.</p> 
+
+        <p class="mt-12">Allowing <span class="skill-static">Rapid Synthesis of Information</span> and <span class="skill-static">Intuitive Identification of Underlying Structures</span>.</p>
+    </div>
+</div>
         </div>
     </section>
 
-    <section class="content-grid">
-        <div class="content-left flex flex-col gap-6">
-            <div class="section-label font-sans">Projects Example</div>
-            <div class="project-image-wrapper reveal relative w-full overflow-hidden rounded-xl mt-4">
-                <img src="your-image.jpg" alt="Projects Overview" class="w-full aspect-[4/3] object-cover grayscale hover:grayscale-0 transition-all duration-700">
+<section class="reveal flex flex-col items-center justify-center text-center py-20 px-[5vw] md:px-[10vw] font-sans w-full">
+    
+    <p class="text-[var(--text-light)] text-sm md:text-base tracking-[0.2em] uppercase mb-8">
+        This cognitive style is particularly suited for
+    </p>
+
+    <a href="#suited-environments" class="scroll-arrows mb-24" aria-label="Scroll down">
+        <span></span><span></span><span></span>
+    </a>
+
+    <div id="suited-environments" class="w-full max-w-5xl flex flex-col gap-6">
+        
+        <div class="w-full flex items-center justify-between p-6 md:p-10 border border-[var(--hairline)] hover:border-[var(--accent)] transition-all duration-500 cursor-pointer group">
+            <div class="flex items-center gap-6 md:gap-10">
+                <span class="text-[var(--text-light)] text-sm tracking-[0.2em] uppercase w-8">01</span>
+                <h3 class="font-serif italic text-2xl md:text-4xl text-[var(--text)] group-hover:text-[var(--accent)] transition-colors duration-500 text-left">Strategic Planning</h3>
+            </div>
+            <i class="fa-solid fa-arrow-right text-[var(--text-light)] group-hover:text-[var(--accent)] transform group-hover:translate-x-4 transition-all duration-500 text-xl md:text-2xl"></i>
+        </div>
+        
+        <div class="w-full flex items-center justify-between p-6 md:p-10 border border-[var(--hairline)] hover:border-[var(--accent)] transition-all duration-500 cursor-pointer group">
+            <div class="flex items-center gap-6 md:gap-10">
+                <span class="text-[var(--text-light)] text-sm tracking-[0.2em] uppercase w-8">02</span>
+                <h3 class="font-serif italic text-2xl md:text-4xl text-[var(--text)] group-hover:text-[var(--accent)] transition-colors duration-500 text-left">Complex Problem-Solving</h3>
+            </div>
+            <i class="fa-solid fa-arrow-right text-[var(--text-light)] group-hover:text-[var(--accent)] transform group-hover:translate-x-4 transition-all duration-500 text-xl md:text-2xl"></i>
+        </div>
+
+        <div class="w-full flex items-center justify-between p-6 md:p-10 border border-[var(--hairline)] hover:border-[var(--accent)] transition-all duration-500 cursor-pointer group">
+            <div class="flex items-center gap-6 md:gap-10">
+                <span class="text-[var(--text-light)] text-sm tracking-[0.2em] uppercase w-8">03</span>
+                <h3 class="font-serif italic text-2xl md:text-4xl text-[var(--text)] group-hover:text-[var(--accent)] transition-colors duration-500 text-left">Cross-Disciplinary Integration</h3>
+            </div>
+            <i class="fa-solid fa-arrow-right text-[var(--text-light)] group-hover:text-[var(--accent)] transform group-hover:translate-x-4 transition-all duration-500 text-xl md:text-2xl"></i>
+        </div>
+
+    </div>
+</section>
+
+<section id="cognitive-strengths" class="reveal px-[5vw] md:px-[10vw] pt-4 pb-20 font-sans w-full flex flex-col items-center">
+    
+    <a href="#cognitive-strengths" class="scroll-arrows mb-16" aria-label="Scroll down">
+        <span></span><span></span><span></span>
+    </a>
+
+    <p class="text-[var(--text-light)] text-sm md:text-base tracking-[0.2em] uppercase mb-12 text-center w-full">
+        Key Cognitive Strengths
+    </p>
+
+  <div class="flex flex-row w-full h-[60vh] md:h-[500px] gap-4 overflow-x-auto md:overflow-hidden snap-x snap-mandatory md:snap-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
+    
+    <div tabindex="0" class="group relative w-[85vw] md:w-auto md:flex-1 md:hover:flex-[3] md:focus:flex-[3] shrink-0 md:shrink transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] border border-[var(--hairline)] hover:border-[var(--accent)] focus:border-[var(--accent)] outline-none cursor-pointer overflow-hidden flex flex-col justify-end bg-cover bg-center snap-center" style="background-image: url('1.png');">
+        
+        <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-700 pointer-events-none z-[1]"></div>
+
+        <div class="absolute top-6 left-6 bg-white text-black group-hover:bg-transparent group-focus:bg-transparent px-3 py-1 text-sm tracking-[0.2em] transition-colors duration-500 group-hover:text-white group-focus:text-white z-20">01</div>
+        
+        <div class="relative z-10 w-full flex flex-col items-start">
+            
+            <div class="w-full bg-white group-hover:bg-transparent group-focus:bg-transparent px-6 md:px-8 py-5 transition-colors duration-500">
+                <h3 class="font-serif italic text-2xl md:text-3xl text-black group-hover:text-white group-focus:text-white transition-colors duration-500 whitespace-nowrap drop-shadow-lg">
+                    Systemic<br class="hidden md:block"> Reasoning
+                </h3>
+            </div>
+            
+            <div class="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] group-focus:grid-rows-[1fr] transition-all duration-700 ease-in-out w-full">
+                <div class="overflow-hidden px-6 md:px-8">
+                    <p class="text-white text-sm md:text-base leading-relaxed pb-6 md:pb-8 pt-2 min-w-[250px] md:min-w-[300px] max-w-sm opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-700 delay-100">
+                        I naturally map relationships between components, identify structural patterns, and translate complexity into clarity.
+                    </p>
+                </div>
             </div>
         </div>
-        <div class="skills-container">
-            <div class="skill-item reveal"><span>01</span>Data Analyst Intern</div>
-            <div class="skill-item reveal"><span>02</span>Market Researcher</div>
-            <div class="skill-item reveal"><span>03</span>Communications Strategist</div>
-            <div class="skill-item reveal"><span>04</span>Project Lead</div>
+    </div>
+
+    <div tabindex="0" class="group relative w-[85vw] md:w-auto md:flex-1 md:hover:flex-[3] md:focus:flex-[3] shrink-0 md:shrink transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] border border-[var(--hairline)] hover:border-[var(--accent)] focus:border-[var(--accent)] outline-none cursor-pointer overflow-hidden flex flex-col justify-end bg-cover bg-center snap-center" style="background-image: url('2.png');">
+        
+        <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-700 pointer-events-none z-[1]"></div>
+
+        <div class="absolute top-6 left-6 bg-white text-black group-hover:bg-transparent group-focus:bg-transparent px-3 py-1 text-sm tracking-[0.2em] transition-colors duration-500 group-hover:text-white group-focus:text-white z-20">02</div>
+        
+        <div class="relative z-10 w-full flex flex-col items-start">
+            
+            <div class="w-full bg-white group-hover:bg-transparent group-focus:bg-transparent px-6 md:px-8 py-5 transition-colors duration-500">
+                <h3 class="font-serif italic text-2xl md:text-3xl text-black group-hover:text-white group-focus:text-white transition-colors duration-500 whitespace-nowrap drop-shadow-lg">
+                    Spatial-Abstract<br class="hidden md:block"> Processing
+                </h3>
+            </div>
+            
+            <div class="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] group-focus:grid-rows-[1fr] transition-all duration-700 ease-in-out w-full">
+                <div class="overflow-hidden px-6 md:px-8">
+                    <p class="text-white text-sm md:text-base leading-relaxed pb-6 md:pb-8 pt-2 min-w-[250px] md:min-w-[300px] max-w-sm opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-700 delay-100">
+                        I think in relationships and structures rather than words or images, which supports non-linear problem-solving and strategic foresight.
+                    </p>
+                </div>
+            </div>
         </div>
-    </section>
+    </div>
+
+    <div tabindex="0" class="group relative w-[85vw] md:w-auto md:flex-1 md:hover:flex-[3] md:focus:flex-[3] shrink-0 md:shrink transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] border border-[var(--hairline)] hover:border-[var(--accent)] focus:border-[var(--accent)] outline-none cursor-pointer overflow-hidden flex flex-col justify-end bg-cover bg-center snap-center" style="background-image: url('3.png');">
+        
+        <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-700 pointer-events-none z-[1]"></div>
+
+        <div class="absolute top-6 left-6 bg-white text-black group-hover:bg-transparent group-focus:bg-transparent px-3 py-1 text-sm tracking-[0.2em] transition-colors duration-500 group-hover:text-white group-focus:text-white z-20">03</div>
+        
+        <div class="relative z-10 w-full flex flex-col items-start">
+            
+            <div class="w-full bg-white group-hover:bg-transparent group-focus:bg-transparent px-6 md:px-8 py-5 transition-colors duration-500">
+                <h3 class="font-serif italic text-2xl md:text-3xl text-black group-hover:text-white group-focus:text-white transition-colors duration-500 whitespace-nowrap drop-shadow-lg">
+                    Metacognitive<br class="hidden md:block"> Awareness
+                </h3>
+            </div>
+            
+            <div class="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] group-focus:grid-rows-[1fr] transition-all duration-700 ease-in-out w-full">
+                <div class="overflow-hidden px-6 md:px-8">
+                    <p class="text-white text-sm md:text-base leading-relaxed pb-6 md:pb-8 pt-2 min-w-[250px] md:min-w-[300px] max-w-sm opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-700 delay-100">
+                        I observe and refine my own thinking processes, enabling continuous adaptation and learning.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div tabindex="0" class="group relative w-[85vw] md:w-auto md:flex-1 md:hover:flex-[3] md:focus:flex-[3] shrink-0 md:shrink transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] border border-[var(--hairline)] hover:border-[var(--accent)] focus:border-[var(--accent)] outline-none cursor-pointer overflow-hidden flex flex-col justify-end bg-cover bg-center snap-center" style="background-image: url('4.png');">
+        
+        <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-700 pointer-events-none z-[1]"></div>
+
+        <div class="absolute top-6 left-6 bg-white text-black group-hover:bg-transparent group-focus:bg-transparent px-3 py-1 text-sm tracking-[0.2em] transition-colors duration-500 group-hover:text-white group-focus:text-white z-20">04</div>
+        
+        <div class="relative z-10 w-full flex flex-col items-start">
+            
+            <div class="w-full bg-white group-hover:bg-transparent group-focus:bg-transparent px-6 md:px-8 py-5 transition-colors duration-500">
+                <h3 class="font-serif italic text-2xl md:text-3xl text-black group-hover:text-white group-focus:text-white transition-colors duration-500 whitespace-nowrap drop-shadow-lg">
+                    Dual-Processing<br class="hidden md:block"> Comm.
+                </h3>
+            </div>
+            
+            <div class="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] group-focus:grid-rows-[1fr] transition-all duration-700 ease-in-out w-full">
+                <div class="overflow-hidden px-6 md:px-8">
+                    <p class="text-white text-sm md:text-base leading-relaxed pb-6 md:pb-8 pt-2 min-w-[250px] md:min-w-[300px] max-w-sm opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-700 delay-100">
+                        I bridge analytical precision with empathetic collaboration, adapting explanatory frameworks to diverse audiences.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</div>
+</section>
 
     <section class="hiring-footer" id="contact">
         <div class="reveal">
