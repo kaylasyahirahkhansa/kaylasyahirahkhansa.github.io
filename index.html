@@ -1,533 +1,153 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>Kayla Syahirah Khansa</title>
-    <meta name="description" content="Kayla Syahirah Khansa — Student from Bondowoso, East Java. Connect via WhatsApp, LinkedIn, Instagram, or Email.">
-    <meta name="keywords" content="Kayla Syahirah Khansa, kayla syahirah khansa, kayla khansa, bondowoso, jawa timur, portfolio">
-    <meta name="author" content="Kayla Syahirah Khansa">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://kaylasyahirahkhansa.my.id">
-    <meta property="og:title" content="Kayla Syahirah Khansa">
-    <meta property="og:description" content="Student from Bondowoso, East Java.">
-    <meta property="og:type" content="profile">
-    <meta property="og:url" content="https://kaylasyahirahkhansa.my.id">
-    <meta property="og:image" content="https://kaylasyahirahkhansa.my.id/preview.png">
-    <meta name="twitter:card" content="summary_large_image">
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Italiana&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <style>
-        :root {
-            --bg: #0a0a0a;
-            --text: #f0f0f0;
-            --text-light: #a0a0a0;
-            --hairline: rgba(255, 255, 255, 0.25);
-            --accent: #be8248; 
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kayla Syahirah Khansa</title>
+<meta name="description" content="Kayla Syahirah Khansa — Student from Bondowoso, East Java. Connect via LinkedIn, Instagram, or Email.">
+<meta name="author" content="Kayla Syahirah Khansa">
 
-        body.light-mode { --bg: #FFFFFF; --text: #0A0A0A; --text-light: #666666; --hairline: rgba(0, 0, 0, 0.2); }
-        
-        * { margin: 0; padding: 0; box-sizing: border-box; max-width: 100vw; }
-        html, body { width: 100%; max-width: 100vw; overflow-x: hidden; }
-        
-        body {
-            background-color: var(--bg); color: var(--text); font-family: 'Space Grotesk', sans-serif; font-weight: 300;
-            transition: background-color 1.5s cubic-bezier(0.2, 0.8, 0.2, 1), color 1.5s ease; -webkit-font-smoothing: antialiased;
-        }
+<style>
+  body {
+    background-color: #fdfdf6;
+    color: #222222;
+    font-family: Georgia, "Times New Roman", serif;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+  }
 
-        #progress { position: fixed; bottom: 0; left: 0; height: 6px; background: var(--accent); width: 0%; z-index: 1000; transition: width 0.1s ease-out; }
-        .header-controls { position: fixed; top: 45px; right: 10vw; z-index: 2000; display: flex; align-items: center; gap: 20px; }
-        .translate-control { position: fixed; top: 45px; left: 10vw; z-index: 2000; display: flex; align-items: center; }
-        .translate-btn { background: none; border: none; cursor: pointer; color: var(--text); display: flex; align-items: center; justify-content: center; outline: none; transition: color 0.4s ease; line-height: 1; padding: 0; }
-        .translate-btn:hover { color: var(--accent); }
-        .translate-bubble { position: absolute; top: calc(100% + 14px); left: 0; width: 260px; max-width: 85vw; background: rgba(150, 150, 150, 0.1); backdrop-filter: blur(15px); border: 1px solid var(--hairline); padding: 20px; border-radius: 20px; opacity: 0; pointer-events: none; transform: translateY(-10px); transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); color: var(--text); font-size: 0.75rem; line-height: 1.5; }
-        .translate-bubble.active { opacity: 1; pointer-events: all; transform: translateY(0); }
-        .translate-bubble hr { border: 0; border-top: 1px solid var(--hairline); margin: 12px 0; }
-        .search-wrapper { display: flex; align-items: center; position: relative; }
-        .search-input { width: 0; opacity: 0; background: rgba(150, 150, 150, 0.1); backdrop-filter: blur(15px); border: 1px solid var(--hairline); color: var(--text); padding: 8px 0; border-radius: 30px; font-family: 'Space Grotesk', sans-serif; font-size: 0.8rem; transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); outline: none; position: absolute; right: 40px; pointer-events: none; }
-        .search-input:focus { border-color: var(--text); box-shadow: 0 0 20px rgba(255, 255, 255, 0.1); }
-        .search-wrapper.active .search-input { width: 200px; opacity: 1; padding: 8px 20px; pointer-events: all; }
-        .search-btn { background: none; border: none; cursor: pointer; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; outline: none; }
-        .search-icon { width: 18px; height: 18px; border: 2px solid var(--text); border-radius: 50%; position: relative; }
-        .search-icon::after { content: ''; position: absolute; top: 13px; left: 13px; width: 7px; height: 2px; background: var(--text); transform: rotate(45deg); }
-        .nav-toggle { background: none; border: none; cursor: pointer; padding: 10px; display: flex; align-items: center; outline: none; }
-        .burger { width: 28px; height: 2px; background: var(--text); position: relative; transition: all 0.4s ease; }
-        .burger::before, .burger::after { content: ''; position: absolute; left: 0; width: 100%; height: 2px; background: inherit; transition: all 0.4s ease; }
-        .burger::before { top: -8px; } .burger::after { top: 8px; }
-        .nav-active .burger { background: transparent; }
-        .nav-active .burger::before { transform: translateY(8px) rotate(45deg); background: #fff; }
-        .nav-active .burger::after { transform: translateY(-8px) rotate(-45deg); background: #fff; }
-        .menu-overlay { position: fixed; inset: 0; background: #000; z-index: 1500; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
-        .menu-overlay.active { opacity: 1; pointer-events: all; }
-        .menu-link { font-family: 'Italiana', serif; font-size: clamp(3rem, 8vw, 6rem); color: #fff; text-decoration: none; margin: 10px 0; transition: all 0.4s ease; }
-        .menu-link:hover { color: var(--accent); font-style: italic; transform: translateX(20px); }
+  .container {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 40px 20px;
+  }
 
-        .font-serif { font-family: 'Cormorant Garamond', serif; font-weight: 400; }
-        #cursor-follower { position: fixed; top: 0; left: 0; width: 10px; height: 10px; background: var(--text); border-radius: 50%; pointer-events: none; z-index: 9999; mix-blend-mode: difference; opacity: 0; transition: opacity 0.3s ease, width 0.3s ease, height 0.3s ease; margin-left: -5px; margin-top: -5px; }
-        .frame-line { position: fixed; background: var(--text); opacity: 0.2; z-index: 50; transition: background 1.5s ease; width: 3px; height: 100vh; top: 0; }
-        .hero { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; cursor: none; width: 100%; }
-        .glitch-title { font-family: 'Italiana', serif; font-size: clamp(4rem, 15vw, 18rem); line-height: 0.8; letter-spacing: -0.05em; text-align: center; z-index: 10; width: 100%; }
-        .hero-img-container { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 30vw; max-width: 450px; aspect-ratio: 0.7; overflow: hidden; z-index: 1; opacity: 0.4; transition: opacity 0.8s ease, width 1s cubic-bezier(0.2, 0.8, 0.2, 1); pointer-events: none; }
-        .hero-img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%) brightness(60%); transition: filter 0.8s ease, transform 1s cubic-bezier(0.2, 0.8, 0.2, 1); }
-        .hero:has(.glitch-title:hover) .hero-img-container, .hero-img-container.colored-container { opacity: 0.9; width: 32vw; }
-        .hero:has(.glitch-title:hover) .hero-img, .hero-img.colored { filter: grayscale(0%) brightness(100%); transform: scale(1.05); }
+  header {
+    text-align: center;
+    border-bottom: 2px solid #222222;
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+  }
 
-        .glowing-text { color: #ffffff; font-weight: 500; text-shadow: 0 0 5px rgba(255, 255, 255, 0.4), 0 0 15px var(--accent), 0 0 25px var(--accent); animation: gentle-glow 2.5s ease-in-out infinite alternate; }
-        @keyframes gentle-glow { from { text-shadow: 0 0 3px rgba(255, 255, 255, 0.3), 0 0 10px rgba(190, 130, 72, 0.5); } to { text-shadow: 0 0 8px rgba(255, 255, 255, 0.8), 0 0 20px rgba(190, 130, 72, 0.9), 0 0 35px rgba(190, 130, 72, 0.7); } }
+  header img {
+    width: 140px;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #222222;
+    margin-bottom: 15px;
+  }
 
-        .editorial { padding: 15vh 10vw 10vh 10vw; display: grid; grid-template-columns: 1.2fr 1fr; gap: 8vw; align-items: start; }
-        .editorial-heading { font-size: clamp(2.5rem, 5vw, 4.5rem); line-height: 1.1; }
-        .editorial-text { font-size: 1.15rem; line-height: 1.8; color: var(--text-light); }
-        .editorial-text p { margin-bottom: 2em; }
+  h1 {
+    font-size: 2rem;
+    margin: 0;
+    letter-spacing: 1px;
+  }
 
-        /* Updated Skills/Methodology Section Styles */
-        .skills-prose { 
-            /* 0 padding top and bottom so it touches lines, 10vw left and right to align perfectly with text */
-            padding: 0 10vw; 
-            text-align: left; 
-            font-size: clamp(1.2rem, 2.5vw, 2rem); 
-            line-height: 1.6; 
-            color: var(--text-light); 
-            border-top: 3px solid var(--hairline); 
-            border-bottom: 3px solid var(--hairline); 
-            margin: 5vh 0; 
-            display: grid;
-            grid-template-columns: 0.9fr 1.1fr; 
-            gap: 6vw;
-            align-items: stretch; /* Stretches the children to the absolute top and bottom */
-        }
-        
-        .skills-img-wrapper {
-            width: 100%;
-            height: 100%; /* Fill the height entirely */
-            display: flex; 
-            overflow: hidden;
-            border-radius: 0; /* Flat edges */
-        }
-        
-        .skills-img {
-            display: block;
-            width: 100%;
-            height: 100%;
-            object-fit: cover; 
-            filter: grayscale(100%);
-            transition: filter 0.8s ease, transform 0.8s ease;
-        }
-        
-        .skills-img-wrapper:hover .skills-img {
-            filter: grayscale(0%);
-            transform: scale(1.05);
-        }
-        
-        .skills-text-wrapper {
-            padding: 12vh 0; /* Padding applied to text container so it stays vertically centered */
-            display: flex;
-            align-items: center;
-        }
+  .subtitle {
+    font-style: italic;
+    color: #555555;
+    margin-top: 5px;
+  }
 
-        .skill-hl { color: var(--text); font-style: italic; font-family: 'Cormorant Garamond', serif; position: relative; display: inline-block; transition: color 0.4s ease; cursor: pointer; }
-        .skill-hl::after { content: ''; position: absolute; bottom: 4px; left: 0; width: 100%; height: 2px; background: var(--accent); transform: scaleX(0); transform-origin: right; transition: transform 0.4s ease; }
-        .skill-hl:hover { color: var(--accent); } .skill-hl:hover::after { transform: scaleX(1); transform-origin: left; }
+  h2 {
+    font-size: 1.3rem;
+    border-bottom: 1px solid #999999;
+    padding-bottom: 5px;
+    margin-top: 40px;
+  }
 
-        .content-grid { padding: 10vh 10vw 15vh 10vw; display: grid; grid-template-columns: 1.2fr 1fr; gap: 8vw; align-items: start; }
-        .section-label { font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; border-top: 3px solid var(--hairline); padding-top: 10px; color: var(--text-light); }
-        .skill-item { display: block; width: 100%; padding: 20px 0; border-bottom: 3px solid var(--hairline); font-size: clamp(1.5rem, 2.5vw, 2.5rem); transition: all 0.4s ease; color: var(--text); cursor: pointer; }
-        .skill-item:hover { padding-left: 20px; color: var(--accent); }
-        .skill-item span { font-size: 0.9rem; vertical-align: super; margin-right: 20px; color: var(--text-light); }
+  p {
+    margin: 15px 0;
+  }
 
-        .hiring-footer { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #000; color: #fff !important; text-align: center; padding: 5vw; position: relative; z-index: 100; }
-        .hiring-title { font-family: 'Italiana', serif; font-size: clamp(4rem, 12vw, 10rem); font-weight: 400; line-height: 0.9; text-transform: uppercase; margin-bottom: 3rem; }
-        .hiring-accent { color: var(--accent); font-style: italic; }
-        .contact-grid-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem 4rem; }
-        .contact-link-modern { font-size: 1.5rem; text-transform: uppercase; letter-spacing: 0.1em; border-bottom: 1px solid var(--accent); padding-bottom: 5px; transition: all 0.4s ease; color: white; background: none; border-top: none; border-left: none; border-right: none; cursor: pointer; }
-        .contact-link-modern:hover { color: var(--accent); transform: translateY(-5px); }
+  ul {
+    padding-left: 20px;
+  }
 
-        .reveal { opacity: 0; filter: blur(8px); transform: translateY(30px); transition: all 1.2s cubic-bezier(0.2, 0.8, 0.2, 1); }
-        .reveal.active { opacity: 1; filter: blur(0); transform: translateY(0); }
+  ul li {
+    margin-bottom: 8px;
+  }
 
-        .editorial-heading .accent {
-         color: var(--accent);
-        }
+  .contact-list {
+    list-style: none;
+    padding: 0;
+    text-align: center;
+  }
 
-.skill-static { 
-    color: var(--accent); 
-    font-style: italic; 
-    font-family: 'Cormorant Garamond', serif; 
-    display: inline-block; 
-}
+  .contact-list li {
+    margin: 10px 0;
+  }
 
-/* Cascading Scrolling Arrows */
-html { scroll-behavior: smooth; }
+  .contact-list a {
+    color: #222222;
+    text-decoration: none;
+    border-bottom: 1px solid #222222;
+    font-weight: bold;
+  }
 
-.scroll-arrows {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-}
-.scroll-arrows:hover {
-    transform: scale(1.1);
-}
-.scroll-arrows span {
-    display: block;
-    width: 24px;
-    height: 24px;
-    border-bottom: 3px solid var(--accent);
-    border-right: 3px solid var(--accent);
-    transform: rotate(45deg);
-    margin: -8px; /* overlaps them slightly */
-    animation: scroll-cascade 2s infinite;
-}
-.scroll-arrows span:nth-child(2) {
-    animation-delay: -0.2s;
-}
-.scroll-arrows span:nth-child(3) {
-    animation-delay: -0.4s;
-}
-@keyframes scroll-cascade {
-    0% { opacity: 0; transform: rotate(45deg) translate(-15px, -15px); }
-    50% { opacity: 1; }
-    100% { opacity: 0; transform: rotate(45deg) translate(15px, 15px); }
-}
+  .contact-list a:hover {
+    color: #7a4a20;
+    border-bottom-color: #7a4a20;
+  }
 
-.hide-scrollbar::-webkit-scrollbar { display: none; }
-.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-        /* ── MOBILE OVERRIDES ── */
-        @media (max-width: 768px) {
-            .header-controls { top: 28px; right: 6vw; gap: 12px; } .translate-control { top: 28px; left: 6vw; } .frame-line { display: none; }
-            .hero-img-container { width: 65vw; } .hero:has(.glitch-title:hover) .hero-img-container, .hero-img-container.colored-container { width: 68vw; }
-            
-            .glitch-title { font-size: 13vw; letter-spacing: -0.02em; line-height: 0.9; }
-            .hiring-title { font-size: 14vw; }
-            
-            .editorial { grid-template-columns: 1fr; gap: 4vh; padding: 10vh 6vw 8vh 6vw; } .editorial-heading { font-size: clamp(2rem, 8vw, 3rem); }
-            
-            /* Updated Mobile Skills Section: Removes cropping entirely */
-            .skills-prose { 
-                grid-template-columns: 1fr;
-                gap: 0;
-                padding: 0; /* Lets elements hit the screen edges on mobile */
-                font-size: clamp(1.2rem, 5vw, 1.8rem); 
-            } 
-            .skills-img-wrapper { 
-                width: 100%; 
-                height: auto; /* Lets the container grow to the image's full natural height */
-                margin: 0; 
-            }
-            .skills-img {
-                height: auto; /* Stops the image from being artificially cut off */
-            }
-            .skills-text-wrapper {
-                padding: 6vh 6vw 8vh 6vw; /* Restore spacing inside text section on mobile */
-            } 
-            
-            .content-grid { grid-template-columns: 1fr; gap: 4vh; padding: 6vh 6vw 10vh 6vw; } 
-            .skill-item { font-size: clamp(1.3rem, 6vw, 2rem); padding: 16px 0; }
-            .hiring-footer { padding: 10vw 6vw; } .contact-grid-links { gap: 1.5rem 2.5rem; } .contact-link-modern { font-size: 1.1rem; }
-            .search-wrapper.active .search-input { width: 150px; } 
-        }
-        
-        /* ── ULTIMATE PRINT RESET ── */
-        @media print {
-            body { background: white !important; color: black !important; margin: 0 !important; padding: 0 !important; }
-        }
-    </style>
+  footer {
+    text-align: center;
+    margin-top: 50px;
+    padding-top: 20px;
+    border-top: 2px solid #222222;
+    font-size: 0.85rem;
+    color: #666666;
+  }
+</style>
 </head>
 <body>
 
-    <div id="progress"></div>
-    <div id="cursor-follower"></div>
+<div class="container">
 
-    <div class="translate-control">
-        <button class="translate-btn" onclick="toggleTranslate()" aria-label="Translate">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-        </button>
-        <div class="translate-bubble" id="translateBubble">
-            <p><strong>Instruksi Terjemahan</strong></p>
-            <p style="margin-top:8px;">Klik kanan di mana saja dan pilih <strong>'Terjemahkan ke Bahasa Indonesia'</strong> (Chrome) untuk melihat situs ini dalam Bahasa Indonesia atau bahasa lainnya.</p>
-            <hr>
-            <p>Right-click anywhere and select <strong>'Translate to Language'</strong> (Chrome) to view this site in Indonesian, English, or any other language.</p>
-        </div>
-    </div>
+  <header>
+    <img src="profile.png" alt="Kayla Syahirah Khansa">
+    <h1>Kayla Syahirah Khansa</h1>
+    <div class="subtitle">Jember, East Java, Indonesia</div>
+  </header>
 
-    <div class="header-controls">
-        <div class="search-wrapper" id="searchWrapper">
-            <input type="text" class="search-input" id="mainSearch" placeholder="Search...">
-            <button class="search-btn" onclick="toggleSearch()" aria-label="Search">
-                <div class="search-icon"></div>
-            </button>
-        </div>
-        <button class="nav-toggle" onclick="toggleMenu()" aria-label="Toggle Menu">
-            <div class="burger"></div>
-        </button>
-    </div>
-
-    <div class="menu-overlay" id="menuOverlay">
-        <a href="#" class="menu-link" onclick="toggleMenu()">Home</a>
-        <a href="#about" class="menu-link" onclick="toggleMenu()">About</a>
-        <a href="#contact" class="menu-link" onclick="toggleMenu()">Contact</a>
-        <a href="https://www.linkedin.com/in/kayla-syahirah-khansa-37a572279" target="_blank" class="menu-link">LinkedIn</a>
-    </div>
-
-    <div class="frame-line v-line" style="left: 5vw;"></div>
-    <div class="frame-line v-line" style="right: 5vw;"></div>
-
-    <section class="hero">
-        <div class="hero-img-container"><img src="profile.png" alt="Kayla" class="hero-img"></div>
-        <h1 class="glitch-title">
-            <span class="magnetic relative z-10 block">KAYLA</span>
-            <span class="magnetic relative z-10 block opacity-50 italic">SYAHIRAH</span>
-            <span class="magnetic relative z-10 block">KHANSA</span>
-        </h1>
-        <div class="absolute bottom-10 left-[10vw] max-w-xs text-[10px] uppercase tracking-widest font-sans glowing-text">Jember, East Java, Indonesia</div>
-    </section>
-
-    <section class="editorial" id="about">
-        <h2 class="editorial-heading font-serif italic reveal"><span class="accent">Who's</span> <br>Kayla Syahirah Khansa?</h2>
-        <div class="editorial-text reveal font-sans">
-            <p><strong>Kayla Syahirah Khansa</strong> is a management student at <strong>Universitas Jember</strong>, Indonesia. </p>
-            <p>They work across<strong> English proficiency at C1 level, </strong> <strong>Mandarin HSK 2,</strong> and the intersection of <strong> systemic reasoning</strong> with<strong> real-world entrepreneurial </strong>practice.</p>
-        </div>
-    </section>
-
-    <section class="skills-prose reveal font-sans">
-        <div class="skills-img-wrapper">
-            <img src="meincoat.png" alt="Methodology" class="skills-img">
-        </div>
-       <div class="skills-text-wrapper">
-    <div>
-        <p>My cognition relies heavily on <span class="skill-hl">Extreme Systemic Thinking</span> and <span class="skill-hl">Abstract-spatial Reasoning</span>. I process complexity through <span class="skill-hl"> Pattern Recognition</span>, <span class="skill-hl">Team Collaboration</span>, and <span class="skill-hl">Problem Solving</span>.</p> 
-
-        <p class="mt-12">Allowing <span class="skill-static">Rapid Synthesis of Information</span> and <span class="skill-static">Intuitive Identification of Underlying Structures</span>.</p>
-    </div>
-</div>
-        </div>
-    </section>
-
-<section class="reveal flex flex-col items-center justify-center text-center py-20 px-[5vw] md:px-[10vw] font-sans w-full">
-    
-    <p class="text-[var(--text-light)] text-sm md:text-base tracking-[0.2em] uppercase mb-8">
-        This cognitive style is particularly suited for
+  <section>
+    <h2>About</h2>
+    <p>
+      Kayla Syahirah Khansa is a management student at Universitas Jember, Indonesia.
     </p>
-
-    <a href="#suited-environments" class="scroll-arrows mb-24" aria-label="Scroll down">
-        <span></span><span></span><span></span>
-    </a>
-
-    <div id="suited-environments" class="w-full max-w-5xl flex flex-col gap-6">
-        
-        <div class="w-full flex items-center justify-between p-6 md:p-10 border border-[var(--hairline)] hover:border-[var(--accent)] transition-all duration-500 cursor-pointer group">
-            <div class="flex items-center gap-6 md:gap-10">
-                <span class="text-[var(--text-light)] text-sm tracking-[0.2em] uppercase w-8">01</span>
-                <h3 class="font-serif italic text-2xl md:text-4xl text-[var(--text)] group-hover:text-[var(--accent)] transition-colors duration-500 text-left">Strategic Planning</h3>
-            </div>
-            <i class="fa-solid fa-arrow-right text-[var(--text-light)] group-hover:text-[var(--accent)] transform group-hover:translate-x-4 transition-all duration-500 text-xl md:text-2xl"></i>
-        </div>
-        
-        <div class="w-full flex items-center justify-between p-6 md:p-10 border border-[var(--hairline)] hover:border-[var(--accent)] transition-all duration-500 cursor-pointer group">
-            <div class="flex items-center gap-6 md:gap-10">
-                <span class="text-[var(--text-light)] text-sm tracking-[0.2em] uppercase w-8">02</span>
-                <h3 class="font-serif italic text-2xl md:text-4xl text-[var(--text)] group-hover:text-[var(--accent)] transition-colors duration-500 text-left">Complex Problem-Solving</h3>
-            </div>
-            <i class="fa-solid fa-arrow-right text-[var(--text-light)] group-hover:text-[var(--accent)] transform group-hover:translate-x-4 transition-all duration-500 text-xl md:text-2xl"></i>
-        </div>
-
-        <div class="w-full flex items-center justify-between p-6 md:p-10 border border-[var(--hairline)] hover:border-[var(--accent)] transition-all duration-500 cursor-pointer group">
-            <div class="flex items-center gap-6 md:gap-10">
-                <span class="text-[var(--text-light)] text-sm tracking-[0.2em] uppercase w-8">03</span>
-                <h3 class="font-serif italic text-2xl md:text-4xl text-[var(--text)] group-hover:text-[var(--accent)] transition-colors duration-500 text-left">Cross-Disciplinary Integration</h3>
-            </div>
-            <i class="fa-solid fa-arrow-right text-[var(--text-light)] group-hover:text-[var(--accent)] transform group-hover:translate-x-4 transition-all duration-500 text-xl md:text-2xl"></i>
-        </div>
-
-    </div>
-</section>
-
-<section id="cognitive-strengths" class="reveal px-[5vw] md:px-[10vw] pt-4 pb-20 font-sans w-full flex flex-col items-center">
-    
-    <a href="#cognitive-strengths" class="scroll-arrows mb-16" aria-label="Scroll down">
-        <span></span><span></span><span></span>
-    </a>
-
-    <p class="text-[var(--text-light)] text-sm md:text-base tracking-[0.2em] uppercase mb-12 text-center w-full">
-        Key Cognitive Strengths
+    <p>
+      She works across English proficiency at C1 level, Mandarin HSK 2, and the intersection
+      of systemic reasoning with real-world entrepreneurial practice.
     </p>
+  </section>
 
-  <div class="flex flex-row w-full h-[60vh] md:h-[500px] gap-4 overflow-x-auto md:overflow-hidden snap-x snap-mandatory md:snap-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
-    
-    <div tabindex="0" class="group relative w-[85vw] md:w-auto md:flex-1 md:hover:flex-[3] md:focus:flex-[3] shrink-0 md:shrink transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] border border-[var(--hairline)] hover:border-[var(--accent)] focus:border-[var(--accent)] outline-none cursor-pointer overflow-hidden flex flex-col justify-end bg-cover bg-center snap-center" style="background-image: url('1.png');">
-        
-        <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-700 pointer-events-none z-[1]"></div>
+  <section>
+    <h2>Skills</h2>
+    <ul>
+      <li>Extreme Systemic Thinking</li>
+      <li>Abstract-Spatial Reasoning</li>
+      <li>Pattern Recognition</li>
+      <li>Team Collaboration</li>
+      <li>Problem Solving</li>
+    </ul>
+  </section>
 
-        <div class="absolute top-6 left-6 bg-white text-black group-hover:bg-transparent group-focus:bg-transparent px-3 py-1 text-sm tracking-[0.2em] transition-colors duration-500 group-hover:text-white group-focus:text-white z-20">01</div>
-        
-        <div class="relative z-10 w-full flex flex-col items-start">
-            
-            <div class="w-full bg-white group-hover:bg-transparent group-focus:bg-transparent px-6 md:px-8 py-5 transition-colors duration-500">
-                <h3 class="font-serif italic text-2xl md:text-3xl text-black group-hover:text-white group-focus:text-white transition-colors duration-500 whitespace-nowrap drop-shadow-lg">
-                    Systemic<br class="hidden md:block"> Reasoning
-                </h3>
-            </div>
-            
-            <div class="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] group-focus:grid-rows-[1fr] transition-all duration-700 ease-in-out w-full">
-                <div class="overflow-hidden px-6 md:px-8">
-                    <p class="text-white text-sm md:text-base leading-relaxed pb-6 md:pb-8 pt-2 min-w-[250px] md:min-w-[300px] max-w-sm opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-700 delay-100">
-                        I naturally map relationships between components, identify structural patterns, and translate complexity into clarity.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
+  <section>
+    <h2>Contact</h2>
+    <ul class="contact-list">
+      <li><a href="https://www.linkedin.com/in/kayla-syahirah-khansa-37a572279" target="_blank">LinkedIn</a></li>
+      <li><a href="#" target="_blank">Instagram</a></li>
+      <li><a href="mailto:youremail@example.com">Email</a></li>
+    </ul>
+  </section>
 
-    <div tabindex="0" class="group relative w-[85vw] md:w-auto md:flex-1 md:hover:flex-[3] md:focus:flex-[3] shrink-0 md:shrink transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] border border-[var(--hairline)] hover:border-[var(--accent)] focus:border-[var(--accent)] outline-none cursor-pointer overflow-hidden flex flex-col justify-end bg-cover bg-center snap-center" style="background-image: url('2.png');">
-        
-        <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-700 pointer-events-none z-[1]"></div>
-
-        <div class="absolute top-6 left-6 bg-white text-black group-hover:bg-transparent group-focus:bg-transparent px-3 py-1 text-sm tracking-[0.2em] transition-colors duration-500 group-hover:text-white group-focus:text-white z-20">02</div>
-        
-        <div class="relative z-10 w-full flex flex-col items-start">
-            
-            <div class="w-full bg-white group-hover:bg-transparent group-focus:bg-transparent px-6 md:px-8 py-5 transition-colors duration-500">
-                <h3 class="font-serif italic text-2xl md:text-3xl text-black group-hover:text-white group-focus:text-white transition-colors duration-500 whitespace-nowrap drop-shadow-lg">
-                    Spatial-Abstract<br class="hidden md:block"> Processing
-                </h3>
-            </div>
-            
-            <div class="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] group-focus:grid-rows-[1fr] transition-all duration-700 ease-in-out w-full">
-                <div class="overflow-hidden px-6 md:px-8">
-                    <p class="text-white text-sm md:text-base leading-relaxed pb-6 md:pb-8 pt-2 min-w-[250px] md:min-w-[300px] max-w-sm opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-700 delay-100">
-                        I think in relationships and structures rather than words or images, which supports non-linear problem-solving and strategic foresight.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div tabindex="0" class="group relative w-[85vw] md:w-auto md:flex-1 md:hover:flex-[3] md:focus:flex-[3] shrink-0 md:shrink transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] border border-[var(--hairline)] hover:border-[var(--accent)] focus:border-[var(--accent)] outline-none cursor-pointer overflow-hidden flex flex-col justify-end bg-cover bg-center snap-center" style="background-image: url('3.png');">
-        
-        <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-700 pointer-events-none z-[1]"></div>
-
-        <div class="absolute top-6 left-6 bg-white text-black group-hover:bg-transparent group-focus:bg-transparent px-3 py-1 text-sm tracking-[0.2em] transition-colors duration-500 group-hover:text-white group-focus:text-white z-20">03</div>
-        
-        <div class="relative z-10 w-full flex flex-col items-start">
-            
-            <div class="w-full bg-white group-hover:bg-transparent group-focus:bg-transparent px-6 md:px-8 py-5 transition-colors duration-500">
-                <h3 class="font-serif italic text-2xl md:text-3xl text-black group-hover:text-white group-focus:text-white transition-colors duration-500 whitespace-nowrap drop-shadow-lg">
-                    Metacognitive<br class="hidden md:block"> Awareness
-                </h3>
-            </div>
-            
-            <div class="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] group-focus:grid-rows-[1fr] transition-all duration-700 ease-in-out w-full">
-                <div class="overflow-hidden px-6 md:px-8">
-                    <p class="text-white text-sm md:text-base leading-relaxed pb-6 md:pb-8 pt-2 min-w-[250px] md:min-w-[300px] max-w-sm opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-700 delay-100">
-                        I observe and refine my own thinking processes, enabling continuous adaptation and learning.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div tabindex="0" class="group relative w-[85vw] md:w-auto md:flex-1 md:hover:flex-[3] md:focus:flex-[3] shrink-0 md:shrink transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] border border-[var(--hairline)] hover:border-[var(--accent)] focus:border-[var(--accent)] outline-none cursor-pointer overflow-hidden flex flex-col justify-end bg-cover bg-center snap-center" style="background-image: url('4.png');">
-        
-        <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-700 pointer-events-none z-[1]"></div>
-
-        <div class="absolute top-6 left-6 bg-white text-black group-hover:bg-transparent group-focus:bg-transparent px-3 py-1 text-sm tracking-[0.2em] transition-colors duration-500 group-hover:text-white group-focus:text-white z-20">04</div>
-        
-        <div class="relative z-10 w-full flex flex-col items-start">
-            
-            <div class="w-full bg-white group-hover:bg-transparent group-focus:bg-transparent px-6 md:px-8 py-5 transition-colors duration-500">
-                <h3 class="font-serif italic text-2xl md:text-3xl text-black group-hover:text-white group-focus:text-white transition-colors duration-500 whitespace-nowrap drop-shadow-lg">
-                    Dual-Processing<br class="hidden md:block"> Comm.
-                </h3>
-            </div>
-            
-            <div class="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] group-focus:grid-rows-[1fr] transition-all duration-700 ease-in-out w-full">
-                <div class="overflow-hidden px-6 md:px-8">
-                    <p class="text-white text-sm md:text-base leading-relaxed pb-6 md:pb-8 pt-2 min-w-[250px] md:min-w-[300px] max-w-sm opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-700 delay-100">
-                        I bridge analytical precision with empathetic collaboration, adapting explanatory frameworks to diverse audiences.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
+  <footer>
+    &copy; 2026 Kayla Syahirah Khansa
+  </footer>
 
 </div>
 
-</div>
-</section>
-
-    <section class="hiring-footer" id="contact">
-        <div class="reveal">
-            <h2 class="hiring-title">Open for<br><span class="hiring-accent">Hiring.</span></h2>
-            <div class="contact-grid-links mt-10">
-                <a href="mailto:kaylasyahirahkhansa.contact@gmail.com" class="contact-link-modern">Email</a>
-                <a href="https://wa.me/6285859462539" target="_blank" class="contact-link-modern">WhatsApp</a>
-                <a href="https://www.linkedin.com/in/kayla-syahirah-khansa-37a572279" target="_blank" class="contact-link-modern">LinkedIn</a>
-                <a href="https://www.instagram.com/kayla.tsss" target="_blank" class="contact-link-modern">Instagram</a>
-            </div>
-            <p class="mt-20 text-[10px] uppercase tracking-widest opacity-40">© 2026 Kayla Syahirah Khansa</p>
-        </div>
-    </section>
-
-    <script>
-        const cursor = document.getElementById('cursor-follower');
-        const progress = document.getElementById('progress');
-        const heroSection = document.querySelector('.hero');
-        const img = document.querySelector('.hero-img');
-        const imgContainer = document.querySelector('.hero-img-container');
-        const searchWrapper = document.getElementById('searchWrapper');
-        const searchInput = document.getElementById('mainSearch');
-        const translateBubble = document.getElementById('translateBubble');
-
-        function toggleMenu() { document.getElementById('menuOverlay').classList.toggle('active'); document.body.classList.toggle('nav-active'); }
-        function toggleSearch() { searchWrapper.classList.toggle('active'); if (searchWrapper.classList.contains('active')) searchInput.focus(); }
-        function toggleTranslate() { translateBubble.classList.toggle('active'); }
-        searchInput.addEventListener('blur', () => setTimeout(() => searchWrapper.classList.remove('active'), 200));
-        
-        window.onclick = function(event) { if (!event.target.closest('.translate-control')) translateBubble.classList.remove('active'); }
-        document.addEventListener('mousemove', (e) => { cursor.style.left = `${e.clientX}px`; cursor.style.top = `${e.clientY}px`; });
-        heroSection.addEventListener('mouseenter', () => cursor.style.opacity = '1');
-        heroSection.addEventListener('mouseleave', () => cursor.style.opacity = '0');
-
-        document.querySelectorAll('.magnetic').forEach(btn => {
-            btn.addEventListener('mousemove', (e) => {
-                const rect = btn.getBoundingClientRect();
-                const x = e.clientX - rect.left - rect.width / 2;
-                const y = e.clientY - rect.top - rect.height / 2;
-                btn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
-                cursor.style.width = '40px'; cursor.style.height = '40px';
-            });
-            btn.addEventListener('mouseleave', () => { btn.style.transform = 'translate(0,0)'; cursor.style.width = '10px'; cursor.style.height = '10px'; });
-        });
-
-        window.addEventListener('scroll', () => {
-            let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-            let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            let scrolled = height > 0 ? (winScroll / height) * 100 : 0;
-            progress.style.width = scrolled + "%";
-
-            if (winScroll > 50) { img.classList.add('colored'); imgContainer.classList.add('colored-container'); }
-            else { img.classList.remove('colored'); imgContainer.classList.remove('colored-container'); }
-
-            const scrollPercent = height > 0 ? winScroll / height : 0;
-            const contactTop = document.getElementById('contact').getBoundingClientRect().top;
-            
-            if (contactTop < window.innerHeight / 2) document.body.classList.remove('light-mode');
-            else if (scrollPercent > 0.15) document.body.classList.add('light-mode');
-            else document.body.classList.remove('light-mode');
-
-            document.querySelectorAll('.reveal').forEach(el => { if (el.getBoundingClientRect().top < window.innerHeight * 0.85) el.classList.add('active'); });
-        });
-        window.dispatchEvent(new Event('scroll'));
-    </script>
 </body>
 </html>
